@@ -14,7 +14,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       theme: Style().textTheme(context),
 
-      home: const LoginPage(),
+      home: LoginPage(),
     );
   }
 }
