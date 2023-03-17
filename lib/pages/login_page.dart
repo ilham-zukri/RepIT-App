@@ -155,7 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                               if (mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    backgroundColor: const Color(0xff3C4048),
+                                    backgroundColor: const Color(0xff00ABB3),
                                     content: Text(
                                       e.toString(),
                                       style: const TextStyle(color: Colors.red),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:repit_app/asset_card.dart';
 import 'package:repit_app/data_classes/user.dart';
+import 'package:repit_app/services.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key, required this.userData});
@@ -94,7 +95,15 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Add your onPressed code here!
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: const Color(0xff00ABB3),
+              content: Text(
+                Services.prefs.getString('token').toString(),
+                style: const TextStyle(color: Colors.red),
+              ),
+            ),
+          );
         },
         child: Transform.scale(
           scale: 2.5,
