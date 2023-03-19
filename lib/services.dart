@@ -1,11 +1,13 @@
+import 'dart:ffi';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data_classes/user.dart';
 import 'package:dio/dio.dart';
 
 abstract class Services {
-  static const String url = "http://10.0.2.2:8000/api";
+  // static const String url = "http://10.0.2.2:8000/api";
   static late SharedPreferences prefs;
-  // static const String url = "http://192.168.100.250:8000/api";
+  static const String url = "http://192.168.100.250:8000/api";
 
   //// Login ////
   static Future<User?> login(String username, String password) async {
@@ -25,7 +27,6 @@ abstract class Services {
         await prefs.setString('token', response.data.toString());
         return getUserData(prefs.getString('token').toString());
       }
-
     } catch (e) {
       exceptionHandling(e);
     }
@@ -33,8 +34,8 @@ abstract class Services {
   }
 
   //// Get User Data ////
-  static Future<User?> getUserData (String token) async{
-    try{
+  static Future<User?> getUserData(String token) async {
+    try {
       var userResponse = await Dio().get(
         '$url/user/current',
         options: Options(
@@ -52,14 +53,34 @@ abstract class Services {
           name: userResponse.data["current_user"]["name"],
         );
       }
-    } catch (e){
+    } catch (e) {
       exceptionHandling(e);
     }
     return null;
   }
 
+  static Future<bool> logout(String token) async {
+    try {
+      var response = await Dio().get(
+        '$url/logout',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        ),
+      );
+      if(response.statusCode == 200){
+        return true;
+      }
+      return false;
+    } catch (e) {
+      throw exceptionHandling(e);
+    }
+  }
+
   //// Handling Exception From API ////
-  static exceptionHandling(var e){
+  static exceptionHandling(var e) {
     if (e is DioError) {
       if (e.response != null) {
         // throw Exception(e.response!.data["message"]);

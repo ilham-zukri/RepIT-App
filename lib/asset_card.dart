@@ -5,8 +5,9 @@ class AssetCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return SizedBox(
-      width: 320,
+      width: size.width,
       height: 155,
       child: Card(
         shape: const RoundedRectangleBorder(
@@ -15,22 +16,28 @@ class AssetCard extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              width: 320,
+              width: size.width,
               height: 40,
               decoration: const BoxDecoration(
-                  color: Color(0xff009199),
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
+                color: Color(0xff009199),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10)),
+              ),
               child: const Padding(
                 padding: EdgeInsets.all(10),
                 child: Text(
                   "Aset-aset anda akan tampil disini",
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w600),
                 ),
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(top: 30, bottom: 30, left: 15, right: 15),
-              child: const Text("Setelah asset ditambahkan, maka daftar asset yang anda miliki akan muncul disini"),
+              margin: const EdgeInsets.only(
+                  top: 30, bottom: 30, left: 15, right: 15),
+              child: const Text(
+                  "Setelah asset ditambahkan, maka daftar asset yang anda miliki akan muncul disini"),
             )
           ],
         ),

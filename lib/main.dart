@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:repit_app/data_classes/user.dart';
 import 'package:repit_app/pages/login_page.dart';
+import 'package:repit_app/pages/main_page.dart';
+import 'package:repit_app/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+late String? storedToken;
+late User? userData;
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  storedToken = prefs.getString('token');
+  userData = (storedToken != null) ? await Services.getUserData(storedToken.toString()) : null;
   runApp(const MainApp());
 }
 
@@ -12,10 +23,7 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // SystemChrome.setEnabledSystemUIMode(
-    //   SystemUiMode.leanBack,
-    //   overlays: [SystemUiOverlay.bottom],
-    // );
+
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Color(0xff006e70)),
     );
@@ -41,7 +49,7 @@ class MainApp extends StatelessWidget {
       //   child: LoginPage(),
       //
       // ),
-      home: LoginPage(),
+      home: (userData != null) ? MainPage(userData: userData!) : LoginPage(),
     );
   }
 }
