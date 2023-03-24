@@ -1,5 +1,4 @@
 import 'dart:ffi';
-
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data_classes/user.dart';
 import 'package:dio/dio.dart';
@@ -59,6 +58,7 @@ abstract class Services {
     return null;
   }
 
+  //// Logout ////
   static Future<bool> logout(String token) async {
     try {
       var response = await Dio().get(
@@ -70,13 +70,40 @@ abstract class Services {
           },
         ),
       );
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         return true;
       }
       return false;
     } catch (e) {
       throw exceptionHandling(e);
     }
+  }
+
+  //// get current User list of assets ////
+
+  static Future<List?> getMyAssets() async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      var response = await Dio().get(
+        '$url/asset/myAssets',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        ),
+      );
+      if(response.statusCode == 200){
+        return response.data['assets'] as List;
+      } else if(response.statusCode == 204){
+        return null;
+      }
+
+    } catch (e) {
+      exceptionHandling(e);
+    }
+    return null;
   }
 
   //// Handling Exception From API ////

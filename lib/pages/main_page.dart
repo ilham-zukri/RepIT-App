@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:repit_app/asset_card.dart';
 import 'package:repit_app/data_classes/user.dart';
 import 'package:repit_app/pages/login_page.dart';
+import 'package:repit_app/pages/my_assets_page.dart';
 import 'package:repit_app/services.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:package_info/package_info.dart';
@@ -104,29 +105,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           const Center(
             child: Text('this is QR Scanner'),
           ),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(50),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text(
-                    "Aset-aset anda akan tampil disini",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Text(
-                      'Setelah asset ditambahkan, maka daftar asset yang anda miliki akan muncul disini',
-                      style: TextStyle(
-                        fontSize: 14,
-                      ),
-                      textAlign: TextAlign.center),
-                ],
-              ),
-            ),
-          ),
+         const MyAssetsPage(),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -193,12 +172,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(top: 32),
+              margin: const EdgeInsets.only(top: 32, left: 20, right: 20),
+              width: 205,
+              height: 40,
               child: Material(
                 child: InkWell(
                   onTap: () {},
+                  customBorder: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
                   child: Container(
-                    margin: const EdgeInsets.only(left: 24),
+                    margin: const EdgeInsets.only(
+                        right: 8, left: 8, top: 4, bottom: 5),
                     width: size.width,
                     height: 33,
                     child: Row(
@@ -222,12 +206,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(top: 20),
+              margin: const EdgeInsets.only(top: 16, left: 20),
+              width: 205,
+              height: 40,
               child: Material(
                 child: InkWell(
                   onTap: () {},
+                  customBorder: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
                   child: Container(
-                    margin: const EdgeInsets.only(left: 24),
+                    margin: const EdgeInsets.only(
+                        right: 8, left: 8, top: 4, bottom: 5),
                     width: size.width,
                     height: 33,
                     child: Row(
@@ -251,12 +240,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(top: 20),
+              margin: const EdgeInsets.only(top: 16, left: 20),
+              width: 205,
+              height: 40,
               child: Material(
                 child: InkWell(
                   onTap: () {},
+                  customBorder: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
                   child: Container(
-                    margin: const EdgeInsets.only(left: 24),
+                    margin: const EdgeInsets.only(
+                        right: 8, left: 8, top: 4, bottom: 5),
                     width: size.width,
                     height: 33,
                     child: Row(
@@ -280,27 +274,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(top: 20),
+              margin: const EdgeInsets.only(top: 16, left: 20),
+              width: 205,
+              height: 40,
               child: Material(
                 child: InkWell(
-                  onTap: () async{
-                    SharedPreferences prefs = await SharedPreferences.getInstance();
-                    String? token = prefs.getString('token').toString();
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          backgroundColor: const Color(0xff00ABB3),
-                          content: Text(
-                            token.toString(),
-                            style: const TextStyle(color: Colors.red),
-                          ),
-                        ),
-                      );
-                    }
-
-                  },
+                  onTap: () {},
+                  customBorder: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
                   child: Container(
-                    margin: const EdgeInsets.only(left: 24),
+                    margin: const EdgeInsets.only(
+                        right: 8, left: 8, top: 4, bottom: 5),
                     width: size.width,
                     height: 33,
                     child: Row(
@@ -324,41 +308,73 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(top: size.height / 2.2),
+              margin: EdgeInsets.only(top: size.height / 2.2, left: 20),
+              width: 205,
+              height: 40,
               child: Material(
                 child: InkWell(
-                  onTap: () async {
-                    try {
-                      SharedPreferences prefs = await SharedPreferences.getInstance();
-                      String? token = prefs.getString('token').toString();
-                      bool response = await Services.logout(token);
-                      if (response) {
-                        if (mounted) {
-                          prefs.clear();
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => LoginPage(),
-                            ),
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            content: const Text("Apakah anda yakin ingin log out?"),
+                            actions: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xff00ABB3),
+                                ),
+                                child: const Text("Batal"),
+                              ),
+                              ElevatedButton(
+                                onPressed: () async{
+                                  try {
+                                    SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                    String? token = prefs.getString('token').toString();
+                                    bool response = await Services.logout(token);
+                                    if (response) {
+                                      if (mounted) {
+                                        prefs.clear();
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => LoginPage(),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  } catch (e) {
+                                    if (mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          backgroundColor: const Color(0xff00ABB3),
+                                          content: Text(
+                                            e.toString(),
+                                            style: const TextStyle(color: Colors.red),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xff00ABB3),
+                                ),
+                                child: const Text("Ya"),
+                              ),
+                            ],
                           );
-                        }
-                      }
-                    } catch (e) {
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            backgroundColor: const Color(0xff00ABB3),
-                            content: Text(
-                              e.toString(),
-                              style: const TextStyle(color: Colors.red),
-                            ),
-                          ),
-                        );
-                      }
-                    }
+                        });
                   },
+                  customBorder: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
                   child: Container(
-                    margin: const EdgeInsets.only(left: 24),
+                    margin: const EdgeInsets.only(
+                        right: 8, left: 8, top: 4, bottom: 5),
                     width: size.width,
                     height: 33,
                     child: Row(
@@ -382,7 +398,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(left: 24, top: 24),
+              margin: const EdgeInsets.only(left: 30, top: 24),
               child: const Text(
                 'V.01.00.05',
                 textAlign: TextAlign.start,
