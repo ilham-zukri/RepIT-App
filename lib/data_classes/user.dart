@@ -1,5 +1,5 @@
 class User {
-  int? id;
+  String? id;
   String? email;
   String? name;
   final String _token;

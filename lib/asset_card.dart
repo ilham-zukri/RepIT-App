@@ -1,14 +1,28 @@
 import 'package:flutter/material.dart';
 
 class AssetCard extends StatelessWidget {
-  const AssetCard({super.key});
+  final String utilization;
+  final String assetType;
+  final String ram;
+  final String cpu;
+  final String location;
+  final String serialNumber;
+
+  const AssetCard(
+      {super.key,
+      required this.utilization,
+      required this.assetType,
+      required this.ram,
+      required this.cpu,
+      required this.serialNumber,
+      required this.location});
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return SizedBox(
       width: size.width,
-      height: 155,
+      height: 170,
       child: Card(
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -24,20 +38,61 @@ class AssetCard extends StatelessWidget {
                     topLeft: Radius.circular(10),
                     topRight: Radius.circular(10)),
               ),
-              child: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Text(
-                  "Aset-aset anda akan tampil disini",
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.w600),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      assetType,
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w600),
+                    ),
+                    Text(
+                      location,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(
-                  top: 30, bottom: 30, left: 15, right: 15),
-              child: const Text(
-                  "Setelah asset ditambahkan, maka daftar asset yang anda miliki akan muncul disini"),
+              alignment: Alignment.topLeft,
+              margin: const EdgeInsets.only(top: 8, bottom: 8, left: 16),
+              child: Text(
+                utilization,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 16, bottom: 8),
+              child: Table(
+                columnWidths: const {
+                  0:FlexColumnWidth(1.22),
+                  1:FlexColumnWidth(0.2),
+                  2:FlexColumnWidth(2.7)
+                },
+                children: [
+                  TableRow(children: [
+                    const Text('CPU'),
+                    const Text(':'),
+                    Text(cpu)
+                  ],),
+                  TableRow(children: [
+                    Container(child: const Text('RAM'), margin: EdgeInsets.only(top: 8),),
+                    Container(child: const Text(':'), margin: EdgeInsets.only(top: 8)),
+                    Container(child: Text(ram),  margin: EdgeInsets.only(top: 8))
+                  ]),
+                  TableRow(children: [
+                    Container(child: const Text('Serial Number'), margin: EdgeInsets.only(top: 8)),
+                    Container(child: const Text(':'), margin: EdgeInsets.only(top: 8)),
+                    Container(child: Text(serialNumber),  margin: EdgeInsets.only(top: 8))
+                  ]),
+                ],
+              ),
             )
           ],
         ),

@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 abstract class Services {
   // static const String url = "http://10.0.2.2:8000/api";
   static late SharedPreferences prefs;
-  static const String url = "http://192.168.100.250:8000/api";
+  static const String url = "http://192.168.1.200:3000/api";
 
   //// Login ////
   static Future<User?> login(String username, String password) async {
