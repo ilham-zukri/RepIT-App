@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 
 class AssetCard extends StatelessWidget {
   final String utilization;
+  final String status;
   final String assetType;
   final String ram;
   final String cpu;
   final String location;
   final String serialNumber;
+  final String? brand;
+  final String? model;
 
   const AssetCard(
       {super.key,
@@ -14,8 +17,11 @@ class AssetCard extends StatelessWidget {
       required this.assetType,
       required this.ram,
       required this.cpu,
+      required this.status,
       required this.serialNumber,
-      required this.location});
+      required this.location,
+      this.brand,
+      this.model});
 
   @override
   Widget build(BuildContext context) {
@@ -61,36 +67,95 @@ class AssetCard extends StatelessWidget {
             ),
             Container(
               alignment: Alignment.topLeft,
-              margin: const EdgeInsets.only(top: 8, bottom: 8, left: 16),
-              child: Text(
-                utilization,
-                style: const TextStyle(fontWeight: FontWeight.w600),
+              margin:
+                  const EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    utilization,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  _statusBoxBuilder(status)
+                ],
               ),
             ),
             Container(
               margin: const EdgeInsets.only(left: 16, bottom: 8),
               child: Table(
                 columnWidths: const {
-                  0:FlexColumnWidth(1.22),
-                  1:FlexColumnWidth(0.2),
-                  2:FlexColumnWidth(2.7)
+                  0: FlexColumnWidth(1.22),
+                  1: FlexColumnWidth(0.2),
+                  2: FlexColumnWidth(2.7)
                 },
-                children: [
+                children: (cpu != "#N/A")
+                    ? [
+                        TableRow(
+                          children: [
+                            const Text('CPU'),
+                            const Text(':'),
+                            Text(cpu)
+                          ],
+                        ),
+                        TableRow(children: [
+                          Container(
+                            margin: const EdgeInsets.only(top: 8),
+                            child: const Text('RAM'),
+                          ),
+                          Container(
+                              margin: const EdgeInsets.only(top: 8),
+                              child: const Text(':')),
+                          Container(
+                              margin: const EdgeInsets.only(top: 8),
+                              child: Text(ram))
+                        ]),
+                        TableRow(
+                          children: [
+                            Container(
+                                margin: const EdgeInsets.only(top: 8),
+                                child: const Text('Serial Number')),
+                            Container(
+                                margin: const EdgeInsets.only(top: 8),
+                                child: const Text(':')),
+                            Container(
+                                margin: const EdgeInsets.only(top: 8),
+                                child: Text(serialNumber))
+                          ],
+                        ),
+                      ]
+                    : [
+                  TableRow(
+                    children: [
+                      const Text('Brand'),
+                      const Text(':'),
+                      Text(brand ?? ' ')
+                    ],
+                  ),
                   TableRow(children: [
-                    const Text('CPU'),
-                    const Text(':'),
-                    Text(cpu)
-                  ],),
-                  TableRow(children: [
-                    Container(child: const Text('RAM'), margin: EdgeInsets.only(top: 8),),
-                    Container(child: const Text(':'), margin: EdgeInsets.only(top: 8)),
-                    Container(child: Text(ram),  margin: EdgeInsets.only(top: 8))
+                    Container(
+                      margin: const EdgeInsets.only(top: 8),
+                      child: const Text('Model'),
+                    ),
+                    Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        child: const Text(':')),
+                    Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        child: Text(model ?? ' '))
                   ]),
-                  TableRow(children: [
-                    Container(child: const Text('Serial Number'), margin: EdgeInsets.only(top: 8)),
-                    Container(child: const Text(':'), margin: EdgeInsets.only(top: 8)),
-                    Container(child: Text(serialNumber),  margin: EdgeInsets.only(top: 8))
-                  ]),
+                  TableRow(
+                    children: [
+                      Container(
+                          margin: const EdgeInsets.only(top: 8),
+                          child: const Text('Serial Number')),
+                      Container(
+                          margin: const EdgeInsets.only(top: 8),
+                          child: const Text(':')),
+                      Container(
+                          margin: const EdgeInsets.only(top: 8),
+                          child: Text(serialNumber))
+                    ],
+                  ),
                 ],
               ),
             )
@@ -98,5 +163,47 @@ class AssetCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _statusBoxBuilder(String status) {
+    final Map<String, dynamic> statusMap = {
+      "Ready": {
+        "backgroundColor": const Color(0xff98BFFA),
+        "textColor": const Color(0xff12315F),
+      },
+      "Deployed": {
+        "backgroundColor": const Color(0xffAEE2AA),
+        "textColor": const Color(0xff11410D),
+      },
+      "On Repair": {
+        "backgroundColor": const Color(0xffFAD398),
+        "textColor": const Color(0xff885B17),
+      },
+      "Sub": {
+        "backgroundColor": const Color(0xffAADAE9),
+        "textColor": const Color(0xff0C4B5F),
+      },
+      "Scrapped": {
+        "backgroundColor": const Color(0xffEDA8A8),
+        "textColor": const Color(0xff891F1F),
+      },
+    };
+    if (statusMap.containsKey(status)) {
+      final backgroundColor = statusMap[status]['backgroundColor'];
+      final textColor = statusMap[status]['textColor'];
+      return Container(
+        padding: const EdgeInsets.only(left: 6, right: 6, top: 2, bottom: 2),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: const BorderRadius.all(Radius.circular(100)),
+        ),
+        child: Text(
+          status,
+          style: TextStyle(color: textColor),
+        ),
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 }

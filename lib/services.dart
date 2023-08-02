@@ -1,12 +1,11 @@
-import 'dart:ffi';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data_classes/user.dart';
 import 'package:dio/dio.dart';
 
 abstract class Services {
-  // static const String url = "http://10.0.2.2:8000/api";
+  static const String url = "http://10.0.2.2:8000/api";
   static late SharedPreferences prefs;
-  static const String url = "http://192.168.1.200:3000/api";
+  // static const String url = "http://192.168.1.200:3000/api";
 
   //// Login ////
   static Future<User?> login(String username, String password) async {
@@ -46,10 +45,13 @@ abstract class Services {
       );
       if (userResponse.statusCode == 200) {
         return User(
-          id: userResponse.data["current_user"]["id"],
-          email: userResponse.data["current_user"]["email"],
+          id: userResponse.data["data"]["id"],
+          email: userResponse.data["data"]["email"],
           token: token,
-          name: userResponse.data["current_user"]["name"],
+          name: userResponse.data["data"]["user_name"],
+          branch: userResponse.data["data"]["branch"],
+          department: userResponse.data["data"]["department"],
+          role: userResponse.data["data"]["role"]["role_name"]
         );
       }
     } catch (e) {
@@ -71,6 +73,8 @@ abstract class Services {
         ),
       );
       if (response.statusCode == 200) {
+        prefs = await SharedPreferences.getInstance();
+        prefs.clear();
         return true;
       }
       return false;
@@ -110,7 +114,6 @@ abstract class Services {
   static exceptionHandling(var e) {
     if (e is DioError) {
       if (e.response != null) {
-        // throw Exception(e.response!.data["message"]);
         throw e.response!.data["error"].toString();
       } else {
         throw Exception("Terjadi kesalahan pada koneksi.");

@@ -1,0 +1,231 @@
+import 'package:flutter/material.dart';
+import 'package:repit_app/data_classes/user.dart';
+
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({Key? key, this.userData}) : super(key: key);
+  final User? userData;
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  @override
+  Widget build(BuildContext context) {
+    final userData = widget.userData;
+    return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: const Text('Profile'),
+      ),
+      body: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 32, bottom: 16),
+                child: Stack(
+                  children: [
+                    const CircleAvatar(
+                      foregroundColor: Color(0xff00ABB3),
+                      minRadius: 80,
+                      child: Icon(
+                        Icons.person_rounded,
+                        size: 80,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: -25,
+                      child: RawMaterialButton(
+                        onPressed: () {},
+                        elevation: 2.0,
+                        fillColor: const Color(0xfff5f6f9),
+                        padding: const EdgeInsets.all(5),
+                        shape: const CircleBorder(),
+                        child: const Icon(Icons.image),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Container(
+            decoration: const BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.grey))),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(
+                          top: 24, left: 24, bottom: 24, right: 16),
+                      child: const Icon(Icons.person_rounded),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Username',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                        Text(
+                          userData!.name as String,
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Container(
+                  margin: const EdgeInsets.only(right: 16),
+                  child: IconButton(
+                      onPressed: () {}, icon: const Icon(Icons.edit)),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            decoration: const BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.grey))),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(
+                          top: 24, left: 24, bottom: 24, right: 16),
+                      child: const Icon(Icons.email),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Email',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                        Text(
+                          userData.email as String,
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Container(
+                  margin: const EdgeInsets.only(right: 16),
+                  child: IconButton(
+                      onPressed: () {}, icon: const Icon(Icons.edit)),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            decoration: const BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.grey))),
+            child: Row(
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(
+                          top: 24, left: 24, bottom: 24, right: 16),
+                      child: const Icon(Icons.home_work),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Branch',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                        Text(
+                          userData.branch ?? "#N/A",
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            decoration: const BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.grey))),
+            child: Row(
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(
+                          top: 24, left: 24, bottom: 24, right: 16),
+                      child: const Icon(Icons.work),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Department',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                        Text(
+                          userData.department ?? "#N/A",
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            decoration: const BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.grey))),
+            child: Row(
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(
+                          top: 24, left: 24, bottom: 24, right: 16),
+                      child: const Icon(Icons.accessibility),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Role',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                        Text(
+                          userData.role ?? "#N/A",
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

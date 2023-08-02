@@ -1,13 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:repit_app/asset_card.dart';
 import 'package:repit_app/data_classes/user.dart';
 import 'package:repit_app/pages/login_page.dart';
 import 'package:repit_app/pages/my_assets_page.dart';
+import 'package:repit_app/pages/profile_page.dart';
 import 'package:repit_app/services.dart';
-import 'package:cupertino_icons/cupertino_icons.dart';
-import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MainPage extends StatefulWidget {
@@ -21,11 +19,17 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   late TabController _tabController;
+  List? _assetList;
 
   @override
   void initState() {
     super.initState();
+    getAssetList();
     _tabController = TabController(length: 3, vsync: this);
+  }
+
+  void getAssetList() async{
+    _assetList = await Services.getMyAssets();
   }
 
   @override
@@ -43,24 +47,31 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         ),
         titleSpacing: 0,
         actions: [
-          Container(
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.account_circle,
-                    size: 32,
-                  ),
-                  padding: EdgeInsets.zero,
+          Row(
+            children: [
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return ProfilePage(userData: widget.userData,);
+                      },
+                    ),
+                  );
+                },
+                icon: const Icon(
+                  Icons.account_circle,
+                  size: 32,
                 ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.notifications, size: 32),
-                  padding: EdgeInsets.zero,
-                ),
-              ],
-            ),
+                padding: EdgeInsets.zero,
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.notifications, size: 32),
+                padding: EdgeInsets.zero,
+              ),
+            ],
           ),
           // IconButton(
           //   onPressed: () {},
@@ -105,7 +116,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           const Center(
             child: Text('this is QR Scanner'),
           ),
-         const MyAssetsPage(),
+         MyAssetsPage(assetList: _assetList),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
