@@ -32,7 +32,7 @@ abstract class Services {
   }
 
   //// Get User Data ////
-  static Future<User?> getUserData(String token) async {
+  static Future<User?> getUserData(String? token) async {
     try {
       var userResponse = await Dio().get(
         '$url/user/current',
@@ -54,6 +54,33 @@ abstract class Services {
           role: userResponse.data["data"]["role"]["role_name"]
         );
       }
+    } catch (e) {
+      exceptionHandling(e);
+    }
+    return null;
+  }
+
+  //// changing user's username ////
+  static Future<Response?> changeUsername(String username) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      var response = await Dio().put(
+        '$url/user/user-name',
+        options: Options(
+          headers: {
+            "Accept" : "application/json",
+            "Authorization" : "Bearer $token"
+          }
+        ),
+        data: {
+          "user_name" : username
+        }
+      );
+
+      if (response.statusCode == 200) return response;
+
+      return null;
     } catch (e) {
       exceptionHandling(e);
     }
@@ -114,7 +141,7 @@ abstract class Services {
   static exceptionHandling(var e) {
     if (e is DioError) {
       if (e.response != null) {
-        throw e.response!.data["error"].toString();
+        throw e.response!.data["message"].toString();
       } else {
         throw Exception("Terjadi kesalahan pada koneksi.");
       }
