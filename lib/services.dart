@@ -60,7 +60,7 @@ abstract class Services {
     return null;
   }
 
-  //// changing user's username ////
+  //// change user's username ////
   static Future<Response?> changeUsername(String username) async {
     try {
       prefs = await SharedPreferences.getInstance();
@@ -85,6 +85,32 @@ abstract class Services {
       exceptionHandling(e);
     }
     return null;
+  }
+
+  //// change user's username ////
+  static Future<Response?> changeEmail(String email) async {
+    try{
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      var response = await Dio().put(
+          '$url/user/email',
+          options: Options(
+              headers: {
+                "Accept" : "application/json",
+                "Authorization" : "Bearer $token"
+              }
+          ),
+          data: {
+            "email" : email
+          }
+      );
+
+      if(response.statusCode == 200) return response;
+    } catch(e){
+      exceptionHandling(e);
+    }
+    return null;
+
   }
 
   //// Logout ////

@@ -17,7 +17,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    User? userData = widget.userData;
+    var userData = widget.userData;
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
@@ -220,7 +220,86 @@ class _ProfilePageState extends State<ProfilePage> {
                   Container(
                     margin: const EdgeInsets.only(right: 16),
                     child: IconButton(
-                        onPressed: () {}, icon: const Icon(Icons.edit)),
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  content: TextField(
+                                    decoration: const InputDecoration(
+                                      hintText: "Masukan email baru",
+                                    ),
+                                    controller: emailController,
+                                  ),
+                                  actions: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            const Color(0xff00ABB3),
+                                      ),
+                                      child: const Text("Batal"),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        try {
+                                          await Services.changeEmail(
+                                              emailController.text.toString());
+                                          if (mounted) {
+                                            showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return AlertDialog(
+                                                    title: const Text(
+                                                        "email berhasil diubah"),
+                                                    content: const Text(
+                                                        "perubahan akan terlihat setelah login ulang"),
+                                                    actions: [
+                                                      ElevatedButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                            backgroundColor:
+                                                                const Color(
+                                                                    0xff00ABB3),
+                                                          ),
+                                                          child:
+                                                              const Text("OK"))
+                                                    ],
+                                                  );
+                                                });
+                                          }
+                                        } catch (e) {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                    content:
+                                                        Text(e.toString()));
+                                              });
+                                        }
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            const Color(0xff00ABB3),
+                                      ),
+                                      child: const Text("Ubah"),
+                                    ),
+                                    const SizedBox(
+                                      width: 6,
+                                    )
+                                  ],
+                                );
+                              });
+                        },
+                        icon: const Icon(Icons.edit)),
                   ),
                 ],
               ),
