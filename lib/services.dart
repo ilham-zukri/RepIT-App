@@ -7,7 +7,7 @@ abstract class Services {
   static late SharedPreferences prefs;
   // static const String url = "http://192.168.1.200:3000/api";
 
-  //// Login ////
+  /// Login ///
   static Future<User?> login(String username, String password) async {
     try {
       var response = await Dio().post(
@@ -31,7 +31,7 @@ abstract class Services {
     return null;
   }
 
-  //// Get User Data ////
+  /// Get User Data ///
   static Future<User?> getUserData(String? token) async {
     try {
       var userResponse = await Dio().get(
@@ -60,7 +60,7 @@ abstract class Services {
     return null;
   }
 
-  //// change user's username ////
+  /// change user's username ///
   static Future<Response?> changeUsername(String username) async {
     try {
       prefs = await SharedPreferences.getInstance();
@@ -87,7 +87,7 @@ abstract class Services {
     return null;
   }
 
-  //// change user's username ////
+  /// change user's username ///
   static Future<Response?> changeEmail(String email) async {
     try{
       prefs = await SharedPreferences.getInstance();
@@ -113,7 +113,7 @@ abstract class Services {
 
   }
 
-  //// Logout ////
+  /// Logout ///
   static Future<bool> logout(String token) async {
     try {
       var response = await Dio().get(
@@ -136,8 +136,7 @@ abstract class Services {
     }
   }
 
-  //// get current User list of assets ////
-
+  /// get current User's list of assets ///
   static Future<List?> getMyAssets() async {
     try {
       prefs = await SharedPreferences.getInstance();
@@ -151,6 +150,7 @@ abstract class Services {
           },
         ),
       );
+
       if(response.statusCode == 200){
         return response.data['assets'] as List;
       } else if(response.statusCode == 204){
@@ -163,7 +163,35 @@ abstract class Services {
     return null;
   }
 
-  //// Handling Exception From API ////
+  /// get Supervisor's subordinates ///
+  static Future<List?> getMySubordinates() async {
+    try{
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      var response = await Dio().get(
+        '$url/api/users/by-department',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        )
+      );
+
+      if(response.statusCode == 200){
+        return response.data['data'] as List;
+      } else if(response.statusCode == 204){
+        return null;
+      }
+
+    }catch (e){
+      exceptionHandling(e);
+    }
+    return null;
+  }
+
+
+  /// Handling Exception From API ///
   static exceptionHandling(var e) {
     if (e is DioError) {
       if (e.response != null) {
