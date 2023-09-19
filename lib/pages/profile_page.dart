@@ -209,7 +209,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             style: TextStyle(fontSize: 14),
                           ),
                           Text(
-                            userData.email as String,
+                            userData.email ?? '#N/A',
                             style: const TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.w600),
                           ),
@@ -282,7 +282,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                               builder: (BuildContext context) {
                                                 return AlertDialog(
                                                     content:
-                                                        Text(e.toString()));
+                                                    Text(e.toString()));
                                               });
                                         }
                                       },

@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:repit_app/data_classes/user.dart';
+import 'package:repit_app/pages/asset_request_form.dart';
 import 'package:repit_app/pages/login_page.dart';
 import 'package:repit_app/pages/my_assets_page.dart';
 import 'package:repit_app/pages/profile_page.dart';
+import 'package:repit_app/pages/ticket_form.dart';
 import 'package:repit_app/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,7 +23,6 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   late TabController _tabController;
   List? _assetList;
-
   @override
   void initState() {
     super.initState();
@@ -28,12 +30,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     _tabController = TabController(length: 3, vsync: this);
   }
 
-  void getAssetList() async{
+  void getAssetList() async {
     _assetList = await Services.getMyAssets();
   }
 
   @override
   Widget build(BuildContext context) {
+    var isDialOpen = ValueNotifier<bool>(false);
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -55,7 +58,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return ProfilePage(userData: widget.userData,);
+                        return ProfilePage(
+                          userData: widget.userData,
+                        );
                       },
                     ),
                   );
@@ -116,7 +121,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           const Center(
             child: Text('this is QR Scanner'),
           ),
-         MyAssetsPage(assetList: _assetList),
+          MyAssetsPage(assetList: _assetList),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -142,22 +147,57 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: const Color(0xff00ABB3),
-              content: Text(
-                Services.prefs.getString('token').toString(),
-                style: const TextStyle(color: Colors.red),
-              ),
-            ),
-          );
-        },
-        child: Transform.scale(
-          scale: 2.5,
-          child: const Icon(Icons.add),
-        ),
+      floatingActionButton: SpeedDial(
+        icon: Icons.add,
+        //icon on Floating action button
+        activeIcon: Icons.close,
+        //icon when menu is expanded on button
+        visible: true,
+        closeManually: false,
+        curve: Curves.elasticInOut,
+        openCloseDial: isDialOpen,
+        spacing: 14,
+        animationDuration: const Duration(milliseconds: 200),
+        overlayColor: Colors.black,
+        overlayOpacity: 0.5,
+        elevation: 8.0,
+        //shadow elevation of button
+        shape: const CircleBorder(),
+        //shape of button
+        children: [
+          SpeedDialChild(
+            //speed dial child
+            child: const Icon(CupertinoIcons.cube_box, color: Colors.white),
+            label: 'Asset',
+            labelBackgroundColor: const Color(0xff00ABB3),
+            backgroundColor: const Color(0xff00ABB3),
+            labelStyle: const TextStyle(
+                fontSize: 16.0,
+                color: Colors.white,
+                fontWeight: FontWeight.w600),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AssetRequestForm()));
+            },
+          ),
+          SpeedDialChild(
+            child: const Icon(CupertinoIcons.tickets, color: Colors.white),
+            label: 'Ticket',
+            labelBackgroundColor: const Color(0xff00ABB3),
+            backgroundColor: const Color(0xff00ABB3),
+            labelStyle: const TextStyle(
+                fontSize: 16.0,
+                color: Colors.white,
+                fontWeight: FontWeight.w600),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const TicketForm()));
+            },
+          ),
+          //add more menu item childs here
+        ],
       ),
       drawer: Drawer(
         child: Column(
@@ -329,7 +369,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            content: const Text("Apakah anda yakin ingin log out?"),
+                            content:
+                                const Text("Apakah anda yakin ingin log out?"),
                             actions: [
                               ElevatedButton(
                                 onPressed: () {
@@ -341,12 +382,14 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                 child: const Text("Batal"),
                               ),
                               ElevatedButton(
-                                onPressed: () async{
+                                onPressed: () async {
                                   try {
                                     SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                    String? token = prefs.getString('token').toString();
-                                    bool response = await Services.logout(token);
+                                        await SharedPreferences.getInstance();
+                                    String? token =
+                                        prefs.getString('token').toString();
+                                    bool response =
+                                        await Services.logout(token);
                                     if (response) {
                                       if (mounted) {
                                         prefs.clear();
@@ -360,12 +403,15 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                     }
                                   } catch (e) {
                                     if (mounted) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         SnackBar(
-                                          backgroundColor: const Color(0xff00ABB3),
+                                          backgroundColor:
+                                              const Color(0xff00ABB3),
                                           content: Text(
                                             e.toString(),
-                                            style: const TextStyle(color: Colors.red),
+                                            style: const TextStyle(
+                                                color: Colors.red),
                                           ),
                                         ),
                                       );
