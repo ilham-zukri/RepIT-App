@@ -157,7 +157,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         curve: Curves.elasticInOut,
         openCloseDial: isDialOpen,
         spacing: 14,
-        animationDuration: const Duration(milliseconds: 200),
         overlayColor: Colors.black,
         overlayOpacity: 0.5,
         elevation: 8.0,

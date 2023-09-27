@@ -169,7 +169,7 @@ abstract class Services {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
       var response = await Dio().get(
-        '$url/api/users/by-department',
+        '$url/users/by-department',
         options: Options(
           headers: {
             "Accept": "application/json",
@@ -179,7 +179,7 @@ abstract class Services {
       );
 
       if(response.statusCode == 200){
-        return response.data['data'] as List;
+        return response.data['data'] as List?;
       } else if(response.statusCode == 204){
         return null;
       }
