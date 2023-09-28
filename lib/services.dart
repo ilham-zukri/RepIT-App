@@ -179,11 +179,10 @@ abstract class Services {
       );
 
       if(response.statusCode == 200){
-        return response.data['data'] as List?;
+        return response.data['data'] as List;
       } else if(response.statusCode == 204){
-        return null;
+        return exceptionHandling(response.data['message']);
       }
-
     }catch (e){
       exceptionHandling(e);
     }

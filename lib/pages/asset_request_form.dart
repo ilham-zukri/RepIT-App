@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:repit_app/data_classes/user_for_list.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,36 +23,32 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
     'Urgent'
   ];
   String priority = priorities.first;
-  late List? users;
   late List? locations;
   late SharedPreferences prefs;
+  late Future<List<UserForList>> userData;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getPrefs();
-    getUsers();
-    getLocations();
+    userData = fetchUsers();
   }
 
-  void getPrefs()async{
-    prefs = await SharedPreferences.getInstance();
-  }
-
-  void getUsers() async{
-    users = await Services.getMySubordinates();
-  }
-
-  void getLocations() async{
-
+  Future<List<UserForList>> fetchUsers() async {
+    final data = await Services.getMySubordinates();
+    if(data == null){
+      return[];
+    }
+    return data.map((item) {
+      return UserForList(item['id'], item['user_name']);
+    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: customAppBar(context),
+      appBar: customAppBar(context, "Request Aset"),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(left: 24, right: 24),
@@ -132,20 +129,17 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
               ),
               DecoratedBox(
                 decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black54,
-                    width: 1
-                  ),
-                  borderRadius: const BorderRadius.all(Radius.circular(10))
-                ),
+                    border: Border.all(color: Colors.black54, width: 1),
+                    borderRadius: const BorderRadius.all(Radius.circular(10))),
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 6, right: 6),
+                  padding: const EdgeInsets.only(left: 10, right: 10),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton(
                       isExpanded: true,
                       value: priority,
                       items: priorities.map((String value) {
-                        return DropdownMenuItem(value: value, child: Text(value));
+                        return DropdownMenuItem(
+                            value: value, child: Text(value));
                       }).toList(),
                       onChanged: (value) {
                         setState(() {
@@ -173,15 +167,37 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
               const SizedBox(
                 height: 8,
               ),
-              DropdownMenu(
-                width: size.width - 48,
-                enableSearch: true,
-                initialSelection: priorities.first,
-                onSelected: (value) => priority = value.toString(),
-                dropdownMenuEntries: priorities.map((String value) {
-                  return DropdownMenuEntry(value: value, label: value);
-                }).toList(),
-              ),
+              FutureBuilder(
+                  future: userData,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Text(snapshot.error.toString());
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else {
+                      List<dynamic>? userData = snapshot.data;
+                      String? initialUserSelection;
+                      if (userData != null && userData.isNotEmpty) {
+                        initialUserSelection = userData.first.id;
+                      }
+                      return DropdownMenu(
+                        textStyle: const TextStyle(fontSize: 16),
+                        width: size.width - 48,
+                        enableSearch: true,
+                        initialSelection: initialUserSelection,
+                        onSelected: (value) {
+                          setState(() {
+                            userId = value.toString();
+                          });
+                        },
+                        dropdownMenuEntries: userData!.map((user) {
+                          return DropdownMenuEntry(
+                              value: user.id, label: user.userName);
+                        }).toList(),
+                      );
+                    }
+                  }),
               const SizedBox(
                 height: 24,
               ),
@@ -217,13 +233,11 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50)),
                       elevation: 5),
-                  onPressed: () {
-                  },
+                  onPressed: () {},
                   child: const Text(
                     "Kirim",
                     style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600),
+                        color: Colors.white, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),

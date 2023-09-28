@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
-PreferredSizeWidget customAppBar(BuildContext context){
+PreferredSizeWidget customAppBar(BuildContext context, String title){
   return AppBar(
-    title: SizedBox(
-      width: 83,
-      height: 33,
-      child: SvgPicture.asset(
-        "assets/logos/mainlogo.svg",
-        fit: BoxFit.contain,
+    title: Text(
+      title,
+      style: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: Color(0xff00ABB3)
       ),
     ),
     titleSpacing: 0,
