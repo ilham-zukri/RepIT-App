@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 abstract class Services {
   static const String url = "http://10.0.2.2:8000/api";
   static late SharedPreferences prefs;
+
   // static const String url = "http://192.168.1.200:3000/api";
 
   /// Login ///
@@ -45,14 +46,13 @@ abstract class Services {
       );
       if (userResponse.statusCode == 200) {
         return User(
-          id: userResponse.data["data"]["id"],
-          email: userResponse.data["data"]["email"],
-          token: token,
-          name: userResponse.data["data"]["user_name"],
-          branch: userResponse.data["data"]["branch"],
-          department: userResponse.data["data"]["department"],
-          role: userResponse.data["data"]["role"]["role_name"]
-        );
+            id: userResponse.data["data"]["id"],
+            email: userResponse.data["data"]["email"],
+            token: token,
+            name: userResponse.data["data"]["user_name"],
+            branch: userResponse.data["data"]["branch"],
+            department: userResponse.data["data"]["department"],
+            role: userResponse.data["data"]["role"]["role_name"]);
       }
     } catch (e) {
       exceptionHandling(e);
@@ -65,18 +65,12 @@ abstract class Services {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      var response = await Dio().put(
-        '$url/user/user-name',
-        options: Options(
-          headers: {
-            "Accept" : "application/json",
-            "Authorization" : "Bearer $token"
-          }
-        ),
-        data: {
-          "user_name" : username
-        }
-      );
+      var response = await Dio().put('$url/user/user-name',
+          options: Options(headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          }),
+          data: {"user_name": username});
 
       if (response.statusCode == 200) return response;
 
@@ -89,28 +83,21 @@ abstract class Services {
 
   /// change user's username ///
   static Future<Response?> changeEmail(String email) async {
-    try{
+    try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      var response = await Dio().put(
-          '$url/user/email',
-          options: Options(
-              headers: {
-                "Accept" : "application/json",
-                "Authorization" : "Bearer $token"
-              }
-          ),
-          data: {
-            "email" : email
-          }
-      );
+      var response = await Dio().put('$url/user/email',
+          options: Options(headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          }),
+          data: {"email": email});
 
-      if(response.statusCode == 200) return response;
-    } catch(e){
+      if (response.statusCode == 200) return response;
+    } catch (e) {
       exceptionHandling(e);
     }
     return null;
-
   }
 
   /// Logout ///
@@ -151,12 +138,11 @@ abstract class Services {
         ),
       );
 
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         return response.data['assets'] as List;
-      } else if(response.statusCode == 204){
+      } else if (response.statusCode == 204) {
         return null;
       }
-
     } catch (e) {
       exceptionHandling(e);
     }
@@ -165,30 +151,86 @@ abstract class Services {
 
   /// get Supervisor's subordinates ///
   static Future<List?> getMySubordinates() async {
-    try{
+    try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      var response = await Dio().get(
-        '$url/users/by-department',
-        options: Options(
-          headers: {
-            "Accept": "application/json",
-            "Authorization": "Bearer $token"
-          },
-        )
-      );
+      var response = await Dio().get('$url/users/by-department',
+          options: Options(
+            headers: {
+              "Accept": "application/json",
+              "Authorization": "Bearer $token"
+            },
+          ));
 
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         return response.data['data'] as List;
-      } else if(response.statusCode == 204){
+      } else if (response.statusCode == 204) {
         return exceptionHandling(response.data['message']);
       }
-    }catch (e){
+    } catch (e) {
       exceptionHandling(e);
     }
     return null;
   }
 
+  /// get Location List ///
+  static Future<List?> getLocationList() async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      var response = await Dio().get('$url/locations',
+          options: Options(
+            headers: {
+              "Accept": "application/json",
+              "Authorization": "Bearer $token"
+            },
+          ));
+
+      if (response.statusCode == 200) {
+        return response.data as List;
+      } else if (response.statusCode == 204) {
+        return exceptionHandling(response.data['message']);
+      }
+    } catch (e) {
+      exceptionHandling(e);
+    }
+    return null;
+  }
+
+  /// POST Create Asset Request ///
+
+  Future<Response?> createAssetRequest(String title, String description,
+      String priority, String userId, int locationId) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().post(
+        '$url/request/create',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        ),
+        data: {
+          'title' : title,
+          'description' : description,
+          'priority' : priority,
+          'for_user' : userId,
+          'location_id' : locationId
+        },
+      );
+
+      if (response.statusCode == 201){
+        return response.data['message'];
+      } else{
+        exceptionHandling(response.data['message']);
+      }
+    } catch (e) {
+      exceptionHandling(e);
+    }
+    return null;
+  }
 
   /// Handling Exception From API ///
   static exceptionHandling(var e) {
