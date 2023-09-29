@@ -199,7 +199,7 @@ abstract class Services {
 
   /// POST Create Asset Request ///
 
-  Future<Response?> createAssetRequest(String title, String description,
+  static Future<Response?> createAssetRequest(String title, String description,
       String priority, String userId, int locationId) async {
     try {
       prefs = await SharedPreferences.getInstance();
@@ -222,9 +222,10 @@ abstract class Services {
       );
 
       if (response.statusCode == 201){
-        return response.data['message'];
+        return response;
       } else{
         exceptionHandling(response.data['message']);
+        return null;
       }
     } catch (e) {
       exceptionHandling(e);

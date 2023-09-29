@@ -34,6 +34,7 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
     super.initState();
     userData = fetchUsers();
     locations = fetchLocations();
+
   }
 
   Future<List<UserForList>> fetchUsers() async {
@@ -41,6 +42,8 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
     if (data == null) {
       return [];
     }
+
+    userId = data[0]['id'];
     return data.map((item) {
       return UserForList(item['id'], item['user_name']);
     }).toList();
@@ -51,6 +54,7 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
     if (data == null) {
       return [];
     }
+    locationId = data[0]['id'];
     return data.map((item) {
       return LocationForList(item['id'], item['name']);
     }).toList();
@@ -58,7 +62,9 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    var size = MediaQuery
+        .of(context)
+        .size;
     return Scaffold(
       appBar: customAppBar(context, "Request Aset"),
       body: SingleChildScrollView(
@@ -72,7 +78,7 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
               const Align(
                 alignment: Alignment.topLeft,
                 child: Text(
-                  "Judul",
+                  "Judul*",
                   style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -100,7 +106,7 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
               const Align(
                 alignment: Alignment.topLeft,
                 child: Text(
-                  "Deskripsi",
+                  "Deskripsi*",
                   style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -223,11 +229,9 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                       color: Colors.black),
                 ),
               ),
-
               const SizedBox(
                 height: 8,
               ),
-
               FutureBuilder(
                   future: locations,
                   builder: (context, snapshot) {
@@ -240,14 +244,14 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                       List<dynamic>? locationData = snapshot.data;
                       String? initialLocationSelection;
                       if (locationData != null && locationData.isNotEmpty) {
-                        initialLocationSelection = locationData.first.id.toString();
+                        initialLocationSelection =
+                            locationData.first.id.toString();
                       }
                       return DropdownMenu(
                         textStyle: const TextStyle(fontSize: 16),
                         width: size.width - 48,
                         enableSearch: true,
                         menuHeight: size.height / 2,
-
                         initialSelection: initialLocationSelection,
                         onSelected: (value) {
                           setState(() {
@@ -256,12 +260,12 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                         },
                         dropdownMenuEntries: locationData!.map((location) {
                           return DropdownMenuEntry(
-                              value: location.id.toString(), label: location.name);
+                              value: location.id.toString(),
+                              label: location.name);
                         }).toList(),
                       );
                     }
                   }),
-
               Container(
                 margin: const EdgeInsets.only(top: 24),
                 height: 41,
@@ -272,7 +276,34 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50)),
                       elevation: 5),
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (titleEc.text.isEmpty || descEc.text.isEmpty) {
+                      showDialog(
+                          context: context, builder: (BuildContext context) => alert(context, 'Lengkapi form', 'Judul dan Deskripsi tidak boleh kosong'));
+                    } else {
+                      try {
+                        var response = await Services.createAssetRequest(
+                            titleEc.text.toString(),
+                            descEc.text.toString(),
+                            priority,
+                            userId,
+                            locationId);
+                        if(mounted){
+                          showDialog(context: context, builder: (context) => alert(context, response!.data['message'], "request terbuat"));
+                        }
+                      } catch (e) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return alert(context, 'Error', e.toString());
+                          },
+                        );
+                      }
+                    }
+                    if(mounted){
+                      Navigator.of(context).pop;
+                    }
+                  },
                   child: const Text(
                     "Kirim",
                     style: TextStyle(
@@ -284,6 +315,23 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget alert(BuildContext context, String title, String content) {
+    return AlertDialog(
+      title: Text(title),
+      content: Text(content),
+      actions: [
+        ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xff00ABB3),
+            ),
+            child: const Text("OK"))
+      ],
     );
   }
 }
