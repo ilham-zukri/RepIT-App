@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:repit_app/data_classes/location_for_list.dart';
 import 'package:repit_app/data_classes/user_for_list.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
@@ -15,7 +16,7 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
   final TextEditingController titleEc = TextEditingController();
   final TextEditingController descEc = TextEditingController();
   late String userId;
-  late String location;
+  late int locationId;
   static const List<String> priorities = <String>[
     'Low',
     'Medium',
@@ -23,7 +24,7 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
     'Urgent'
   ];
   String priority = priorities.first;
-  late List? locations;
+  late Future<List<LocationForList>> locations;
   late SharedPreferences prefs;
   late Future<List<UserForList>> userData;
 
@@ -32,15 +33,26 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
     // TODO: implement initState
     super.initState();
     userData = fetchUsers();
+    locations = fetchLocations();
   }
 
   Future<List<UserForList>> fetchUsers() async {
     final data = await Services.getMySubordinates();
-    if(data == null){
-      return[];
+    if (data == null) {
+      return [];
     }
     return data.map((item) {
       return UserForList(item['id'], item['user_name']);
+    }).toList();
+  }
+
+  Future<List<LocationForList>> fetchLocations() async {
+    final data = await Services.getLocationList();
+    if (data == null) {
+      return [];
+    }
+    return data.map((item) {
+      return LocationForList(item['id'], item['name']);
     }).toList();
   }
 
@@ -211,18 +223,45 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                       color: Colors.black),
                 ),
               ),
+
               const SizedBox(
                 height: 8,
               ),
-              DropdownMenu(
-                width: size.width - 48,
-                enableSearch: true,
-                initialSelection: priorities.first,
-                onSelected: (value) => priority = value.toString(),
-                dropdownMenuEntries: priorities.map((String value) {
-                  return DropdownMenuEntry(value: value, label: value);
-                }).toList(),
-              ),
+
+              FutureBuilder(
+                  future: locations,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Text(snapshot.error.toString());
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else {
+                      List<dynamic>? locationData = snapshot.data;
+                      String? initialLocationSelection;
+                      if (locationData != null && locationData.isNotEmpty) {
+                        initialLocationSelection = locationData.first.id.toString();
+                      }
+                      return DropdownMenu(
+                        textStyle: const TextStyle(fontSize: 16),
+                        width: size.width - 48,
+                        enableSearch: true,
+                        menuHeight: size.height / 2,
+
+                        initialSelection: initialLocationSelection,
+                        onSelected: (value) {
+                          setState(() {
+                            locationId = int.parse(value as String);
+                          });
+                        },
+                        dropdownMenuEntries: locationData!.map((location) {
+                          return DropdownMenuEntry(
+                              value: location.id.toString(), label: location.name);
+                        }).toList(),
+                      );
+                    }
+                  }),
+
               Container(
                 margin: const EdgeInsets.only(top: 24),
                 height: 41,

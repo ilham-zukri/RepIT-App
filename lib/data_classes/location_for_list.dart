@@ -1,5 +1,6 @@
 class LocationForList{
-  int id;
-  String name;
+  final int id;
+  final String name;
+
   LocationForList(this.id, this.name);
 }
