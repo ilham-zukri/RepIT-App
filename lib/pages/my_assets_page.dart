@@ -28,6 +28,7 @@ class _MyAssetsPageState extends State<MyAssetsPage> {
     }
     return assetList.map((asset) {
       return Asset(
+          asset['id'],
           asset['utilization'],
           asset['status'],
           asset['asset_type'],

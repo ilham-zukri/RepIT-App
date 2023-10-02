@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:repit_app/pages/asset_detail.dart';
+import 'package:repit_app/widgets/status_box_builder.dart';
 
 import 'data_classes/asset.dart';
 
@@ -18,8 +20,9 @@ class AssetCard extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(10))),
         elevation: 5,
         child: InkWell(
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
           onTap: () {
-
+            Navigator.push(context, MaterialPageRoute(builder: (context) => AssetDetail(asset: asset),));
           },
           child: Column(
             children: [
@@ -64,7 +67,7 @@ class AssetCard extends StatelessWidget {
                       asset.utilization,
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
-                    _statusBoxBuilder(asset.status)
+                    statusBoxBuilder(asset.status, "card")
                   ],
                 ),
               ),
@@ -154,45 +157,4 @@ class AssetCard extends StatelessWidget {
     );
   }
 
-  Widget _statusBoxBuilder(String status) {
-    final Map<String, dynamic> statusMap = {
-      "Ready": {
-        "backgroundColor": const Color(0xff98BFFA),
-        "textColor": const Color(0xff12315F),
-      },
-      "Deployed": {
-        "backgroundColor": const Color(0xffAEE2AA),
-        "textColor": const Color(0xff11410D),
-      },
-      "On Repair": {
-        "backgroundColor": const Color(0xffFAD398),
-        "textColor": const Color(0xff885B17),
-      },
-      "Sub": {
-        "backgroundColor": const Color(0xffAADAE9),
-        "textColor": const Color(0xff0C4B5F),
-      },
-      "Scrapped": {
-        "backgroundColor": const Color(0xffEDA8A8),
-        "textColor": const Color(0xff891F1F),
-      },
-    };
-    if (statusMap.containsKey(status)) {
-      final backgroundColor = statusMap[status]['backgroundColor'];
-      final textColor = statusMap[status]['textColor'];
-      return Container(
-        padding: const EdgeInsets.only(left: 6, right: 6, top: 2, bottom: 2),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: const BorderRadius.all(Radius.circular(100)),
-        ),
-        child: Text(
-          status,
-          style: TextStyle(color: textColor),
-        ),
-      );
-    }
-
-    return const SizedBox.shrink();
-  }
 }

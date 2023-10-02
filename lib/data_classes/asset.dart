@@ -1,4 +1,5 @@
 class Asset {
+  final int? id;
   final String utilization;
   final String status;
   final String assetType;
@@ -9,6 +10,6 @@ class Asset {
   final String? brand;
   final String? model;
 
-  Asset(this.utilization, this.status, this.assetType, this.ram, this.cpu,
+  Asset(this.id,this.utilization, this.status, this.assetType, this.ram, this.cpu,
       this.location, this.serialNumber, this.brand, this.model);
 }

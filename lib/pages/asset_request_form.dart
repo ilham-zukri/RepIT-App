@@ -82,7 +82,7 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                   "Judul*",
                   style: TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                       color: Colors.black),
                 ),
               ),
@@ -110,7 +110,7 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                   "Deskripsi*",
                   style: TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                       color: Colors.black),
                 ),
               ),
@@ -139,7 +139,7 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                   "Prioritas",
                   style: TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                       color: Colors.black),
                 ),
               ),
@@ -179,7 +179,7 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                   "User",
                   style: TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                       color: Colors.black),
                 ),
               ),
@@ -226,7 +226,7 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                   "Lokasi",
                   style: TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                       color: Colors.black),
                 ),
               ),
