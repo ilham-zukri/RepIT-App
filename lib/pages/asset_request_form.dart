@@ -5,6 +5,8 @@ import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../widgets/alert.dart';
+
 class AssetRequestForm extends StatefulWidget {
   const AssetRequestForm({Key? key}) : super(key: key);
 
@@ -34,7 +36,6 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
     super.initState();
     userData = fetchUsers();
     locations = fetchLocations();
-
   }
 
   Future<List<UserForList>> fetchUsers() async {
@@ -318,20 +319,4 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
     );
   }
 
-  Widget alert(BuildContext context, String title, String content) {
-    return AlertDialog(
-      title: Text(title),
-      content: Text(content),
-      actions: [
-        ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xff00ABB3),
-            ),
-            child: const Text("OK"))
-      ],
-    );
-  }
 }

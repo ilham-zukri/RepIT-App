@@ -1,141 +1,157 @@
 import 'package:flutter/material.dart';
 import 'package:repit_app/asset_card.dart';
 import 'package:repit_app/services.dart';
+import 'package:repit_app/widgets/alert.dart';
+
+import '../data_classes/asset.dart';
 
 class MyAssetsPage extends StatefulWidget {
-  const MyAssetsPage({Key? key, this.assetList}) : super(key: key);
-  final List? assetList;
+  const MyAssetsPage({super.key});
 
   @override
   State<MyAssetsPage> createState() => _MyAssetsPageState();
 }
 
 class _MyAssetsPageState extends State<MyAssetsPage> {
-  List? assetsList;
-  int assetsLength = 0;
+  Future<List<Asset>>? assetsList;
 
   @override
   void initState() {
     super.initState();
-    assetsList = widget.assetList;
-    assetsLength = assetsList?.length ?? 0;
+    assetsList = getAssetList();
   }
 
-  Future<void> getAssetList() async {
-    try{
-      assetsList = await Services.getMyAssets();
-    }catch(e){
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: const Color(0xff00ABB3),
-          content: Text(
-            e.toString(),
-            style: const TextStyle(color: Colors.red),
-          ),
-        ),
-      );
+  Future<List<Asset>> getAssetList() async {
+    var assetList = await Services.getMyAssets();
+    if (assetList == null) {
+      return [];
     }
-    assetsLength = assetsLength = assetsList?.length ?? 0;
-    setState(() {
-      assetsList;
-      assetsLength;
-    });
+    return assetList.map((asset) {
+      return Asset(
+          asset['utilization'],
+          asset['status'],
+          asset['asset_type'],
+          asset['ram'],
+          asset['cpu'],
+          asset['location'],
+          asset['serial_number'],
+          asset['brand'],
+          asset['model']);
+    }).toList();
+  }
+
+  void refreshAsset() async {
+    try {
+      // Fetch the updated asset list
+      var refreshedAssets = await getAssetList();
+
+      setState(() {
+        // Update the assetsList with the refreshed data
+        assetsList = Future.value(refreshedAssets);
+      });
+    } catch (error) {
+      // Handle any errors that occur during the refresh
+      alert(context, 'Error', error.toString());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (assetsList?.isEmpty ?? true) {
-      return RefreshIndicator(
-        onRefresh: () async {
-          getAssetList();
-        },
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(50),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "Aset-aset anda akan tampil disini",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                const Text(
-                    'Setelah asset ditambahkan, maka daftar asset yang anda miliki akan muncul disini',
-                    style: TextStyle(
-                      fontSize: 14,
+    return FutureBuilder(
+      future: assetsList,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          alert(context, 'Error', snapshot.error.toString());
+        }
+        var assets = snapshot.data;
+        int assetsLength = assets?.length ?? 0;
+        if (assetsLength == 0) {
+          return RefreshIndicator(
+            onRefresh: () async {
+              refreshAsset();
+            },
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(50),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Aset-aset anda akan tampil disini",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                     ),
-                    textAlign: TextAlign.center),
-                const SizedBox(
-                  height: 16,
-                ),
-                SizedBox(
-                  width: 115,
-                  height: 35,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xff00ABB3),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    const Text(
+                        'Setelah asset ditambahkan, maka daftar asset yang anda miliki akan muncul disini',
+                        style: TextStyle(
+                          fontSize: 14,
                         ),
-                        elevation: 5),
-                    onPressed: () async {
-                      getAssetList();
-                    },
-                    child: Row(
-                      children: const [
-                        Icon(Icons.refresh),
-                        SizedBox(width: 4),
-                        Text(
-                          'Refresh',
-                          style: TextStyle(color: Colors.white),
-                        )
-                      ],
+                        textAlign: TextAlign.center),
+                    const SizedBox(
+                      height: 16,
                     ),
-                  ),
+                    SizedBox(
+                      width: 115,
+                      height: 35,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xff00ABB3),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            elevation: 5),
+                        onPressed: () async {
+                          refreshAsset();
+                        },
+                        child: Row(
+                          children: const [
+                            Icon(Icons.refresh),
+                            SizedBox(width: 4),
+                            Text(
+                              'Refresh',
+                              style: TextStyle(color: Colors.white),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-      );
-    } else {
-      return Padding(
-        padding: const EdgeInsets.only(left: 24, right: 24),
-        child: RefreshIndicator(
-          onRefresh: () async {
-            getAssetList();
-          },
-          child: ListView(
-            children: assetsList?.map((asset) {
-                  return Column(
-                    children: [
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      AssetCard(
-                        utilization: asset['utilization'],
-                        assetType: asset['asset_type'],
-                        ram: asset['ram'],
-                        cpu: asset['cpu'],
-                        serialNumber: asset['serial_number'],
-                        location: asset['location'],
-                        status: asset['status'],
-                        model: asset['model'],
-                        brand: asset['brand'],
-                      ),
-                      (assetsList?.indexOf(asset) == assetsLength - 1)
-                          ? const SizedBox(height: 16)
-                          : const SizedBox.shrink()
-                    ],
-                  );
-                }).toList() ??
-                [],
-          ),
-        ),
-      );
-    }
+          );
+        } else {
+          return Padding(
+            padding: const EdgeInsets.only(left: 24, right: 24),
+            child: RefreshIndicator(
+              onRefresh: () async {
+                refreshAsset();
+              },
+              child: ListView(
+                children: assets?.map((asset) {
+                      return Column(
+                        children: [
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          AssetCard(
+                            asset: asset,
+                          ),
+                          (assets.indexOf(asset) == assetsLength - 1)
+                              ? const SizedBox(height: 16)
+                              : const SizedBox.shrink()
+                        ],
+                      );
+                    }).toList() ??
+                    [],
+              ),
+            ),
+          );
+        }
+      },
+    );
   }
 }

@@ -52,7 +52,7 @@ abstract class Services {
             name: userResponse.data["data"]["user_name"],
             branch: userResponse.data["data"]["branch"],
             department: userResponse.data["data"]["department"],
-            role: userResponse.data["data"]["role"]["role_name"]);
+            role: userResponse.data["data"]["role"]);
       }
     } catch (e) {
       exceptionHandling(e);

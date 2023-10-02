@@ -18,6 +18,7 @@ class _TicketFormState extends State<TicketForm> {
     'Urgent'
   ];
   String priority = priorities.first;
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -62,6 +63,34 @@ class _TicketFormState extends State<TicketForm> {
               const Align(
                 alignment: Alignment.topLeft,
                 child: Text(
+                  "Kategori",
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black),
+                ),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              DropdownMenu(
+                textStyle: const TextStyle(fontSize: 16),
+                width: size.width - 48,
+                enableSearch: true,
+                initialSelection: priorities.first,
+                onSelected: (value) {
+                  setState(() {});
+                },
+                dropdownMenuEntries: priorities.map((value) {
+                  return DropdownMenuEntry(value: value, label: value);
+                }).toList(),
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              const Align(
+                alignment: Alignment.topLeft,
+                child: Text(
                   "Aset",
                   style: TextStyle(
                       fontSize: 14,
@@ -78,13 +107,10 @@ class _TicketFormState extends State<TicketForm> {
                 enableSearch: true,
                 initialSelection: priorities.first,
                 onSelected: (value) {
-                  setState(() {
-
-                  });
+                  setState(() {});
                 },
                 dropdownMenuEntries: priorities.map((value) {
-                  return DropdownMenuEntry(
-                      value: value, label: value);
+                  return DropdownMenuEntry(value: value, label: value);
                 }).toList(),
               ),
               const SizedBox(
@@ -166,17 +192,15 @@ class _TicketFormState extends State<TicketForm> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50)),
                       elevation: 5),
-                  onPressed: () async {
-
-                  },
+                  onPressed: () async {},
                   child: const Text(
                     "Upload Gambar",
                     style: TextStyle(
                         color: Colors.white, fontWeight: FontWeight.w600),
                   ),
-
                 ),
-              ), Container(
+              ),
+              Container(
                 margin: const EdgeInsets.only(top: 22),
                 height: 41,
                 width: size.width,
@@ -186,9 +210,7 @@ class _TicketFormState extends State<TicketForm> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50)),
                       elevation: 5),
-                  onPressed: () async {
-
-                  },
+                  onPressed: () async {},
                   child: const Text(
                     "Kirim",
                     style: TextStyle(

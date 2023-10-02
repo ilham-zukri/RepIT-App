@@ -386,7 +386,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             style: TextStyle(fontSize: 14),
                           ),
                           Text(
-                            userData.role ?? "#N/A",
+                            userData.role?['role_name'] ?? "#N/A",
                             style: const TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.w600),
                           ),
