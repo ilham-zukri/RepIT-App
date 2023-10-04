@@ -1,5 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/asset.dart';
+import 'package:repit_app/services.dart';
+import 'package:repit_app/widgets/alert.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
 import 'package:repit_app/widgets/status_box_builder.dart';
 
@@ -17,10 +20,19 @@ class _AssetDetailState extends State<AssetDetail> {
     fontSize: 14,
     fontWeight: FontWeight.w500,
   );
+  static late Asset asset;
+  static late String status;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    asset = widget.asset;
+    status = asset.status;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final Asset asset = widget.asset;
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: customAppBar(context, 'Detail Aset'),
@@ -36,7 +48,7 @@ class _AssetDetailState extends State<AssetDetail> {
                   style: const TextStyle(
                       fontWeight: FontWeight.w600, fontSize: 20),
                 ),
-                statusBoxBuilder(asset.status, 'detail')
+                statusBoxBuilder(status, 'detail')
               ],
             ),
             Container(
@@ -149,25 +161,52 @@ class _AssetDetailState extends State<AssetDetail> {
                 ),
               ],
             ),
-            (asset.status == 'Ready') ?
-            Container(
-              margin: const EdgeInsets.only(top: 32),
-              height: 41,
-              width: size.width,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xff00ABB3),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50)),
-                    elevation: 5),
-                onPressed: () async {},
-                child: const Text(
-                  "Terima",
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.w600),
-                ),
-              ),
-            ) : const SizedBox(height: 0)
+            (asset.status == 'Ready')
+                ? Container(
+                    margin: const EdgeInsets.only(top: 32),
+                    height: 41,
+                    width: size.width,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xff00ABB3),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50)),
+                          elevation: 5),
+                      onPressed: () async {
+                        try {
+                          Response? response =
+                              await Services.acceptAsset(asset.id as int);
+                          if (mounted) {
+                            setState(() {
+                              status = response?.data['status'] as String;
+                            });
+                            showDialog(
+                              context: context,
+                              builder: (context) => alert(
+                                  context,
+                                  response!.data['message'],
+                                  "Aset berhasil diterima"),
+                            );
+                          }
+                        } catch (e) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => alert(
+                              context,
+                              'Error',
+                              e.toString(),
+                            ),
+                          );
+                        }
+                      },
+                      child: const Text(
+                        "Terima",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  )
+                : const SizedBox(height: 0)
           ],
         ),
       ),

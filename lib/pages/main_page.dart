@@ -6,6 +6,7 @@ import 'package:repit_app/data_classes/user.dart';
 import 'package:repit_app/main.dart';
 import 'package:repit_app/pages/asset_request_form.dart';
 import 'package:repit_app/pages/login_page.dart';
+import 'package:repit_app/pages/manage_request.dart';
 import 'package:repit_app/pages/my_assets_page.dart';
 import 'package:repit_app/pages/profile_page.dart';
 import 'package:repit_app/pages/ticket_form.dart';
@@ -34,9 +35,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     var isDialOpen = ValueNotifier<bool>(false);
-    var size = MediaQuery
-        .of(context)
-        .size;
+    var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: SizedBox(
@@ -110,7 +109,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               indicatorColor: const Color(0xff007980),
               indicatorSize: TabBarIndicatorSize.label,
               controller: _tabController,
-
             ),
           ),
         ),
@@ -178,11 +176,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               if (userData?.role?['asset_request'] != 1) {
                 showDialog(
                     context: context,
-                    builder: (BuildContext context) =>
-                        alert(
-                            context,
-                            "Tidak Berwenang",
-                            "Anda tidak memiliki wewenang untuk membuat Asset Request"));
+                    builder: (BuildContext context) => alert(
+                        context,
+                        "Tidak Berwenang",
+                        "Anda tidak memiliki wewenang untuk membuat Asset Request"));
               } else {
                 Navigator.push(
                     context,
@@ -214,8 +211,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           children: [
             Container(
               height:
-              const Size.fromHeight(kToolbarHeight + kTextTabBarHeight + 24)
-                  .height,
+                  const Size.fromHeight(kToolbarHeight + kTextTabBarHeight + 24)
+                      .height,
               width: size.width,
               decoration: const BoxDecoration(color: Color(0xff00ABB3)),
               child: Align(
@@ -335,6 +332,47 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             ),
             Container(
               margin: const EdgeInsets.only(top: 16, left: 20),
+              width: 230,
+              height: 40,
+              child: Material(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ManageRequest(),
+                      ),
+                    );
+                  },
+                  customBorder: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                        right: 8, left: 8, top: 4, bottom: 5),
+                    width: size.width,
+                    height: 33,
+                    child: Row(
+                      children: const [
+                        Icon(
+                          Icons.note_alt_outlined,
+                          size: 32,
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Text(
+                          'Manage Requests',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w600),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 16, left: 20),
               width: 205,
               height: 40,
               child: Material(
@@ -368,7 +406,41 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(top: size.height / 2.2, left: 20),
+              margin: const EdgeInsets.only(top: 16, left: 20),
+              width: 205,
+              height: 40,
+              child: Material(
+                child: InkWell(
+                  onTap: () {},
+                  customBorder: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                        right: 8, left: 8, top: 4, bottom: 5),
+                    width: size.width,
+                    height: 33,
+                    child: Row(
+                      children: const [
+                        Icon(
+                          Icons.qr_code,
+                          size: 32,
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Text(
+                          'Scan QR Code',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w600),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: size.height / 3.2, left: 20),
               width: 205,
               height: 40,
               child: Material(
@@ -379,7 +451,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         builder: (BuildContext context) {
                           return AlertDialog(
                             content:
-                            const Text("Apakah anda yakin ingin log out?"),
+                                const Text("Apakah anda yakin ingin log out?"),
                             actions: [
                               ElevatedButton(
                                 onPressed: () {
@@ -394,11 +466,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                 onPressed: () async {
                                   try {
                                     SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
+                                        await SharedPreferences.getInstance();
                                     String? token =
-                                    prefs.getString('token').toString();
+                                        prefs.getString('token').toString();
                                     bool response =
-                                    await Services.logout(token);
+                                        await Services.logout(token);
                                     if (response) {
                                       if (mounted) {
                                         prefs.clear();
@@ -416,7 +488,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                           .showSnackBar(
                                         SnackBar(
                                           backgroundColor:
-                                          const Color(0xff00ABB3),
+                                              const Color(0xff00ABB3),
                                           content: Text(
                                             e.toString(),
                                             style: const TextStyle(

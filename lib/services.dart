@@ -233,6 +233,36 @@ abstract class Services {
     return null;
   }
 
+  /// Accept Asset ///
+
+  static Future<Response?> acceptAsset(int assetId) async{
+    try{
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().put(
+          '$url/asset/accept',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          }
+        ),
+        data: {
+         "asset_id" : assetId
+        }
+      );
+      if (response.statusCode == 200){
+        return response;
+      } else{
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    }catch(e){
+      exceptionHandling(e);
+    }
+    return null;
+  }
+
   /// Handling Exception From API ///
   static exceptionHandling(var e) {
     if (e is DioError) {
