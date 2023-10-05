@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:repit_app/widgets/priority_box_builder.dart';
+import 'package:repit_app/widgets/req_status_box_builder.dart';
 
 class RequestCard extends StatelessWidget {
   const RequestCard({Key? key}) : super(key: key);
@@ -37,13 +39,7 @@ class RequestCard extends StatelessWidget {
                         style: const TextStyle(
                             color: Colors.white, fontWeight: FontWeight.w600),
                       ),
-                      Text(
-                        'high',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                      priorityBoxBuilder("High", 'card')
                     ],
                   ),
                 ),
@@ -80,7 +76,7 @@ class RequestCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Approved"),
+                        reqStatusBoxBuilder("Approved", "card"),
                         Text("03/12/22")
                       ],
                     )

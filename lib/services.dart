@@ -198,7 +198,6 @@ abstract class Services {
   }
 
   /// POST Create Asset Request ///
-
   static Future<Response?> createAssetRequest(String title, String description,
       String priority, String userId, int locationId) async {
     try {
@@ -213,17 +212,17 @@ abstract class Services {
           },
         ),
         data: {
-          'title' : title,
-          'description' : description,
-          'priority' : priority,
-          'for_user' : userId,
-          'location_id' : locationId
+          'title': title,
+          'description': description,
+          'priority': priority,
+          'for_user': userId,
+          'location_id': locationId
         },
       );
 
-      if (response.statusCode == 201){
+      if (response.statusCode == 201) {
         return response;
-      } else{
+      } else {
         exceptionHandling(response.data['message']);
         return null;
       }
@@ -234,33 +233,50 @@ abstract class Services {
   }
 
   /// Accept Asset ///
-
-  static Future<Response?> acceptAsset(int assetId) async{
-    try{
+  static Future<Response?> acceptAsset(int assetId) async {
+    try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      Response? response = await Dio().put(
-          '$url/asset/accept',
-        options: Options(
-          headers: {
+      Response? response = await Dio().put('$url/asset/accept',
+          options: Options(headers: {
             "Accept": "application/json",
             "Authorization": "Bearer $token"
-          }
-        ),
-        data: {
-         "asset_id" : assetId
-        }
-      );
-      if (response.statusCode == 200){
+          }),
+          data: {"asset_id": assetId});
+      if (response.statusCode == 200) {
         return response;
-      } else{
+      } else {
         exceptionHandling(response.data['message']);
         return null;
       }
-    }catch(e){
+    } catch (e) {
       exceptionHandling(e);
     }
     return null;
+  }
+
+  /// GET Asset Requests List with pagination
+
+  static Future<Map?> getListOfRequests(int? page) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().get('$url/requests',
+          options: Options(headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          }),
+          queryParameters: {'page': page ?? 1});
+      if (response.statusCode == 200) {
+        return response.data as Map;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
   }
 
   /// Handling Exception From API ///
