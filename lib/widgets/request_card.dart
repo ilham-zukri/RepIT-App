@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:repit_app/data_classes/asset_request.dart';
+import 'package:repit_app/pages/asset_request_detail.dart';
 import 'package:repit_app/widgets/priority_box_builder.dart';
 import 'package:repit_app/widgets/req_status_box_builder.dart';
 
 class RequestCard extends StatelessWidget {
-  const RequestCard({Key? key}) : super(key: key);
+  final AssetRequest request;
+
+  const RequestCard({super.key, required this.request});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +21,9 @@ class RequestCard extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(10))),
         elevation: 5,
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => AssetRequestDetail(request: request),));
+          },
           child: Column(
             children: [
               Container(
@@ -35,11 +41,11 @@ class RequestCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '1',
+                        request.id.toString(),
                         style: const TextStyle(
                             color: Colors.white, fontWeight: FontWeight.w600),
                       ),
-                      priorityBoxBuilder("High", 'card')
+                      priorityBoxBuilder(request.priority, 'card')
                     ],
                   ),
                 ),
@@ -48,14 +54,14 @@ class RequestCard extends StatelessWidget {
                 height: 2,
               ),
               Padding(
-                padding: EdgeInsets.only(left: 10, right: 10),
+                padding: const EdgeInsets.only(left: 10, right: 10),
                 child: Column(
                   children: [
                     Align(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        'Bob',
-                        style: TextStyle(
+                        request.requester,
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
@@ -67,7 +73,7 @@ class RequestCard extends StatelessWidget {
                     Align(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        'Permohonan Untuk Server Finance',
+                        request.title,
                       ),
                     ),
                     const SizedBox(
@@ -76,8 +82,8 @@ class RequestCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        reqStatusBoxBuilder("Approved", "card"),
-                        Text("03/12/22")
+                        reqStatusBoxBuilder(request.status, "card"),
+                        Text(request.createdAt)
                       ],
                     )
                   ],

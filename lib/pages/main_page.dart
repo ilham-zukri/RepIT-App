@@ -15,7 +15,7 @@ import 'package:repit_app/widgets/alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key, required this.userData});
+  const MainPage({Key? key, required this.userData}) : super(key: key);
 
   final User userData;
 
@@ -29,12 +29,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    userData = widget.userData;
     _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
   }
 
   @override
   Widget build(BuildContext context) {
-    var isDialOpen = ValueNotifier<bool>(false);
+    final isDialOpen = ValueNotifier<bool>(false);
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -57,7 +58,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     MaterialPageRoute(
                       builder: (context) {
                         return ProfilePage(
-                          userData: widget.userData,
+                          userData: userData,
                         );
                       },
                     ),
@@ -173,7 +174,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 color: Colors.white,
                 fontWeight: FontWeight.w600),
             onTap: () {
-              if (userData?.role?['asset_request'] != 1) {
+              if (userData?.role['asset_request'] != 1) {
                 showDialog(
                     context: context,
                     builder: (BuildContext context) => alert(
@@ -337,12 +338,20 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Material(
                 child: InkWell(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ManageRequest(),
-                      ),
-                    );
+                    if (userData?.role['asset_approval'] != 1) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => alert(context, "Tidak Berwenang",
+                            "Anda tidak memiliki wewenang untuk mengaakses menu ini"),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ManageRequest(),
+                        ),
+                      );
+                    }
                   },
                   customBorder: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),

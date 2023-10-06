@@ -4,10 +4,10 @@ class User {
   String? name;
   String? branch;
   String? department;
-  Map? role;
+  Map role;
   final String _token;
 
-  User({required this.name, required token, this.email, this.id, this.branch, this.department, this.role})
+  User({required this.name, required token, this.email, this.id, this.branch, this.department, required this.role})
       : _token = token;
 
   get token => _token;

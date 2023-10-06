@@ -114,7 +114,7 @@ abstract class Services {
       );
       if (response.statusCode == 200) {
         prefs = await SharedPreferences.getInstance();
-        prefs.clear();
+        await prefs.clear();
         return true;
       }
       return false;
