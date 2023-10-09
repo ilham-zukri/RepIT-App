@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:repit_app/data_classes/user.dart';
-import 'package:repit_app/main.dart';
 import 'package:repit_app/pages/asset_request_form.dart';
 import 'package:repit_app/pages/login_page.dart';
 import 'package:repit_app/pages/manage_request.dart';
@@ -25,7 +24,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   late TabController _tabController;
-
+  late User userData;
   @override
   void initState() {
     super.initState();
@@ -116,15 +115,15 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [
-          const Center(
+        children: const [
+          Center(
             child: Text('this is QR Scanner'),
           ),
-          const MyAssetsPage(),
+          MyAssetsPage(),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Text(
                   "Tiket-tiket anda akan tampil disini",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
@@ -174,7 +173,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 color: Colors.white,
                 fontWeight: FontWeight.w600),
             onTap: () {
-              if (userData?.role['asset_request'] != 1) {
+              if (userData.role['asset_request'] != 1) {
                 showDialog(
                     context: context,
                     builder: (BuildContext context) => alert(
@@ -243,8 +242,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         right: 8, left: 8, top: 4, bottom: 5),
                     width: size.width,
                     height: 33,
-                    child: Row(
-                      children: const [
+                    child: const Row(
+                      children: [
                         Icon(
                           CupertinoIcons.cube_box,
                           size: 32,
@@ -277,8 +276,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         right: 8, left: 8, top: 4, bottom: 5),
                     width: size.width,
                     height: 33,
-                    child: Row(
-                      children: const [
+                    child: const Row(
+                      children: [
                         Icon(
                           CupertinoIcons.person_2_square_stack,
                           size: 32,
@@ -311,8 +310,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         right: 8, left: 8, top: 4, bottom: 5),
                     width: size.width,
                     height: 33,
-                    child: Row(
-                      children: const [
+                    child: const Row(
+                      children: [
                         Icon(
                           CupertinoIcons.tickets,
                           size: 32,
@@ -338,7 +337,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Material(
                 child: InkWell(
                   onTap: () {
-                    if (userData?.role['asset_approval'] != 1) {
+                    if (userData.role['asset_approval'] != 1 || userData.role['asset_purchasing'] != 1) {
                       showDialog(
                         context: context,
                         builder: (context) => alert(context, "Tidak Berwenang",
@@ -348,7 +347,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const ManageRequest(),
+                          builder: (context) => ManageRequest(role: userData.role),
                         ),
                       );
                     }
@@ -360,8 +359,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         right: 8, left: 8, top: 4, bottom: 5),
                     width: size.width,
                     height: 33,
-                    child: Row(
-                      children: const [
+                    child: const Row(
+                      children: [
                         Icon(
                           Icons.note_alt_outlined,
                           size: 32,
@@ -394,8 +393,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         right: 8, left: 8, top: 4, bottom: 5),
                     width: size.width,
                     height: 33,
-                    child: Row(
-                      children: const [
+                    child: const Row(
+                      children: [
                         Icon(
                           CupertinoIcons.creditcard_fill,
                           size: 32,
@@ -428,8 +427,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         right: 8, left: 8, top: 4, bottom: 5),
                     width: size.width,
                     height: 33,
-                    child: Row(
-                      children: const [
+                    child: const Row(
+                      children: [
                         Icon(
                           Icons.qr_code,
                           size: 32,
@@ -524,8 +523,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         right: 8, left: 8, top: 4, bottom: 5),
                     width: size.width,
                     height: 33,
-                    child: Row(
-                      children: const [
+                    child: const Row(
+                      children: [
                         Icon(
                           Icons.exit_to_app,
                           size: 32,

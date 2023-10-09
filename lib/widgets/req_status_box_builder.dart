@@ -15,8 +15,8 @@ Widget reqStatusBoxBuilder(String status, String usage){
       "textColor": const Color(0xff58148E),
     },
     "Declined": {
-      "backgroundColor": const Color(0xffFAD398),
-      "textColor": const Color(0xffE9A7A7),
+      "backgroundColor": const Color(0xffE9A7A7),
+      "textColor": const Color(0xff852020),
     },
     "Preparation": {
       "backgroundColor": const Color(0xffE9DAA7),

@@ -189,14 +189,16 @@ class _AssetDetailState extends State<AssetDetail> {
                             );
                           }
                         } catch (e) {
-                          showDialog(
-                            context: context,
-                            builder: (context) => alert(
-                              context,
-                              'Error',
-                              e.toString(),
-                            ),
-                          );
+                          if(mounted){
+                            showDialog(
+                              context: context,
+                              builder: (context) => alert(
+                                context,
+                                'Error',
+                                e.toString(),
+                              ),
+                            );
+                          }
                         }
                       },
                       child: const Text(

@@ -52,7 +52,16 @@ class _MyAssetsPageState extends State<MyAssetsPage> {
       });
     } catch (error) {
       // Handle any errors that occur during the refresh
-      alert(context, 'Error', error.toString());
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => alert(
+            context,
+            'Error',
+            error.toString(),
+          ),
+        );
+      }
     }
   }
 
@@ -107,8 +116,8 @@ class _MyAssetsPageState extends State<MyAssetsPage> {
                         onPressed: () async {
                           refreshAsset();
                         },
-                        child: Row(
-                          children: const [
+                        child: const Row(
+                          children: [
                             Icon(Icons.refresh),
                             SizedBox(width: 4),
                             Text(

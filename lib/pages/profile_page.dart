@@ -161,13 +161,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 });
                                           }
                                         } catch (e) {
-                                          showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                    content:
-                                                        Text(e.toString()));
-                                              });
+                                          if(mounted){
+                                            showDialog(
+                                                context: context,
+                                                builder: (BuildContext context) {
+                                                  return AlertDialog(
+                                                      content:
+                                                      Text(e.toString()));
+                                                });
+                                          }
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(
@@ -277,13 +279,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 });
                                           }
                                         } catch (e) {
-                                          showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                    content:
-                                                    Text(e.toString()));
-                                              });
+                                          if(mounted){
+                                            showDialog(
+                                                context: context,
+                                                builder: (BuildContext context) {
+                                                  return AlertDialog(
+                                                      content:
+                                                      Text(e.toString()));
+                                                });
+                                          }
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(

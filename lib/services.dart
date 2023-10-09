@@ -279,6 +279,35 @@ abstract class Services {
     }
   }
 
+  /// Approving Asset Request
+  static Future<Response?> approveRequest(int requestId, bool approved) async {
+    try{
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().put(
+        "$url/request/approve",
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          }
+        ),
+        data: {
+          "request_id" : requestId,
+          "approved" : approved
+        }
+      );
+      if(response.statusCode == 200){
+        return response;
+      } else {
+        exceptionHandling(response.data['message'].toString());
+      }
+    } catch (e){
+      exceptionHandling(e);
+    }
+    return null;
+  }
+
   /// Handling Exception From API ///
   static exceptionHandling(var e) {
     if (e is DioError) {

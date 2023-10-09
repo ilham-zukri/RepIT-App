@@ -7,15 +7,21 @@ import 'package:repit_app/pages/main_page.dart';
 import 'package:repit_app/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-late String? storedToken;
-late User? userData;
+String? storedToken;
+User? userData;
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await getUserData();
+  runApp(const MainApp());
+}
+
+Future<void> getUserData() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   storedToken = prefs.getString('token');
-  userData = (storedToken != null) ? await Services.getUserData(storedToken.toString()) : null;
-  runApp(const MainApp());
+  userData = (storedToken != null)
+      ? await Services.getUserData(storedToken.toString())
+      : null;
 }
 
 class MainApp extends StatelessWidget {

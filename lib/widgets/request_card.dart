@@ -6,8 +6,9 @@ import 'package:repit_app/widgets/req_status_box_builder.dart';
 
 class RequestCard extends StatelessWidget {
   final AssetRequest request;
+  final Map<String, dynamic> role;
 
-  const RequestCard({super.key, required this.request});
+  const RequestCard({super.key, required this.request, required this.role});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class RequestCard extends StatelessWidget {
         elevation: 5,
         child: InkWell(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => AssetRequestDetail(request: request),));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => AssetRequestDetail(request: request, role: role,),));
           },
           child: Column(
             children: [

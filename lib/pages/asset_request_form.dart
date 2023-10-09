@@ -293,12 +293,14 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                           showDialog(context: context, builder: (context) => alert(context, response!.data['message'], "request terbuat"));
                         }
                       } catch (e) {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return alert(context, 'Error', e.toString());
-                          },
-                        );
+                        if(mounted){
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return alert(context, 'Error', e.toString());
+                            },
+                          );
+                        }
                       }
                     }
                     if(mounted){

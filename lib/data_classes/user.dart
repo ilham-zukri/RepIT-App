@@ -4,7 +4,7 @@ class User {
   String? name;
   String? branch;
   String? department;
-  Map role;
+  Map<String, dynamic> role;
   final String _token;
 
   User({required this.name, required token, this.email, this.id, this.branch, this.department, required this.role})

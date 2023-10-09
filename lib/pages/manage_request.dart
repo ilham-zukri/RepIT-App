@@ -5,7 +5,8 @@ import 'package:repit_app/widgets/request_card.dart';
 import '../data_classes/asset_request.dart';
 
 class ManageRequest extends StatefulWidget {
-  const ManageRequest({Key? key}) : super(key: key);
+  final Map<String, dynamic> role;
+  const ManageRequest({Key? key, required this.role}) : super(key: key);
 
   @override
   State<ManageRequest> createState() => _ManageRequestState();
@@ -13,16 +14,19 @@ class ManageRequest extends StatefulWidget {
 
 class _ManageRequestState extends State<ManageRequest> {
   List assetRequests = [];
+  late Map<String, dynamic> role;
   late int page;
   late int lastPage;
   int requestsLength = 0;
   final scrollController = ScrollController();
   bool isLoadingMore = false;
 
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    role = widget.role;
     page = 1;
     scrollController.addListener(_scrollListener);
     fetchRequests();
@@ -71,6 +75,7 @@ class _ManageRequestState extends State<ManageRequest> {
                     ),
                     RequestCard(
                       request: assetRequests[index],
+                      role: role,
                     ),
                     (index == requestsLength - 1)
                         ? const SizedBox(height: 16)
