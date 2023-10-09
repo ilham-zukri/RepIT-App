@@ -6,6 +6,7 @@ import '../data_classes/asset_request.dart';
 
 class ManageRequest extends StatefulWidget {
   final Map<String, dynamic> role;
+
   const ManageRequest({Key? key, required this.role}) : super(key: key);
 
   @override
@@ -21,7 +22,6 @@ class _ManageRequestState extends State<ManageRequest> {
   final scrollController = ScrollController();
   bool isLoadingMore = false;
 
-
   @override
   void initState() {
     // TODO: implement initState
@@ -35,7 +35,7 @@ class _ManageRequestState extends State<ManageRequest> {
   Future<void> fetchRequests() async {
     var data = await Services.getListOfRequests(page);
     if (data == null) {
-      assetRequests = [];
+      assetRequests += [];
     } else {
       assetRequests += data['data'].map((request) {
         return AssetRequest(
@@ -63,38 +63,48 @@ class _ManageRequestState extends State<ManageRequest> {
       appBar: customAppBar(context, "Manage Request"),
       body: Padding(
           padding: const EdgeInsets.only(left: 24, right: 24),
-          child: ListView.builder(
-            controller: scrollController,
-            itemCount: isLoadingMore ? requestsLength + 1 : requestsLength,
-            itemBuilder: (context, index) {
-              if(index < requestsLength){
-                return Column(
-                  children: [
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    RequestCard(
-                      request: assetRequests[index],
-                      role: role,
-                    ),
-                    (index == requestsLength - 1)
-                        ? const SizedBox(height: 16)
-                        : const SizedBox.shrink()
-                  ],
-                );
-              } else {
-                return const Center(child: CircularProgressIndicator(),);
-              }
-
-            },
-          )),
+          child: (requestsLength != 0)
+              ? RefreshIndicator(
+                  onRefresh: () async => await fetchRequests(),
+                  child: ListView.builder(
+                    controller: scrollController,
+                    itemCount:
+                        isLoadingMore ? requestsLength + 1 : requestsLength,
+                    itemBuilder: (context, index) {
+                      if (index < requestsLength) {
+                        return Column(
+                          children: [
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            RequestCard(
+                              request: assetRequests[index],
+                              role: role,
+                            ),
+                            (index == requestsLength - 1)
+                                ? const SizedBox(height: 16)
+                                : const SizedBox.shrink()
+                          ],
+                        );
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    },
+                  ),
+                )
+              : const Center(
+                  child: CircularProgressIndicator(),
+                )),
     );
   }
 
-  Future<void> _scrollListener() async{
-    if(isLoadingMore) return;
-    if(scrollController.position.pixels == scrollController.position.maxScrollExtent){
-      if(page < lastPage){
+  Future<void> _scrollListener() async {
+    if (isLoadingMore) return;
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
+      if (page < lastPage) {
         setState(() {
           isLoadingMore = true;
         });
