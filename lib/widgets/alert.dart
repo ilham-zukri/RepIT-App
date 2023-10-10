@@ -11,7 +11,7 @@ Widget alert(BuildContext context, String title, String content) {
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xff00ABB3),
           ),
-          child: const Text("OK"))
+          child: const Text("OK")),
     ],
   );
 }

@@ -257,16 +257,26 @@ abstract class Services {
 
   /// GET Asset Requests List with pagination
 
-  static Future<Map?> getListOfRequests(int? page) async {
+  static Future<Map?> getListOfRequests(int? page,
+      {String? prioritySort,
+      String? createdAtSort,
+      int? filterLocation}) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      Response? response = await Dio().get('$url/requests',
-          options: Options(headers: {
-            "Accept": "application/json",
-            "Authorization": "Bearer $token"
-          }),
-          queryParameters: {'page': page ?? 1});
+      Response? response = await Dio().get(
+        '$url/requests',
+        options: Options(headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        }),
+        queryParameters: {
+          'page': page ?? 1,
+          'priority_sort': prioritySort,
+          'created_at_sort' : createdAtSort,
+          'filter_location': filterLocation
+        },
+      );
       if (response.statusCode == 200) {
         return response.data as Map;
       } else {
@@ -281,28 +291,21 @@ abstract class Services {
 
   /// Approving Asset Request
   static Future<Response?> approveRequest(int requestId, bool approved) async {
-    try{
+    try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      Response? response = await Dio().put(
-        "$url/request/approve",
-        options: Options(
-          headers: {
+      Response? response = await Dio().put("$url/request/approve",
+          options: Options(headers: {
             "Accept": "application/json",
             "Authorization": "Bearer $token"
-          }
-        ),
-        data: {
-          "request_id" : requestId,
-          "approved" : approved
-        }
-      );
-      if(response.statusCode == 200){
+          }),
+          data: {"request_id": requestId, "approved": approved});
+      if (response.statusCode == 200) {
         return response;
       } else {
         exceptionHandling(response.data['message'].toString());
       }
-    } catch (e){
+    } catch (e) {
       exceptionHandling(e);
     }
     return null;
