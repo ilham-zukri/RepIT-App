@@ -13,7 +13,6 @@ class RequestCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-
     return SizedBox(
       width: size.width,
       height: 155,

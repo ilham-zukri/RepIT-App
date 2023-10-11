@@ -1,0 +1,124 @@
+import 'package:flutter/material.dart';
+
+class PurchaseItemCard extends StatelessWidget {
+  const PurchaseItemCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    return SizedBox(
+        width: size.width,
+        height: 190,
+        child: Card(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          elevation: 5,
+          child: InkWell(
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            child: Column(
+              children: [
+                Container(
+                  width: size.width,
+                  height: 45,
+                  decoration: const BoxDecoration(
+                    color: Color(0xff009199),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      top: 12,
+                      bottom: 12,
+                    ),
+                    child: const Text(
+                      "Laptop",
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: const Text(
+                          "Lenovo",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      Table(
+                        columnWidths: const {
+                          0: FlexColumnWidth(1.22),
+                          1: FlexColumnWidth(0.2),
+                          2: FlexColumnWidth(2.7)
+                        },
+                        children: [
+                          TableRow(
+                            children: [
+                              const Text('Model'),
+                              const Text(':'),
+                              Text("Thinkpad")
+                            ],
+                          ),
+                          TableRow(children: [
+                            Container(
+                              margin: const EdgeInsets.only(top: 6),
+                              child: const Text('Jumlah Item'),
+                            ),
+                            Container(
+                                margin: const EdgeInsets.only(top: 6),
+                                child: const Text(':')),
+                            Container(
+                                margin: const EdgeInsets.only(top: 6),
+                                child: Text("2"))
+                          ]),
+                          TableRow(
+                            children: [
+                              Container(
+                                  margin: const EdgeInsets.only(top: 6),
+                                  child: const Text('Harga Satuan')),
+                              Container(
+                                  margin: const EdgeInsets.only(top: 6),
+                                  child: const Text(':')),
+                              Container(
+                                  margin: const EdgeInsets.only(top: 6),
+                                  child: Text("1.000.000"))
+                            ],
+                          ),
+                          TableRow(
+                            children: [
+                              Container(
+                                  margin: const EdgeInsets.only(top: 6),
+                                  child: const Text('Total Harga')),
+                              Container(
+                                  margin: const EdgeInsets.only(top: 6),
+                                  child: const Text(':')),
+                              Container(
+                                  margin: const EdgeInsets.only(top: 6),
+                                  child: Text("2.000.000"))
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ));
+  }
+}

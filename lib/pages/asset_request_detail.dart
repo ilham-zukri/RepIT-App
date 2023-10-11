@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:repit_app/pages/purchase_form.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/alert.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
@@ -335,7 +336,9 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
             elevation: 5,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => PurchaseForm(purchaseId: request!.id)));
+          },
           child: const Text(
             "Ajukan Pembelian",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),

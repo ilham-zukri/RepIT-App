@@ -188,10 +188,10 @@ class _ManageRequestState extends State<ManageRequest> {
                 context: context,
                 builder: (context) {
                   var size = MediaQuery.of(context).size;
+                  prioritySort = sortOrders[0];
+                  createdAtSort = sortOrders[0];
                   return StatefulBuilder(
                     builder: (context, setState) {
-                      prioritySort = sortOrders[0];
-                      createdAtSort = sortOrders[0];
                       return AlertDialog(
                         scrollable: true,
                         title: const Text("Sort & Filter"),

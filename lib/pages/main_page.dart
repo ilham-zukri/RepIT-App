@@ -337,11 +337,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Material(
                 child: InkWell(
                   onTap: () {
-                    if (userData.role['asset_approval'] != 1 || userData.role['asset_purchasing'] != 1) {
+                    print(userData.role);
+                    if (userData.role['asset_approval'] != 1 && userData.role['asset_purchasing'] != 1) {
                       showDialog(
                         context: context,
                         builder: (context) => alert(context, "Tidak Berwenang",
-                            "Anda tidak memiliki wewenang untuk mengaakses menu ini"),
+                            "Anda tidak memiliki wewenang untuk mengakses menu ini"),
                       );
                     } else {
                       Navigator.push(
