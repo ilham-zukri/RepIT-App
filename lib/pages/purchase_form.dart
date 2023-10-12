@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:repit_app/widgets/purchase_item_card.dart';
 
+import '../data_classes/purchase_item.dart';
+
 class PurchaseForm extends StatefulWidget {
   final int purchaseId;
 
@@ -17,7 +19,8 @@ class _PurchaseFormState extends State<PurchaseForm> {
   TextEditingController modelEc = TextEditingController();
   TextEditingController amountEc = TextEditingController();
   TextEditingController priceEaEc = TextEditingController();
-  Map<String, dynamic> items = {};
+  List<Map<String, dynamic>> items = [];
+  List<PurchaseItem> purchaseItems = [];
 
   @override
   void initState() {
@@ -35,6 +38,17 @@ class _PurchaseFormState extends State<PurchaseForm> {
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                "No. Permintaan: ${widget.purchaseId}",
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
             const Align(
               alignment: Alignment.topLeft,
               child: Text(
@@ -66,34 +80,51 @@ class _PurchaseFormState extends State<PurchaseForm> {
             const Divider(
               color: Colors.black45,
             ),
-            const SizedBox(
-              height: 16,
-            ),
-            const PurchaseItemCard(),
-            const SizedBox(
-              height: 35,
-            ),
-            SizedBox(
-              height: 35,
-              width: size.width,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xff009199),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50)),
-                  elevation: 5,
-                ),
-                onPressed: () {
-
-                },
-                child: const Text(
-                  "Kirim",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600),
-                ),
-              ),
-            )
+            (purchaseItems.isNotEmpty)
+                ? Expanded(
+                    // flex: 1,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: purchaseItems.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            PurchaseItemCard(
+                              purchaseItem: purchaseItems[index],
+                            ),
+                            (index == purchaseItems.length - 1)
+                                ? Container(
+                                    margin: const EdgeInsets.only(top: 32, bottom: 16),
+                                    height: 35,
+                                    width: size.width,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            const Color(0xff009199),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(50)),
+                                        elevation: 5,
+                                      ),
+                                      onPressed: () {},
+                                      child: const Text(
+                                        "Kirim",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox(height: 8)
+                          ],
+                        );
+                      },
+                    ),
+                  )
+                : const SizedBox.shrink(),
           ],
         ),
       ),
@@ -127,7 +158,9 @@ class _PurchaseFormState extends State<PurchaseForm> {
                     builder: (context, setState) {
                       Size size = MediaQuery.of(context).size;
                       return AlertDialog(
-                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12))),
                         scrollable: true,
                         content: Column(
                           children: [
@@ -290,7 +323,8 @@ class _PurchaseFormState extends State<PurchaseForm> {
                                   elevation: 5,
                                 ),
                                 onPressed: () {
-
+                                  addItems();
+                                  Navigator.of(context).pop();
                                 },
                                 child: const Text(
                                   "Simpan",
@@ -330,5 +364,39 @@ class _PurchaseFormState extends State<PurchaseForm> {
         ),
       ],
     );
+  }
+
+  void addItems() {
+    String assetType = typeEc.text;
+    String brand = brandEc.text;
+    String model = modelEc.text;
+    int amount = int.tryParse(amountEc.text.toString()) as int;
+    int priceEa = int.tryParse(priceEaEc.text.toString()) as int;
+    int priceTotal = amount * priceEa;
+
+    PurchaseItem purchaseItem = PurchaseItem(
+      assetType: assetType,
+      brand: brand,
+      model: model,
+      amount: amount,
+      priceEa: priceEa,
+      priceTotal: priceTotal,
+    );
+
+    Map<String, dynamic> item = purchaseItem.toMap();
+    items.add(item);
+
+    setState(() {
+      purchaseItems.add(purchaseItem);
+      clearItemForm();
+    });
+  }
+
+  void clearItemForm() {
+    typeEc.clear();
+    brandEc.clear();
+    modelEc.clear();
+    amountEc.clear();
+    priceEaEc.clear();
   }
 }

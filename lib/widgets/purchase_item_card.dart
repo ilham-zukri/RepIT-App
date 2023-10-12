@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:repit_app/data_classes/purchase_item.dart';
 
 class PurchaseItemCard extends StatelessWidget {
-  const PurchaseItemCard({super.key});
+  final PurchaseItem purchaseItem;
+
+  const PurchaseItemCard({super.key, required this.purchaseItem});
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +17,7 @@ class PurchaseItemCard extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(10))),
           elevation: 5,
           child: InkWell(
+            onTap: () {},
             borderRadius: const BorderRadius.all(Radius.circular(10)),
             child: Column(
               children: [
@@ -32,9 +36,9 @@ class PurchaseItemCard extends StatelessWidget {
                       top: 12,
                       bottom: 12,
                     ),
-                    child: const Text(
-                      "Laptop",
-                      style: TextStyle(
+                    child: Text(
+                      purchaseItem.assetType,
+                      style: const TextStyle(
                           fontSize: 16,
                           color: Colors.white,
                           fontWeight: FontWeight.w600),
@@ -50,9 +54,9 @@ class PurchaseItemCard extends StatelessWidget {
                     children: [
                       Align(
                         alignment: Alignment.topLeft,
-                        child: const Text(
-                          "Lenovo",
-                          style: TextStyle(
+                        child: Text(
+                          purchaseItem.brand,
+                          style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16),
                         ),
                       ),
@@ -70,7 +74,7 @@ class PurchaseItemCard extends StatelessWidget {
                             children: [
                               const Text('Model'),
                               const Text(':'),
-                              Text("Thinkpad")
+                              Text(purchaseItem.model)
                             ],
                           ),
                           TableRow(children: [
@@ -82,8 +86,11 @@ class PurchaseItemCard extends StatelessWidget {
                                 margin: const EdgeInsets.only(top: 6),
                                 child: const Text(':')),
                             Container(
-                                margin: const EdgeInsets.only(top: 6),
-                                child: Text("2"))
+                              margin: const EdgeInsets.only(top: 6),
+                              child: Text(
+                                purchaseItem.amount.toString(),
+                              ),
+                            )
                           ]),
                           TableRow(
                             children: [
@@ -94,8 +101,11 @@ class PurchaseItemCard extends StatelessWidget {
                                   margin: const EdgeInsets.only(top: 6),
                                   child: const Text(':')),
                               Container(
-                                  margin: const EdgeInsets.only(top: 6),
-                                  child: Text("1.000.000"))
+                                margin: const EdgeInsets.only(top: 6),
+                                child: Text(
+                                  purchaseItem.priceEa.toString(),
+                                ),
+                              )
                             ],
                           ),
                           TableRow(
@@ -107,8 +117,11 @@ class PurchaseItemCard extends StatelessWidget {
                                   margin: const EdgeInsets.only(top: 6),
                                   child: const Text(':')),
                               Container(
-                                  margin: const EdgeInsets.only(top: 6),
-                                  child: Text("2.000.000"))
+                                margin: const EdgeInsets.only(top: 6),
+                                child: Text(
+                                  purchaseItem.priceTotal.toString(),
+                                ),
+                              )
                             ],
                           ),
                         ],
