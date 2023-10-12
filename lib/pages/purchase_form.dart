@@ -1,12 +1,15 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:repit_app/services.dart';
+import 'package:repit_app/widgets/alert.dart';
 import 'package:repit_app/widgets/purchase_item_card.dart';
 
 import '../data_classes/purchase_item.dart';
 
 class PurchaseForm extends StatefulWidget {
-  final int purchaseId;
+  final int requestId;
 
-  const PurchaseForm({super.key, required this.purchaseId});
+  const PurchaseForm({super.key, required this.requestId});
 
   @override
   State<PurchaseForm> createState() => _PurchaseFormState();
@@ -21,11 +24,28 @@ class _PurchaseFormState extends State<PurchaseForm> {
   TextEditingController priceEaEc = TextEditingController();
   List<Map<String, dynamic>> items = [];
   List<PurchaseItem> purchaseItems = [];
+  late String assetType;
+  late Future<List?> assetTypes;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    assetTypes = fetchAssetTypes();
+  }
+
+  /// GET asset Types
+  Future<List?> fetchAssetTypes() async {
+    try {
+      final data = await Services.getAssetType();
+      if (data == null) {
+        return [];
+      }
+      assetType = data.first['type'];
+      return data;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
@@ -41,7 +61,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
             Align(
               alignment: Alignment.topLeft,
               child: Text(
-                "No. Permintaan: ${widget.purchaseId}",
+                "No. Permintaan: ${widget.requestId}",
                 style:
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
@@ -94,10 +114,14 @@ class _PurchaseFormState extends State<PurchaseForm> {
                             ),
                             PurchaseItemCard(
                               purchaseItem: purchaseItems[index],
+                              onDelete: () {
+                                deleteItem(index);
+                              },
                             ),
                             (index == purchaseItems.length - 1)
                                 ? Container(
-                                    margin: const EdgeInsets.only(top: 32, bottom: 16),
+                                    margin: const EdgeInsets.only(
+                                        top: 32, bottom: 16),
                                     height: 35,
                                     width: size.width,
                                     child: ElevatedButton(
@@ -109,7 +133,46 @@ class _PurchaseFormState extends State<PurchaseForm> {
                                                 BorderRadius.circular(50)),
                                         elevation: 5,
                                       ),
-                                      onPressed: () {},
+                                      onPressed: () async {
+                                        if (vendorNameEc.text.isEmpty) {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => alert(context,
+                                                "Error", "Lengkapi Form"),
+                                          );
+                                        } else {
+                                          String vendorName = vendorNameEc.text;
+                                          try {
+                                            Response? response = await Services
+                                                .createPurchasingForm(
+                                                    widget.requestId,
+                                                    vendorName,
+                                                    items);
+                                            if (mounted) {
+                                              setState(() {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) => alert(
+                                                      context,
+                                                      "Berhasil",
+                                                      response!
+                                                          .data['message']),
+                                                );
+                                              });
+                                            }
+                                            print(vendorNameEc.text);
+                                          } catch (e) {
+                                            print(e.toString());
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) => alert(
+                                                  context,
+                                                  "Error",
+                                                  e.toString()),
+                                            );
+                                          }
+                                        }
+                                      },
                                       child: const Text(
                                         "Kirim",
                                         style: TextStyle(
@@ -131,6 +194,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
     );
   }
 
+  /// Custom Appbar
   PreferredSizeWidget appBarWithAdd() {
     return AppBar(
       title: const Text(
@@ -151,6 +215,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
           margin: const EdgeInsets.only(right: 6),
           child: IconButton(
             onPressed: () {
+              print(assetTypes);
               showDialog(
                 context: context,
                 builder: (context) {
@@ -175,20 +240,45 @@ class _PurchaseFormState extends State<PurchaseForm> {
                                     color: Colors.black),
                               ),
                             ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 8),
-                              height: 41,
-                              child: TextField(
-                                controller: typeEc,
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.all(10),
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                              ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: FutureBuilder(
+                                  future: assetTypes,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasError) {
+                                      return Text(snapshot.error.toString());
+                                    } else if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const CircularProgressIndicator();
+                                    } else {
+                                      List<dynamic>? types = snapshot.data;
+                                      String? initialTypeSelection;
+                                      if (types != null && types.isNotEmpty) {
+                                        initialTypeSelection =
+                                            types.first['type'];
+                                      }
+                                      return DropdownMenu(
+                                        textStyle:
+                                            const TextStyle(fontSize: 16),
+                                        width: size.width - 130,
+                                        enableSearch: true,
+                                        initialSelection: initialTypeSelection,
+                                        onSelected: (value) {
+                                          setState(() {
+                                            assetType = value;
+                                          });
+                                        },
+                                        dropdownMenuEntries: types!.map((type) {
+                                          return DropdownMenuEntry(
+                                              value: type['type'],
+                                              label: type['type']);
+                                        }).toList(),
+                                      );
+                                    }
+                                  }),
                             ),
                             const SizedBox(
                               height: 8,
@@ -323,8 +413,19 @@ class _PurchaseFormState extends State<PurchaseForm> {
                                   elevation: 5,
                                 ),
                                 onPressed: () {
-                                  addItems();
-                                  Navigator.of(context).pop();
+                                  if (brandEc.text.isEmpty ||
+                                      modelEc.text.isEmpty ||
+                                      amountEc.text.isEmpty ||
+                                      priceEaEc.text.isEmpty) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => alert(
+                                          context, "Error", "Lengkapi Field"),
+                                    );
+                                  } else {
+                                    addItems();
+                                    Navigator.of(context).pop();
+                                  }
                                 },
                                 child: const Text(
                                   "Simpan",
@@ -366,8 +467,8 @@ class _PurchaseFormState extends State<PurchaseForm> {
     );
   }
 
+  /// Adding Items
   void addItems() {
-    String assetType = typeEc.text;
     String brand = brandEc.text;
     String model = modelEc.text;
     int amount = int.tryParse(amountEc.text.toString()) as int;
@@ -392,6 +493,15 @@ class _PurchaseFormState extends State<PurchaseForm> {
     });
   }
 
+  /// Deleting Item From Maps
+  void deleteItem(int index) {
+    setState(() {
+      purchaseItems.removeAt(index);
+      items.removeAt(index);
+    });
+  }
+
+  /// Clearing Form Texts
   void clearItemForm() {
     typeEc.clear();
     brandEc.clear();

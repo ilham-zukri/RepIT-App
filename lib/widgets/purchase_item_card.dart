@@ -3,8 +3,9 @@ import 'package:repit_app/data_classes/purchase_item.dart';
 
 class PurchaseItemCard extends StatelessWidget {
   final PurchaseItem purchaseItem;
+  final VoidCallback onDelete;
 
-  const PurchaseItemCard({super.key, required this.purchaseItem});
+  const PurchaseItemCard({super.key, required this.purchaseItem, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +23,7 @@ class PurchaseItemCard extends StatelessWidget {
             child: Column(
               children: [
                 Container(
+                  padding: const EdgeInsets.only(left: 16),
                   width: size.width,
                   height: 45,
                   decoration: const BoxDecoration(
@@ -30,19 +32,35 @@ class PurchaseItemCard extends StatelessWidget {
                         topLeft: Radius.circular(10),
                         topRight: Radius.circular(10)),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                      top: 12,
-                      bottom: 12,
-                    ),
-                    child: Text(
-                      purchaseItem.assetType,
-                      style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600),
-                    ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          purchaseItem.assetType,
+                          style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+
+                      Align(
+                        alignment: Alignment.centerRight,
+                        heightFactor: 5,
+                        widthFactor: 5,
+                        child: IconButton(
+                          alignment: Alignment.topCenter,
+                          onPressed: onDelete ,
+                          icon: const Icon(
+                            Icons.remove,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(

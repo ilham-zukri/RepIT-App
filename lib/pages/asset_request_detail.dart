@@ -337,7 +337,7 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
             elevation: 5,
           ),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => PurchaseForm(purchaseId: request!.id)));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => PurchaseForm(requestId: request!.id)));
           },
           child: const Text(
             "Ajukan Pembelian",

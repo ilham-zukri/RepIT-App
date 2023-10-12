@@ -256,7 +256,6 @@ abstract class Services {
   }
 
   /// GET Asset Requests List with pagination
-
   static Future<Map?> getListOfRequests(int? page,
       {String? prioritySort,
       String? createdAtSort,
@@ -273,7 +272,7 @@ abstract class Services {
         queryParameters: {
           'page': page ?? 1,
           'priority_sort': prioritySort,
-          'created_at_sort' : createdAtSort,
+          'created_at_sort': createdAtSort,
           'filter_location': filterLocation
         },
       );
@@ -304,6 +303,58 @@ abstract class Services {
         return response;
       } else {
         exceptionHandling(response.data['message'].toString());
+      }
+    } catch (e) {
+      exceptionHandling(e);
+    }
+    return null;
+  }
+
+  /// Get List of Asset Type
+  static Future<List?> getAssetType() async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().get("$url/asset-type",
+          options: Options(headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          }));
+      if (response.statusCode == 200) {
+        return response.data as List;
+      } else {
+        exceptionHandling(response.data['message']);
+      }
+    } catch (e) {
+      exceptionHandling(e);
+    }
+
+    return null;
+  }
+
+  /// POST Purchasing Form
+  static Future<Response?> createPurchasingForm(int requestId, String vendorName, List<Map<String, dynamic>> items) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().post(
+        '$url/purchase',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        ),
+        data: {
+          'request_id' : requestId,
+          'purchased_from' : vendorName,
+          'items' : items
+        }
+      );
+      if (response.statusCode == 201) {
+        return response;
+      } else {
+        exceptionHandling(response.data['message']);
       }
     } catch (e) {
       exceptionHandling(e);
