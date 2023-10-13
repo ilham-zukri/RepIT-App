@@ -7,10 +7,12 @@ import 'package:repit_app/pages/asset_request_form.dart';
 import 'package:repit_app/pages/login_page.dart';
 import 'package:repit_app/pages/manage_request.dart';
 import 'package:repit_app/pages/my_assets_page.dart';
+import 'package:repit_app/pages/my_request_page.dart';
 import 'package:repit_app/pages/profile_page.dart';
 import 'package:repit_app/pages/ticket_form.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/alert.dart';
+import 'package:repit_app/widgets/loading_overlay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MainPage extends StatefulWidget {
@@ -25,6 +27,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   late TabController _tabController;
   late User userData;
+
   @override
   void initState() {
     super.initState();
@@ -34,6 +37,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    bool isLoading = false;
     final isDialOpen = ValueNotifier<bool>(false);
     var size = MediaQuery.of(context).size;
     return Scaffold(
@@ -96,13 +100,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             child: TabBar(
               tabs: const [
                 Tab(
-                  icon: Icon(Icons.qr_code),
+                  text: "Tickets",
                 ),
                 Tab(
                   text: "Assets",
                 ),
                 Tab(
-                  text: "Tickets",
+                  text: "Request",
                 ),
               ],
               labelStyle: const TextStyle(fontWeight: FontWeight.w600),
@@ -113,36 +117,19 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           ),
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: const [
-          Center(
-            child: Text('this is QR Scanner'),
+      body: Stack(
+        children: [
+          TabBarView(
+            controller: _tabController,
+            children: const [
+              Center(
+                child: Text('This is Tickets Page'),
+              ),
+              MyAssetsPage(),
+              MyRequestPage(),
+            ],
           ),
-          MyAssetsPage(),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Tiket-tiket anda akan tampil disini",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 50, right: 50),
-                  child: Text(
-                      'Setelah tiket dibuat, maka daftar tiket yang anda miliki akan muncul disini',
-                      style: TextStyle(
-                        fontSize: 14,
-                      ),
-                      textAlign: TextAlign.center),
-                ),
-              ],
-            ),
-          ),
+          loadingOverlay(isLoading, context)
         ],
       ),
       floatingActionButton: SpeedDial(
@@ -337,7 +324,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Material(
                 child: InkWell(
                   onTap: () {
-                    if (userData.role['asset_approval'] != 1 && userData.role['asset_purchasing'] != 1) {
+                    if (userData.role['asset_approval'] != 1 &&
+                        userData.role['asset_purchasing'] != 1) {
                       showDialog(
                         context: context,
                         builder: (context) => alert(context, "Tidak Berwenang",
@@ -347,7 +335,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ManageRequest(role: userData.role),
+                          builder: (context) =>
+                              ManageRequest(role: userData.role),
                         ),
                       );
                     }
@@ -473,12 +462,18 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                               ElevatedButton(
                                 onPressed: () async {
                                   try {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
                                     SharedPreferences prefs =
                                         await SharedPreferences.getInstance();
                                     String? token =
                                         prefs.getString('token').toString();
                                     bool response =
                                         await Services.logout(token);
+                                    setState(() {
+                                      isLoading = true;
+                                    });
                                     if (response) {
                                       if (mounted) {
                                         prefs.clear();
