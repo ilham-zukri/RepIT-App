@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/alert.dart';
+import 'package:repit_app/widgets/loading_overlay.dart';
 import 'package:repit_app/widgets/purchase_item_card.dart';
 
 import '../data_classes/purchase_item.dart';
@@ -26,6 +27,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
   List<PurchaseItem> purchaseItems = [];
   late String assetType;
   late Future<List?> assetTypes;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -51,145 +53,160 @@ class _PurchaseFormState extends State<PurchaseForm> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
     return Scaffold(
       appBar: appBarWithAdd(),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                "No. Permintaan: ${widget.requestId}",
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            const Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                "Nama Toko*",
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 8),
-              height: 41,
-              child: TextField(
-                controller: vendorNameEc,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(10),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "No. Permintaan: ${widget.requestId}",
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-            const Divider(
-              color: Colors.black45,
-            ),
-            (purchaseItems.isNotEmpty)
-                ? Expanded(
-                    // flex: 1,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: purchaseItems.length,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            PurchaseItemCard(
-                              purchaseItem: purchaseItems[index],
-                              onDelete: () {
-                                deleteItem(index);
-                              },
-                            ),
-                            (index == purchaseItems.length - 1)
-                                ? Container(
-                                    margin: const EdgeInsets.only(
-                                        top: 32, bottom: 16),
-                                    height: 35,
-                                    width: size.width,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            const Color(0xff009199),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(50)),
-                                        elevation: 5,
-                                      ),
-                                      onPressed: () async {
-                                        if (vendorNameEc.text.isEmpty) {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) => alert(context,
-                                                "Error", "Lengkapi Form"),
-                                          );
-                                        } else {
-                                          String vendorName = vendorNameEc.text;
-                                          try {
-                                            Response? response = await Services
-                                                .createPurchasingForm(
-                                                    widget.requestId,
-                                                    vendorName,
-                                                    items);
-                                            if (mounted) {
-                                              setState(() {
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (context) => alert(
-                                                      context,
-                                                      "Berhasil",
-                                                      response!
-                                                          .data['message']),
-                                                );
-                                              });
-                                            }
-                                            print(vendorNameEc.text);
-                                          } catch (e) {
-                                            print(e.toString());
-                                            showDialog(
-                                              context: context,
-                                              builder: (context) => alert(
-                                                  context,
-                                                  "Error",
-                                                  e.toString()),
-                                            );
-                                          }
-                                        }
-                                      },
-                                      child: const Text(
-                                        "Kirim",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ),
-                                  )
-                                : const SizedBox(height: 8)
-                          ],
-                        );
-                      },
+                const SizedBox(
+                  height: 16,
+                ),
+                const Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Nama Toko*",
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 8),
+                  height: 41,
+                  child: TextField(
+                    controller: vendorNameEc,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(10),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
-                  )
-                : const SizedBox.shrink(),
-          ],
-        ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                const Divider(
+                  color: Colors.black45,
+                ),
+                (purchaseItems.isNotEmpty)
+                    ? Expanded(
+                        // flex: 1,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: purchaseItems.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                PurchaseItemCard(
+                                  purchaseItem: purchaseItems[index],
+                                  onDelete: () {
+                                    deleteItem(index);
+                                  },
+                                ),
+                                (index == purchaseItems.length - 1)
+                                    ? Container(
+                                        margin: const EdgeInsets.only(
+                                            top: 32, bottom: 16),
+                                        height: 35,
+                                        width: size.width,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                const Color(0xff009199),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(50)),
+                                            elevation: 5,
+                                          ),
+                                          onPressed: () async {
+                                            if (vendorNameEc.text.isEmpty) {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) => alert(
+                                                    context,
+                                                    "Error",
+                                                    "Lengkapi Form"),
+                                              );
+                                            } else {
+                                              String vendorName =
+                                                  vendorNameEc.text;
+                                              try {
+                                                setState(() {
+                                                  isLoading = true;
+                                                });
+                                                Response? response =
+                                                    await Services
+                                                        .createPurchasingForm(
+                                                            widget.requestId,
+                                                            vendorName,
+                                                            items);
+                                                setState(() {
+                                                  isLoading = false;
+                                                });
+                                                if (mounted) {
+                                                  setState(() {
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (context) =>
+                                                          alert(
+                                                              context,
+                                                              "Berhasil",
+                                                              response!.data[
+                                                                  'message']),
+                                                    );
+                                                  });
+                                                }
+                                              } catch (e) {
+                                                if (mounted) {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) => alert(
+                                                        context,
+                                                        "Error",
+                                                        e.toString()),
+                                                  );
+                                                }
+                                              }
+                                            }
+                                          },
+                                          child: const Text(
+                                            "Kirim",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox(height: 8)
+                              ],
+                            );
+                          },
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              ],
+            ),
+          ),
+          loadingOverlay(isLoading, context),
+        ],
       ),
     );
   }
@@ -215,7 +232,6 @@ class _PurchaseFormState extends State<PurchaseForm> {
           margin: const EdgeInsets.only(right: 6),
           child: IconButton(
             onPressed: () {
-              print(assetTypes);
               showDialog(
                 context: context,
                 builder: (context) {

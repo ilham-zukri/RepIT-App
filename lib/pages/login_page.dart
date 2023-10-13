@@ -15,6 +15,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -133,10 +134,16 @@ class _LoginPageState extends State<LoginPage> {
                               elevation: 5),
                           onPressed: () async {
                             try {
+                              setState(() {
+                                isLoading = true;
+                              });
                               var response = await Services.login(
                                 widget.userNameController.text.toString(),
                                 widget.passwordController.text.toString(),
                               );
+                              setState(() {
+                                isLoading = false;
+                              });
                               if (response?.token != null) {
                                 userData = response;
                                 if (mounted) {

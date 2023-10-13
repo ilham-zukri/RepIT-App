@@ -199,7 +199,7 @@ abstract class Services {
 
   /// POST Create Asset Request ///
   static Future<Response?> createAssetRequest(String title, String description,
-      String priority, String userId, int locationId) async {
+      int priority, String userId, int locationId) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
@@ -333,26 +333,50 @@ abstract class Services {
   }
 
   /// POST Purchasing Form
-  static Future<Response?> createPurchasingForm(int requestId, String vendorName, List<Map<String, dynamic>> items) async {
+  static Future<Response?> createPurchasingForm(int requestId,
+      String vendorName, List<Map<String, dynamic>> items) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      Response? response = await Dio().post(
-        '$url/purchase',
+      Response? response = await Dio().post('$url/purchase',
+          options: Options(
+            headers: {
+              "Accept": "application/json",
+              "Authorization": "Bearer $token"
+            },
+          ),
+          data: {
+            'request_id': requestId,
+            'purchased_from': vendorName,
+            'items': items
+          });
+      if (response.statusCode == 201) {
+        return response;
+      } else {
+        exceptionHandling(response.data['message']);
+      }
+    } catch (e) {
+      exceptionHandling(e);
+    }
+    return null;
+  }
+
+  /// Get Priorities
+  static Future<List?> getPriorities() async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().get(
+        '$url/priorities',
         options: Options(
           headers: {
             "Accept": "application/json",
             "Authorization": "Bearer $token"
           },
         ),
-        data: {
-          'request_id' : requestId,
-          'purchased_from' : vendorName,
-          'items' : items
-        }
       );
-      if (response.statusCode == 201) {
-        return response;
+      if(response.statusCode == 200){
+        return response.data as List;
       } else {
         exceptionHandling(response.data['message']);
       }

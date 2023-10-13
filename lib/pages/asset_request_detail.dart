@@ -327,23 +327,27 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
         ],
       );
     } else if (role['asset_purchasing'] == 1 && request!.status == "Approved") {
-      return SizedBox(
-        width: size.width,
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xff009199),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            elevation: 5,
+      return Column(
+        children: [
+          SizedBox(
+            width: size.width,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xff009199),
+                shape:
+                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                elevation: 5,
+              ),
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PurchaseForm(requestId: request!.id)));
+              },
+              child: const Text(
+                "Ajukan Pembelian",
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              ),
+            ),
           ),
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => PurchaseForm(requestId: request!.id)));
-          },
-          child: const Text(
-            "Ajukan Pembelian",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-          ),
-        ),
+        ],
       );
     }
     return const SizedBox.shrink();

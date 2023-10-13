@@ -337,7 +337,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Material(
                 child: InkWell(
                   onTap: () {
-                    print(userData.role);
                     if (userData.role['asset_approval'] != 1 && userData.role['asset_purchasing'] != 1) {
                       showDialog(
                         context: context,

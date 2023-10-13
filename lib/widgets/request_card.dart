@@ -15,14 +15,21 @@ class RequestCard extends StatelessWidget {
     var size = MediaQuery.of(context).size;
     return SizedBox(
       width: size.width,
-      height: 155,
+      height: 170,
       child: Card(
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))),
         elevation: 5,
         child: InkWell(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => AssetRequestDetail(request: request, role: role,),));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AssetRequestDetail(
+                    request: request,
+                    role: role,
+                  ),
+                ));
           },
           child: Column(
             children: [
@@ -77,7 +84,19 @@ class RequestCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(
-                      height: 22,
+                      height: 10,
+                    ),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        request.location,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 14,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

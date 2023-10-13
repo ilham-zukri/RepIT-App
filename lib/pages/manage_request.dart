@@ -40,10 +40,31 @@ class _ManageRequestState extends State<ManageRequest> {
     locations = fetchLocations();
   }
 
-  Future<void> fetchRequests() async {
-    var data = await Services.getListOfRequests(page, filterLocation: locationFilter, createdAtSort: createdAtSort, prioritySort: prioritySort);
+  Future<void> fetchRequests({bool? refresh}) async {
+    var data = await Services.getListOfRequests(page,
+        filterLocation: locationFilter,
+        createdAtSort: createdAtSort,
+        prioritySort: prioritySort);
     if (data == null) {
       assetRequests += [];
+    } else if (refresh != null && refresh == true) {
+      assetRequests = data['data'].map((request) {
+        return AssetRequest(
+            request['id'],
+            request['priority'],
+            request['created_at'],
+            request['title'],
+            request['description'],
+            request['for_user'],
+            request['location'],
+            request['requester'],
+            status: request['status']);
+      }).toList();
+      setState(() {
+        lastPage = data['meta']['last_page'];
+        assetRequests;
+        requestsLength = assetRequests.length;
+      });
     } else {
       assetRequests += data['data'].map((request) {
         return AssetRequest(
@@ -65,10 +86,13 @@ class _ManageRequestState extends State<ManageRequest> {
     }
   }
 
-  Future <void> fetchRequestsSort() async{
-    try{
-      var data = await Services.getListOfRequests(page, filterLocation: locationFilter, createdAtSort: createdAtSort, prioritySort: prioritySort);
-      if (data != null){
+  Future<void> fetchRequestsSort() async {
+    try {
+      var data = await Services.getListOfRequests(page,
+          filterLocation: locationFilter,
+          createdAtSort: createdAtSort,
+          prioritySort: prioritySort);
+      if (data != null) {
         assetRequests = data['data'].map((request) {
           return AssetRequest(
               request['id'],
@@ -87,7 +111,7 @@ class _ManageRequestState extends State<ManageRequest> {
           requestsLength = assetRequests.length;
         });
       }
-    }catch(e){
+    } catch (e) {
       rethrow;
     }
   }
@@ -109,10 +133,11 @@ class _ManageRequestState extends State<ManageRequest> {
       appBar: appBarWithSort(context, "Manage Request"),
       body: Padding(
           padding: const EdgeInsets.only(left: 24, right: 24),
-          child: (requestsLength != 0)
+          child: (requestsLength > 0)
               ? RefreshIndicator(
-                  onRefresh: () async =>
-                      (requestsLength == 0) ? await fetchRequests() : null,
+                  onRefresh: () async {
+                    await fetchRequests(refresh: true);
+                  },
                   child: ListView.builder(
                     controller: scrollController,
                     itemCount:
@@ -361,7 +386,7 @@ class _ManageRequestState extends State<ManageRequest> {
                               try {
                                 page = 1;
                                 await fetchRequestsSort();
-                                if(mounted){
+                                if (mounted) {
                                   build(context);
                                 }
                                 if (mounted) {
