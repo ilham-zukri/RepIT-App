@@ -18,6 +18,7 @@ class PurchaseItem {
     return {
       "asset_type": assetType,
       "brand": brand,
+      "amount" : amount,
       "model": model,
       "price_ea": priceEa,
       "total_price": priceTotal
