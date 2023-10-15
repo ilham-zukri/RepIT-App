@@ -47,7 +47,7 @@ class _ManageRequestState extends State<ManageRequest> {
         prioritySort: prioritySort);
     if (data == null) {
       assetRequests += [];
-    } else if (refresh != null && refresh == true) {
+    } else if (refresh == true) {
       assetRequests = data['data'].map((request) {
         return AssetRequest(
             request['id'],
@@ -132,43 +132,45 @@ class _ManageRequestState extends State<ManageRequest> {
     return Scaffold(
       appBar: appBarWithSort(context, "Manage Request"),
       body: Padding(
-          padding: const EdgeInsets.only(left: 24, right: 24),
-          child: (requestsLength > 0)
-              ? RefreshIndicator(
-                  onRefresh: () async {
-                    await fetchRequests(refresh: true);
+        padding: const EdgeInsets.only(left: 24, right: 24),
+        child: (requestsLength > 0)
+            ? RefreshIndicator(
+                onRefresh: () async {
+                  page = 1;
+                  await fetchRequests(refresh: true);
+                },
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemCount:
+                      isLoadingMore ? requestsLength + 1 : requestsLength,
+                  itemBuilder: (context, index) {
+                    if (index < requestsLength) {
+                      return Column(
+                        children: [
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          RequestCard(
+                            request: assetRequests[index],
+                            role: role,
+                          ),
+                          (index == requestsLength - 1)
+                              ? const SizedBox(height: 16)
+                              : const SizedBox.shrink()
+                        ],
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
                   },
-                  child: ListView.builder(
-                    controller: scrollController,
-                    itemCount:
-                        isLoadingMore ? requestsLength + 1 : requestsLength,
-                    itemBuilder: (context, index) {
-                      if (index < requestsLength) {
-                        return Column(
-                          children: [
-                            const SizedBox(
-                              height: 16,
-                            ),
-                            RequestCard(
-                              request: assetRequests[index],
-                              role: role,
-                            ),
-                            (index == requestsLength - 1)
-                                ? const SizedBox(height: 16)
-                                : const SizedBox.shrink()
-                          ],
-                        );
-                      } else {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                    },
-                  ),
-                )
-              : const Center(
-                  child: CircularProgressIndicator(),
-                )),
+                ),
+              )
+            : const Center(
+                child: CircularProgressIndicator(),
+              ),
+      ),
     );
   }
 

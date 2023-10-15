@@ -255,7 +255,7 @@ abstract class Services {
     return null;
   }
 
-  /// GET Asset Requests List with pagination
+  /// GET All Asset Requests List with pagination
   static Future<Map?> getListOfRequests(int? page,
       {String? prioritySort,
       String? createdAtSort,
@@ -274,6 +274,32 @@ abstract class Services {
           'priority_sort': prioritySort,
           'created_at_sort': createdAtSort,
           'filter_location': filterLocation
+        },
+      );
+      if (response.statusCode == 200) {
+        return response.data as Map;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
+  static Future<Map?> getMyListOfRequests(int? page) async{
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().get(
+        '$url/my-requests',
+        options: Options(headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        }),
+        queryParameters: {
+          'page': page ?? 1,
         },
       );
       if (response.statusCode == 200) {
