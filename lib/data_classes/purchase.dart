@@ -7,7 +7,7 @@ class Purchase {
   final String purchasedBy;
   final String requester;
   final String createdAt;
-  final String status;
+  String status;
   final int totalPrice;
   final List<PurchaseItem> items;
 

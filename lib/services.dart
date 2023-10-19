@@ -288,7 +288,7 @@ abstract class Services {
     }
   }
 
-  static Future<Map?> getMyListOfRequests(int? page) async{
+  static Future<Map?> getMyListOfRequests(int? page) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
@@ -401,7 +401,7 @@ abstract class Services {
           },
         ),
       );
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         return response.data as List;
       } else {
         exceptionHandling(response.data['message']);
@@ -412,7 +412,8 @@ abstract class Services {
     return null;
   }
 
-  static Future<Map?> getPurchases(int? page) async{
+  /// Get All Purchases with pagination
+  static Future<Map?> getPurchases(int? page) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
@@ -436,6 +437,34 @@ abstract class Services {
       exceptionHandling(e);
       return null;
     }
+  }
+
+  /// Cancel Purchase
+  static Future<Response?> cancelPurchase(int id) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().put(
+        '$url/purchase',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        ),
+        data: {
+          'id' : id
+        }
+      );
+      if(response.statusCode == 200){
+        return response;
+      } else {
+        exceptionHandling(response.data['message']);
+      }
+    } catch (e) {
+      exceptionHandling(e);
+    }
+    return null;
   }
 
   /// Handling Exception From API ///
