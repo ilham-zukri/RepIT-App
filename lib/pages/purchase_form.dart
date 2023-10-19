@@ -105,7 +105,6 @@ class _PurchaseFormState extends State<PurchaseForm> {
                 ),
                 (purchaseItems.isNotEmpty)
                     ? Expanded(
-                        // flex: 1,
                         child: ListView.builder(
                           shrinkWrap: true,
                           itemCount: purchaseItems.length,

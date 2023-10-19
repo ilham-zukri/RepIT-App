@@ -46,20 +46,22 @@ class _ManagePurchaseState extends State<ManagePurchase> {
             totalPrice: purchase['total_price'],
             id: purchase['id'],
             vendorName: purchase['purchased_from'],
-            items: purchase['items'].map((item) {
-              return PurchaseItem(
-                id: item['id'],
-                assetType: item['asset_type'],
-                brand: item['brand'],
-                model: item['model'],
-                amount: item['amount'],
-                priceEa: item['price_ea'],
-                priceTotal: item['total_price'],
-              );
-            }).toList().cast<PurchaseItem>(),
+            items: purchase['items']
+                .map((item) {
+                  return PurchaseItem(
+                    id: item['id'],
+                    assetType: item['asset_type'],
+                    brand: item['brand'],
+                    model: item['model'],
+                    amount: item['amount'],
+                    priceEa: item['price_ea'],
+                    priceTotal: item['total_price'],
+                  );
+                })
+                .toList()
+                .cast<PurchaseItem>(),
           );
         }).toList();
-        print(purchases);
         setState(() {
           lastPage = data['meta']['last_page'];
           purchases;
@@ -76,17 +78,20 @@ class _ManagePurchaseState extends State<ManagePurchase> {
             totalPrice: purchase['total_price'],
             id: purchase['id'],
             vendorName: purchase['purchased_from'],
-            items: purchase['items'].map((item) {
-              return PurchaseItem(
-                id: item['id'],
-                assetType: item['asset_type'],
-                brand: item['brand'],
-                model: item['model'],
-                amount: item['amount'],
-                priceEa: item['price_ea'],
-                priceTotal: item['total_price'],
-              );
-            }).toList().cast<PurchaseItem>(),
+            items: purchase['items']
+                .map((item) {
+                  return PurchaseItem(
+                    id: item['id'],
+                    assetType: item['asset_type'],
+                    brand: item['brand'],
+                    model: item['model'],
+                    amount: item['amount'],
+                    priceEa: item['price_ea'],
+                    priceTotal: item['total_price'],
+                  );
+                })
+                .toList()
+                .cast<PurchaseItem>(),
           );
         }).toList();
         setState(() {
@@ -110,9 +115,39 @@ class _ManagePurchaseState extends State<ManagePurchase> {
       appBar: customAppBar(context, "Purchasing"),
       body: Padding(
         padding: const EdgeInsets.only(left: 24, right: 24),
-        child: const Center(
-          child: PurchaseCard(),
-        ),
+        child: (purchasesLength > 0)
+            ? RefreshIndicator(
+                onRefresh: () async {
+                  page = 1;
+                  await fetchPurchases(isRefresh: true);
+                },
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemCount: isLoadingMore ? purchasesLength + 1 : purchasesLength,
+                  itemBuilder: (context, index) {
+                    if (index < purchasesLength) {
+                      return Column(
+                        children: [
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          PurchaseCard(purchase: purchases[index]),
+                          (index == purchasesLength - 1)
+                              ? const SizedBox(height: 16)
+                              : const SizedBox.shrink()
+                        ],
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
+              )
+            : const Center(
+                child: CircularProgressIndicator(),
+              ),
       ),
     );
   }

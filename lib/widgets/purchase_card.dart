@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:repit_app/data_classes/purchase.dart';
+import 'package:repit_app/pages/purchase_detail.dart';
 import 'package:repit_app/widgets/purchase_status_box_builder.dart';
 
 class PurchaseCard extends StatelessWidget {
-  const PurchaseCard({super.key});
+  final Purchase purchase;
+
+  const PurchaseCard({super.key, required this.purchase});
 
   @override
   Widget build(BuildContext context) {
@@ -14,11 +18,18 @@ class PurchaseCard extends StatelessWidget {
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))),
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PurchaseDetail(purchase: purchase),
+              ),
+            );
+          },
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.only(left: 16, right: 16),
+                padding: const EdgeInsets.only(left: 16, right: 16),
                 width: size.width,
                 height: 40,
                 decoration: const BoxDecoration(
@@ -31,15 +42,15 @@ class PurchaseCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "28-08-28",
-                      style: TextStyle(
+                      purchase.createdAt,
+                      style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
                           fontSize: 16),
                     ),
                     Text(
-                      "1",
-                      style: TextStyle(
+                      purchase.id.toString(),
+                      style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
                           fontSize: 16),
@@ -49,20 +60,22 @@ class PurchaseCard extends StatelessWidget {
               ),
               Container(
                 alignment: Alignment.topLeft,
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.only(left: 16, top: 15, bottom: 14),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "CV Platinum Sinar Asia",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      purchase.vendorName,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     const SizedBox(
                       height: 6,
                     ),
                     Text(
-                      "Bob Smith  ",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      purchase.requester,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     const SizedBox(
                       height: 6,
@@ -78,7 +91,7 @@ class PurchaseCard extends StatelessWidget {
                           const Text('Total Harga'),
                           const Text(':'),
                           Text(
-                          "2.000.000",
+                            purchase.totalPrice.toString(),
                           )
                         ]),
                       ],
@@ -86,7 +99,7 @@ class PurchaseCard extends StatelessWidget {
                     const SizedBox(
                       height: 8,
                     ),
-                    purchaseStatusBoxBuilder('In Progress', 'card')
+                    purchaseStatusBoxBuilder(purchase.status, 'card')
                   ],
                 ),
               )
