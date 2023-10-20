@@ -439,13 +439,41 @@ abstract class Services {
     }
   }
 
+  /// Receive Purchase
+  static Future<Response?> receivePurchase(int id) async {
+    try{
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().put(
+          '$url/purchase/receive',
+          options: Options(
+            headers: {
+              "Accept": "application/json",
+              "Authorization": "Bearer $token"
+            },
+          ),
+          data: {
+            'id' : id
+          }
+      );
+      if(response.statusCode == 200){
+        return response;
+      } else {
+        exceptionHandling(response.data['message']);
+      }
+    }catch (e){
+      exceptionHandling(e);
+    }
+    return null;
+  }
+
   /// Cancel Purchase
   static Future<Response?> cancelPurchase(int id) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
       Response? response = await Dio().put(
-        '$url/purchase',
+        '$url/purchase/cancel',
         options: Options(
           headers: {
             "Accept": "application/json",

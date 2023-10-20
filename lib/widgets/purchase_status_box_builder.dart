@@ -14,6 +14,10 @@ Widget purchaseStatusBoxBuilder(String status, String usage){
       "backgroundColor": const Color(0xff98BFFA),
       "textColor": const Color(0xff12315F),
     },
+    "Received": {
+      "backgroundColor": const Color(0xffA7E9E9),
+      "textColor": const Color(0xff2F546E),
+    },
     "Cancelled": {
       "backgroundColor": const Color(0xffE9A7A7),
       "textColor": const Color(0xff852020),

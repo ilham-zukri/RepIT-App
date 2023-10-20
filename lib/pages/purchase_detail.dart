@@ -33,7 +33,7 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    isButtonDisabled = purchase.status == 'Cancelled';
+    isButtonDisabled = purchase.status == 'Cancelled' || purchase.status == 'Received';
     return Scaffold(
       appBar: customDownloadAppBar(context, "Purchase Detail"),
       body: Stack(
@@ -181,6 +181,8 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
                 const SizedBox(
                   height: 16,
                 ),
+                (purchase.status != 'Received')
+                    ?
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -277,11 +279,89 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
                               borderRadius: BorderRadius.circular(50)),
                           elevation: 5,
                         ),
-                        onPressed: !isButtonDisabled ? () {} : null,
+                        onPressed: !isButtonDisabled ? () {
+                          showDialog(context: context, builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Konfirmasi'),
+                              content: const Text('Apakah anda yakin barang yang anda terima sudah sesuai?'),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                    const Color(0xffF05050),
+                                    elevation: 5,
+                                  ),
+                                  child: const Text("Tidak"),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async{
+                                    try{
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+                                      var response = await Services.receivePurchase(purchase.id);
+                                      setState(() {
+                                        isLoading = false;
+                                      });
+                                      if (mounted) {
+                                        Navigator.pop(context);
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => alert(
+                                              context,
+                                              "Berhasil",
+                                              response!.data['message']),
+                                        );
+                                        setState(() {
+                                          purchase.status = 'Received';
+                                        });
+                                      }
+                                    }catch(e){
+                                      if(mounted){
+                                        showDialog(context: context, builder: (context) => alert(context, 'Error', e.toString()),);
+                                      }
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                    const Color(0xff009199),
+                                    elevation: 5,
+                                  ),
+                                  child: const Text("Yakin"),
+                                ),
+
+                              ],
+                            );
+                          },);
+                        } : null,
                         child: const Text('Terima Barang'),
                       ),
                     ),
                   ],
+                ) :
+                SizedBox(
+                  width: size.width,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                      const Color(0xff009199),
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.circular(50)),
+                      elevation: 5,
+                    ),
+                    onPressed: () async {
+                    },
+                    child: const Text(
+                      "Daftarkan Aset",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
                 )
               ],
             ),
