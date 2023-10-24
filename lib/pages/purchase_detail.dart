@@ -155,27 +155,31 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
                       bottom: BorderSide(color: Colors.black26),
                     ),
                   ),
-                  child: Expanded(
-                    child: ListView.builder(
-                      itemCount: purchase.items.length,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            PurchaseItemCard(
-                                purchaseItem: purchase.items[index],
-                                onDelete: null),
-                            (index < purchase.items.length - 1)
-                                ? const SizedBox.shrink()
-                                : const SizedBox(
-                                    height: 8,
-                                  ),
-                          ],
-                        );
-                      },
-                    ),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: purchase.items.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                PurchaseItemCard(
+                                    purchaseItem: purchase.items[index],
+                                    onDelete: null),
+                                (index < purchase.items.length - 1)
+                                    ? const SizedBox.shrink()
+                                    : const SizedBox(
+                                        height: 8,
+                                      ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(
