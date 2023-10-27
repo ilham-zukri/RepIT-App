@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:repit_app/data_classes/asset.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/alert.dart';
@@ -35,16 +36,24 @@ class _AssetDetailState extends State<AssetDetail> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: customAppBar(context, 'Detail Aset'),
+      appBar: customAppBar(
+        context,
+        'Detail Aset',
+        'qr',
+        () {
+          showQr(context);
+        },
+      ),
       body: Padding(
         padding: const EdgeInsets.all(28),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  asset.assetType,
+                  asset.id.toString(),
                   style: const TextStyle(
                       fontWeight: FontWeight.w600, fontSize: 20),
                 ),
@@ -53,22 +62,11 @@ class _AssetDetailState extends State<AssetDetail> {
             ),
             Container(
               margin: const EdgeInsets.only(top: 32),
-              width: size.width,
-              height: 180,
-              decoration: const BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.all(Radius.circular(20))),
-            ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Container(
-                margin: const EdgeInsets.only(top: 32),
-                child: Text(
-                  asset.utilization,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 20,
-                  ),
+              child: Text(
+                asset.assetType,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20,
                 ),
               ),
             ),
@@ -85,13 +83,25 @@ class _AssetDetailState extends State<AssetDetail> {
                 TableRow(
                   children: [
                     const Text(
-                      'CPU',
+                      'Peruntukan',
                       style: tableContentStyle,
                     ),
                     const Text(':', style: tableContentStyle),
-                    Text(asset.cpu)
+                    Text(asset.utilization)
                   ],
                 ),
+                TableRow(children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 8),
+                    child: const Text('CPU', style: tableContentStyle),
+                  ),
+                  Container(
+                      margin: const EdgeInsets.only(top: 8),
+                      child: const Text(':', style: tableContentStyle)),
+                  Container(
+                      margin: const EdgeInsets.only(top: 8),
+                      child: Text(asset.cpu, style: tableContentStyle))
+                ]),
                 TableRow(children: [
                   Container(
                     margin: const EdgeInsets.only(top: 8),
@@ -175,7 +185,7 @@ class _AssetDetailState extends State<AssetDetail> {
                       onPressed: () async {
                         try {
                           Response? response =
-                              await Services.acceptAsset(asset.id as int);
+                              await Services.acceptAsset(asset.id);
                           if (mounted) {
                             setState(() {
                               status = response?.data['status'] as String;
@@ -189,7 +199,7 @@ class _AssetDetailState extends State<AssetDetail> {
                             );
                           }
                         } catch (e) {
-                          if(mounted){
+                          if (mounted) {
                             showDialog(
                               context: context,
                               builder: (context) => alert(
@@ -212,6 +222,59 @@ class _AssetDetailState extends State<AssetDetail> {
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> showQr(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('QR Code'),
+          content: Image(
+            image: NetworkImage(Services.url + asset.qrPath),
+          ),
+          actionsAlignment: MainAxisAlignment.end,
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xffF05050),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  elevation: 5),
+              child: const Text("Tutup"),
+            ),
+            SizedBox(
+              width: 95,
+              child: ElevatedButton(
+                onPressed: () async{
+                  await Clipboard.setData(ClipboardData(text: Services.url + asset.qrPath));
+                },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff00ABB3),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    elevation: 5),
+                child: const Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.share),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text("Link"),
+                  ],
+                ),
+              ),
+            ),
+
+          ],
+        );
+      },
     );
   }
 }

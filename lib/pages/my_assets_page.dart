@@ -28,16 +28,18 @@ class _MyAssetsPageState extends State<MyAssetsPage> {
     }
     return assetList.map((asset) {
       return Asset(
-          asset['id'],
-          asset['utilization'],
-          asset['status'],
-          asset['asset_type'],
-          asset['ram'],
-          asset['cpu'],
-          asset['location'],
-          asset['serial_number'],
-          asset['brand'],
-          asset['model']);
+        asset['id'],
+        asset['utilization'],
+        asset['status'],
+        asset['asset_type'],
+        asset['ram'],
+        asset['cpu'],
+        asset['location'],
+        asset['serial_number'],
+        asset['brand'],
+        asset['model'],
+        asset['qr_path'],
+      );
     }).toList();
   }
 
@@ -72,6 +74,9 @@ class _MyAssetsPageState extends State<MyAssetsPage> {
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           alert(context, 'Error', snapshot.error.toString());
+        }
+        if(snapshot.connectionState == ConnectionState.waiting){
+          return const Center(child:CircularProgressIndicator());
         }
         var assets = snapshot.data;
         int assetsLength = assets?.length ?? 0;
@@ -150,9 +155,6 @@ class _MyAssetsPageState extends State<MyAssetsPage> {
                           AssetCard(
                             asset: asset,
                           ),
-                          (assets.indexOf(asset) == assetsLength - 1)
-                              ? const SizedBox(height: 16)
-                              : const SizedBox.shrink()
                         ],
                       );
                     }).toList() ??

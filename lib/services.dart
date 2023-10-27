@@ -3,7 +3,8 @@ import 'data_classes/user.dart';
 import 'package:dio/dio.dart';
 
 abstract class Services {
-  static const String url = "http://10.0.2.2:8000/api";
+  static const String url = "http://10.0.2.2:8000";
+  static const String apiUrl = "$url/api";
   static late SharedPreferences prefs;
 
   // static const String url = "http://192.168.1.200:3000/api";
@@ -12,7 +13,7 @@ abstract class Services {
   static Future<User?> login(String username, String password) async {
     try {
       var response = await Dio().post(
-        "$url/login",
+        "$apiUrl/login",
         data: {'user_name': username, 'password': password},
         options: Options(
           headers: {
@@ -36,7 +37,7 @@ abstract class Services {
   static Future<User?> getUserData(String? token) async {
     try {
       var userResponse = await Dio().get(
-        '$url/user/current',
+        '$apiUrl/user/current',
         options: Options(
           headers: {
             "Accept": "application/json",
@@ -65,7 +66,7 @@ abstract class Services {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      var response = await Dio().put('$url/user/user-name',
+      var response = await Dio().put('$apiUrl/user/user-name',
           options: Options(headers: {
             "Accept": "application/json",
             "Authorization": "Bearer $token"
@@ -86,7 +87,7 @@ abstract class Services {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      var response = await Dio().put('$url/user/email',
+      var response = await Dio().put('$apiUrl/user/email',
           options: Options(headers: {
             "Accept": "application/json",
             "Authorization": "Bearer $token"
@@ -104,7 +105,7 @@ abstract class Services {
   static Future<bool> logout(String token) async {
     try {
       var response = await Dio().get(
-        '$url/logout',
+        '$apiUrl/logout',
         options: Options(
           headers: {
             "Accept": "application/json",
@@ -129,7 +130,7 @@ abstract class Services {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
       var response = await Dio().get(
-        '$url/asset/myAssets',
+        '$apiUrl/asset/myAssets',
         options: Options(
           headers: {
             "Accept": "application/json",
@@ -154,7 +155,7 @@ abstract class Services {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      var response = await Dio().get('$url/users/by-department',
+      var response = await Dio().get('$apiUrl/users/by-department',
           options: Options(
             headers: {
               "Accept": "application/json",
@@ -178,7 +179,7 @@ abstract class Services {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      var response = await Dio().get('$url/locations',
+      var response = await Dio().get('$apiUrl/locations',
           options: Options(
             headers: {
               "Accept": "application/json",
@@ -204,7 +205,7 @@ abstract class Services {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
       Response? response = await Dio().post(
-        '$url/request/create',
+        '$apiUrl/request/create',
         options: Options(
           headers: {
             "Accept": "application/json",
@@ -237,7 +238,7 @@ abstract class Services {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      Response? response = await Dio().put('$url/asset/accept',
+      Response? response = await Dio().put('$apiUrl/asset/accept',
           options: Options(headers: {
             "Accept": "application/json",
             "Authorization": "Bearer $token"
@@ -264,7 +265,7 @@ abstract class Services {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
       Response? response = await Dio().get(
-        '$url/requests',
+        '$apiUrl/requests',
         options: Options(headers: {
           "Accept": "application/json",
           "Authorization": "Bearer $token"
@@ -293,7 +294,7 @@ abstract class Services {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
       Response? response = await Dio().get(
-        '$url/my-requests',
+        '$apiUrl/my-requests',
         options: Options(headers: {
           "Accept": "application/json",
           "Authorization": "Bearer $token"
@@ -319,7 +320,7 @@ abstract class Services {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      Response? response = await Dio().put("$url/request/approve",
+      Response? response = await Dio().put("$apiUrl/request/approve",
           options: Options(headers: {
             "Accept": "application/json",
             "Authorization": "Bearer $token"
@@ -341,7 +342,7 @@ abstract class Services {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      Response? response = await Dio().get("$url/asset-type",
+      Response? response = await Dio().get("$apiUrl/asset-type",
           options: Options(headers: {
             "Accept": "application/json",
             "Authorization": "Bearer $token"
@@ -364,7 +365,7 @@ abstract class Services {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      Response? response = await Dio().post('$url/purchase',
+      Response? response = await Dio().post('$apiUrl/purchase',
           options: Options(
             headers: {
               "Accept": "application/json",
@@ -393,7 +394,7 @@ abstract class Services {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
       Response? response = await Dio().get(
-        '$url/priorities',
+        '$apiUrl/priorities',
         options: Options(
           headers: {
             "Accept": "application/json",
@@ -418,7 +419,7 @@ abstract class Services {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
       Response? response = await Dio().get(
-        '$url/purchases',
+        '$apiUrl/purchases',
         options: Options(headers: {
           "Accept": "application/json",
           "Authorization": "Bearer $token"
@@ -445,7 +446,7 @@ abstract class Services {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
       Response? response = await Dio().put(
-          '$url/purchase/receive',
+          '$apiUrl/purchase/receive',
           options: Options(
             headers: {
               "Accept": "application/json",
@@ -473,7 +474,7 @@ abstract class Services {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
       Response? response = await Dio().put(
-        '$url/purchase/cancel',
+        '$apiUrl/purchase/cancel',
         options: Options(
           headers: {
             "Accept": "application/json",

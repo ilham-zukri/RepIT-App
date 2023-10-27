@@ -157,7 +157,7 @@ class _MyRequestPageState extends State<MyRequestPage> {
                     borderRadius: BorderRadius.circular(50),
                   ),
                   elevation: 5),
-              onPressed: () async {
+              onPressed: (role["asset_request"] == 1) ? () async {
                 setState(() {
                   isLoading = true;
                 });
@@ -165,7 +165,7 @@ class _MyRequestPageState extends State<MyRequestPage> {
                 setState(() {
                   isLoading = false;
                 });
-              },
+              } : null,
               child: const Row(
                 children: [
                   Icon(Icons.refresh),
