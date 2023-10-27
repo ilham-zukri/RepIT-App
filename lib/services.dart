@@ -523,6 +523,34 @@ abstract class Services {
     }
   }
 
+  /// Get Received all Purchases
+  static Future<Map?> getReceivedPurchases(int? page) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().get(
+        '$apiUrl/purchases/received',
+        options: Options(headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        }),
+        queryParameters: {
+          'page': page ?? 1,
+        },
+      );
+      if (response.statusCode == 200) {
+        return response.data as Map;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
+
   /// Handling Exception From API ///
   static exceptionHandling(var e) {
     if (e is DioError) {

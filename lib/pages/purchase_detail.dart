@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/purchase.dart';
+import 'package:repit_app/pages/register_asset.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/alert.dart';
 import 'package:repit_app/widgets/loading_overlay.dart';
@@ -33,7 +34,8 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    isButtonDisabled = purchase.status == 'Cancelled' || purchase.status == 'Received';
+    isButtonDisabled =
+        purchase.status == 'Cancelled' || purchase.status == 'Received';
     return Scaffold(
       appBar: customDownloadAppBar(context, "Purchase Detail"),
       body: Stack(
@@ -61,7 +63,8 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
                 ),
                 Text(
                   purchase.vendorName,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(
                   height: 8,
@@ -131,7 +134,8 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
                             margin: const EdgeInsets.only(top: 4),
                             child: const Text(':',
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w600, fontSize: 15))),
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15))),
                         Container(
                           margin: const EdgeInsets.only(top: 4),
                           child: Text(
@@ -186,187 +190,216 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
                   height: 16,
                 ),
                 (purchase.status != 'Received')
-                    ?
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: 150,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xffF05050),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50)),
-                          elevation: 5,
-                        ),
-                        onPressed: !isButtonDisabled
-                            ? () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      title: const Text('Konfirmasi'),
-                                      content: const Text('Apakah anda yakin?'),
-                                      actions: [
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                const Color(0xffF05050),
-                                            elevation: 5,
-                                          ),
-                                          child: const Text("Tidak"),
-                                        ),
-                                        ElevatedButton(
-                                          onPressed: () async {
-                                            try {
-                                              setState(() {
-                                                isLoading = true;
-                                              });
-                                              var response =
-                                                  await Services.cancelPurchase(
-                                                      purchase.id);
-                                              setState(() {
-                                                isLoading = false;
-                                              });
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: 150,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xffF05050),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50)),
+                                elevation: 5,
+                              ),
+                              onPressed: !isButtonDisabled
+                                  ? () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: const Text('Konfirmasi'),
+                                            content: const Text(
+                                                'Apakah anda yakin?'),
+                                            actions: [
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      const Color(0xffF05050),
+                                                  elevation: 5,
+                                                ),
+                                                child: const Text("Tidak"),
+                                              ),
+                                              ElevatedButton(
+                                                onPressed: () async {
+                                                  try {
+                                                    setState(() {
+                                                      isLoading = true;
+                                                    });
+                                                    var response =
+                                                        await Services
+                                                            .cancelPurchase(
+                                                                purchase.id);
+                                                    setState(() {
+                                                      isLoading = false;
+                                                    });
 
-                                              if (mounted) {
-                                                Navigator.pop(context);
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (context) => alert(
-                                                      context,
-                                                      "Berhasil",
-                                                      response!.data['message']),
-                                                );
-                                                setState(() {
-                                                  purchase.status = 'Cancelled';
-                                                });
-                                              }
-                                            } catch (e) {
-                                              if (mounted) {
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (context) => alert(
-                                                    context,
-                                                    'Error',
-                                                    e.toString(),
-                                                  ),
-                                                );
-                                              }
-                                            }
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                const Color(0xff009199),
-                                            elevation: 5,
-                                          ),
-                                          child: const Text("Ya"),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              }
-                            : null,
-                        child: const Text('Batal'),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 150,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xff009199),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50)),
-                          elevation: 5,
-                        ),
-                        onPressed: !isButtonDisabled ? () {
-                          showDialog(context: context, builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Konfirmasi'),
-                              content: const Text('Apakah anda yakin barang yang anda terima sudah sesuai?'),
-                              actions: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                    const Color(0xffF05050),
-                                    elevation: 5,
-                                  ),
-                                  child: const Text("Tidak"),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () async{
-                                    try{
-                                      setState(() {
-                                        isLoading = true;
-                                      });
-                                      var response = await Services.receivePurchase(purchase.id);
-                                      setState(() {
-                                        isLoading = false;
-                                      });
-                                      if (mounted) {
-                                        Navigator.pop(context);
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) => alert(
-                                              context,
-                                              "Berhasil",
-                                              response!.data['message']),
-                                        );
-                                        setState(() {
-                                          purchase.status = 'Received';
-                                        });
-                                      }
-                                    }catch(e){
-                                      if(mounted){
-                                        showDialog(context: context, builder: (context) => alert(context, 'Error', e.toString()),);
-                                      }
+                                                    if (mounted) {
+                                                      Navigator.pop(context);
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (context) =>
+                                                            alert(
+                                                                context,
+                                                                "Berhasil",
+                                                                response!.data[
+                                                                    'message']),
+                                                      );
+                                                      setState(() {
+                                                        purchase.status =
+                                                            'Cancelled';
+                                                      });
+                                                    }
+                                                  } catch (e) {
+                                                    if (mounted) {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (context) =>
+                                                            alert(
+                                                          context,
+                                                          'Error',
+                                                          e.toString(),
+                                                        ),
+                                                      );
+                                                    }
+                                                  }
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      const Color(0xff009199),
+                                                  elevation: 5,
+                                                ),
+                                                child: const Text("Ya"),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
                                     }
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                    const Color(0xff009199),
-                                    elevation: 5,
-                                  ),
-                                  child: const Text("Yakin"),
+                                  : null,
+                              child: const Text('Batal'),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 150,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xff009199),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50)),
+                                elevation: 5,
+                              ),
+                              onPressed: !isButtonDisabled
+                                  ? () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: const Text('Konfirmasi'),
+                                            content: const Text(
+                                                'Apakah anda yakin barang yang anda terima sudah sesuai?'),
+                                            actions: [
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      const Color(0xffF05050),
+                                                  elevation: 5,
+                                                ),
+                                                child: const Text("Tidak"),
+                                              ),
+                                              ElevatedButton(
+                                                onPressed: () async {
+                                                  try {
+                                                    setState(() {
+                                                      isLoading = true;
+                                                    });
+                                                    var response =
+                                                        await Services
+                                                            .receivePurchase(
+                                                                purchase.id);
+                                                    setState(() {
+                                                      isLoading = false;
+                                                    });
+                                                    if (mounted) {
+                                                      Navigator.pop(context);
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (context) =>
+                                                            alert(
+                                                                context,
+                                                                "Berhasil",
+                                                                response!.data[
+                                                                    'message']),
+                                                      );
+                                                      setState(() {
+                                                        purchase.status =
+                                                            'Received';
+                                                      });
+                                                    }
+                                                  } catch (e) {
+                                                    if (mounted) {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (context) =>
+                                                            alert(
+                                                                context,
+                                                                'Error',
+                                                                e.toString()),
+                                                      );
+                                                    }
+                                                  }
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      const Color(0xff009199),
+                                                  elevation: 5,
+                                                ),
+                                                child: const Text("Yakin"),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    }
+                                  : null,
+                              child: const Text('Terima Barang'),
+                            ),
+                          ),
+                        ],
+                      )
+                    : SizedBox(
+                        width: size.width,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xff009199),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50)),
+                            elevation: 5,
+                          ),
+                          onPressed: () async {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RegisterAsset(
+                                  purchase: purchase,
                                 ),
-
-                              ],
+                              ),
                             );
-                          },);
-                        } : null,
-                        child: const Text('Terima Barang'),
-                      ),
-                    ),
-                  ],
-                ) :
-                SizedBox(
-                  width: size.width,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                      const Color(0xff009199),
-                      shape: RoundedRectangleBorder(
-                          borderRadius:
-                          BorderRadius.circular(50)),
-                      elevation: 5,
-                    ),
-                    onPressed: () async {
-                    },
-                    child: const Text(
-                      "Daftarkan Aset",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                )
+                          },
+                          child: const Text(
+                            "Daftarkan Aset",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      )
               ],
             ),
           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:repit_app/asset_card.dart';
+import 'package:repit_app/pages/received_purchase.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
 
@@ -84,7 +85,9 @@ class _ManageAssetState extends State<ManageAsset> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppBar(context, "Manage Assets"),
+        appBar: customAppBar(context, "Manage Assets", 'add', () {
+          addAssetsDialog(context);
+        }),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: (assetsLength > 0)
@@ -138,5 +141,54 @@ class _ManageAssetState extends State<ManageAsset> {
         });
       }
     }
+  }
+
+  void addAssetsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            "Tambahkan Aset",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.w500),
+          ),
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          actions: [
+            SizedBox(
+              width: 140,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ReceivedPurchase(),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff00ABB3),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    elevation: 5),
+                child: const Text("Dari Pembelian"),
+              ),
+            ),
+            SizedBox(
+              width: 140,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff00ABB3),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    elevation: 5),
+                child: const Text("Aset Lama"),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
