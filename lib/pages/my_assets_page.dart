@@ -154,6 +154,7 @@ class _MyAssetsPageState extends State<MyAssetsPage> {
                           ),
                           AssetCard(
                             asset: asset,
+                            withDetail: true,
                           ),
                         ],
                       );

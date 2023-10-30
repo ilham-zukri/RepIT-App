@@ -3,7 +3,7 @@ class PurchaseItem {
   final String assetType;
   final String brand;
   final String model;
-  final int amount;
+  int amount;
   final int priceEa;
   final int priceTotal;
 

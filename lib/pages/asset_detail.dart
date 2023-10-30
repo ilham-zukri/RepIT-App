@@ -29,7 +29,7 @@ class _AssetDetailState extends State<AssetDetail> {
     // TODO: implement initState
     super.initState();
     asset = widget.asset;
-    status = asset.status;
+    status = asset.status!;
   }
 
   @override
@@ -166,7 +166,7 @@ class _AssetDetailState extends State<AssetDetail> {
                         child: const Text(':', style: tableContentStyle)),
                     Container(
                         margin: const EdgeInsets.only(top: 8),
-                        child: Text(asset.location, style: tableContentStyle))
+                        child: Text(asset.location ?? '#N/A', style: tableContentStyle))
                   ],
                 ),
               ],
@@ -185,7 +185,7 @@ class _AssetDetailState extends State<AssetDetail> {
                       onPressed: () async {
                         try {
                           Response? response =
-                              await Services.acceptAsset(asset.id);
+                              await Services.acceptAsset(asset.id!);
                           if (mounted) {
                             setState(() {
                               status = response?.data['status'] as String;
@@ -232,7 +232,7 @@ class _AssetDetailState extends State<AssetDetail> {
         return AlertDialog(
           title: const Text('QR Code'),
           content: Image(
-            image: NetworkImage(Services.url + asset.qrPath),
+            image: NetworkImage(Services.url + (asset.qrPath as String)),
           ),
           actionsAlignment: MainAxisAlignment.end,
           actions: [
@@ -251,7 +251,7 @@ class _AssetDetailState extends State<AssetDetail> {
               width: 95,
               child: ElevatedButton(
                 onPressed: () async{
-                  await Clipboard.setData(ClipboardData(text: Services.url + asset.qrPath));
+                  await Clipboard.setData(ClipboardData(text: Services.url + (asset.qrPath as String)));
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xff00ABB3),

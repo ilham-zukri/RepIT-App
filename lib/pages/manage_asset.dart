@@ -106,7 +106,7 @@ class _ManageAssetState extends State<ManageAsset> {
                             const SizedBox(
                               height: 16,
                             ),
-                            AssetCard(asset: assets[index]),
+                            AssetCard(asset: assets[index], withDetail: true),
                             (index == assetsLength - 1)
                                 ? const SizedBox(height: 16)
                                 : const SizedBox.shrink()

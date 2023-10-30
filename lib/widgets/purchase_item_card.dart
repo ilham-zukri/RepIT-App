@@ -4,9 +4,10 @@ import 'package:repit_app/data_classes/purchase_item.dart';
 class PurchaseItemCard extends StatelessWidget {
   final PurchaseItem purchaseItem;
   final VoidCallback? onDelete;
+  final VoidCallback? onAdd;
 
   const PurchaseItemCard(
-      {super.key, required this.purchaseItem, this.onDelete});
+      {super.key, required this.purchaseItem, this.onDelete, this.onAdd});
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +62,17 @@ class PurchaseItemCard extends StatelessWidget {
                                 ),
                               ),
                             )
-                          : const SizedBox.shrink()
+                          : const SizedBox.shrink(),
+                      (onAdd != null)
+                          ? IconButton(
+                            alignment: Alignment.topCenter,
+                            onPressed: onAdd,
+                            icon: const Icon(
+                              Icons.add,
+                              color: Colors.white,
+                            ),
+                          )
+                          : const SizedBox.shrink(),
                     ],
                   ),
                 ),

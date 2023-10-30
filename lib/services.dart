@@ -442,27 +442,23 @@ abstract class Services {
 
   /// Receive Purchase
   static Future<Response?> receivePurchase(int id) async {
-    try{
+    try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      Response? response = await Dio().put(
-          '$apiUrl/purchase/receive',
+      Response? response = await Dio().put('$apiUrl/purchase/receive',
           options: Options(
             headers: {
               "Accept": "application/json",
               "Authorization": "Bearer $token"
             },
           ),
-          data: {
-            'id' : id
-          }
-      );
-      if(response.statusCode == 200){
+          data: {'id': id});
+      if (response.statusCode == 200) {
         return response;
       } else {
         exceptionHandling(response.data['message']);
       }
-    }catch (e){
+    } catch (e) {
       exceptionHandling(e);
     }
     return null;
@@ -473,19 +469,15 @@ abstract class Services {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      Response? response = await Dio().put(
-        '$apiUrl/purchase/cancel',
-        options: Options(
-          headers: {
-            "Accept": "application/json",
-            "Authorization": "Bearer $token"
-          },
-        ),
-        data: {
-          'id' : id
-        }
-      );
-      if(response.statusCode == 200){
+      Response? response = await Dio().put('$apiUrl/purchase/cancel',
+          options: Options(
+            headers: {
+              "Accept": "application/json",
+              "Authorization": "Bearer $token"
+            },
+          ),
+          data: {'id': id});
+      if (response.statusCode == 200) {
         return response;
       } else {
         exceptionHandling(response.data['message']);
@@ -550,6 +542,36 @@ abstract class Services {
     }
   }
 
+  /// Register Assets from Purchasing
+  static Future<Response?> registerAssetFromPurchase(
+      {int? purchaseId, List<Map<String, dynamic>>? items}) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().post(
+        '$apiUrl/asset/create',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        ),
+        data: {
+          'purchase_id': purchaseId,
+          'items' : items
+        },
+      );
+      if (response.statusCode == 201) {
+        return response;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
 
   /// Handling Exception From API ///
   static exceptionHandling(var e) {

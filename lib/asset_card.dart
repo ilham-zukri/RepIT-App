@@ -6,8 +6,9 @@ import 'data_classes/asset.dart';
 
 class AssetCard extends StatelessWidget {
   final Asset asset;
+  late bool withDetail;
 
-  const AssetCard({super.key, required this.asset});
+  AssetCard({super.key, required this.asset, required this.withDetail});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,14 @@ class AssetCard extends StatelessWidget {
         child: InkWell(
           borderRadius: const BorderRadius.all(Radius.circular(10)),
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => AssetDetail(asset: asset),));
+            if(withDetail){
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AssetDetail(asset: asset),
+                ),
+              );
+            }
           },
           child: Column(
             children: [
@@ -46,7 +54,7 @@ class AssetCard extends StatelessWidget {
                             color: Colors.white, fontWeight: FontWeight.w600),
                       ),
                       Text(
-                        asset.location,
+                        asset.location ?? '#N/A',
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
@@ -58,8 +66,8 @@ class AssetCard extends StatelessWidget {
               ),
               Container(
                 alignment: Alignment.topLeft,
-                margin:
-                    const EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 16),
+                margin: const EdgeInsets.only(
+                    top: 8, bottom: 8, left: 16, right: 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -67,7 +75,7 @@ class AssetCard extends StatelessWidget {
                       asset.utilization,
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
-                    statusBoxBuilder(asset.status, "card")
+                    (asset.status!=null) ? statusBoxBuilder(asset.status!, "card") : const SizedBox.shrink(),
                   ],
                 ),
               ),
@@ -115,46 +123,45 @@ class AssetCard extends StatelessWidget {
                           ),
                         ]
                       : [
-                    TableRow(
-                      children: [
-                        const Text('Brand'),
-                        const Text(':'),
-                        Text(asset.brand ?? ' ')
-                      ],
-                    ),
-                    TableRow(children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 8),
-                        child: const Text('Model'),
-                      ),
-                      Container(
-                          margin: const EdgeInsets.only(top: 8),
-                          child: const Text(':')),
-                      Container(
-                          margin: const EdgeInsets.only(top: 8),
-                          child: Text(asset.model ?? ' '))
-                    ]),
-                    TableRow(
-                      children: [
-                        Container(
-                            margin: const EdgeInsets.only(top: 8),
-                            child: const Text('Serial Number')),
-                        Container(
-                            margin: const EdgeInsets.only(top: 8),
-                            child: const Text(':')),
-                        Container(
-                            margin: const EdgeInsets.only(top: 8),
-                            child: Text(asset.serialNumber))
-                      ],
-                    ),
-                  ],
+                          TableRow(
+                            children: [
+                              const Text('Brand'),
+                              const Text(':'),
+                              Text(asset.brand ?? ' ')
+                            ],
+                          ),
+                          TableRow(children: [
+                            Container(
+                              margin: const EdgeInsets.only(top: 8),
+                              child: const Text('Model'),
+                            ),
+                            Container(
+                                margin: const EdgeInsets.only(top: 8),
+                                child: const Text(':')),
+                            Container(
+                                margin: const EdgeInsets.only(top: 8),
+                                child: Text(asset.model ?? ' '))
+                          ]),
+                          TableRow(
+                            children: [
+                              Container(
+                                  margin: const EdgeInsets.only(top: 8),
+                                  child: const Text('Serial Number')),
+                              Container(
+                                  margin: const EdgeInsets.only(top: 8),
+                                  child: const Text(':')),
+                              Container(
+                                  margin: const EdgeInsets.only(top: 8),
+                                  child: Text(asset.serialNumber))
+                            ],
+                          ),
+                        ],
                 ),
-              )
+              ),
             ],
           ),
         ),
       ),
     );
   }
-
 }
