@@ -171,7 +171,7 @@ class _AssetDetailState extends State<AssetDetail> {
                 ),
               ],
             ),
-            (asset.status == 'Ready')
+            (status == 'Ready')
                 ? Container(
                     margin: const EdgeInsets.only(top: 32),
                     height: 41,

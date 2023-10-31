@@ -75,8 +75,8 @@ class _MyAssetsPageState extends State<MyAssetsPage> {
         if (snapshot.hasError) {
           alert(context, 'Error', snapshot.error.toString());
         }
-        if(snapshot.connectionState == ConnectionState.waiting){
-          return const Center(child:CircularProgressIndicator());
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
         }
         var assets = snapshot.data;
         int assetsLength = assets?.length ?? 0;
@@ -156,6 +156,9 @@ class _MyAssetsPageState extends State<MyAssetsPage> {
                             asset: asset,
                             withDetail: true,
                           ),
+                          (assets.indexOf(asset) == assets.length - 1)
+                              ? const SizedBox(height: 16)
+                              : const SizedBox.shrink(),
                         ],
                       );
                     }).toList() ??

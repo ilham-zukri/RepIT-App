@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:repit_app/asset_card.dart';
 import 'package:repit_app/pages/received_purchase.dart';
+import 'package:repit_app/pages/register_asset_old.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
 
@@ -177,7 +178,14 @@ class _ManageAssetState extends State<ManageAsset> {
             SizedBox(
               width: 140,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RegisterAssetOld(),
+                    ),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xff00ABB3),
                     shape: RoundedRectangleBorder(

@@ -184,7 +184,7 @@ class _RegisterAssetState extends State<RegisterAsset> {
           children: [
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.8,
-              height: MediaQuery.of(context).size.height * 0.6,
+              // height: MediaQuery.of(context).size.height * 0.6,
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -411,8 +411,8 @@ class _RegisterAssetState extends State<RegisterAsset> {
                   elevation: 5,
                 ),
                 onPressed: () {
-                  if (serialNumberEc.text.isEmpty ||
-                      utilizationEc.text.isEmpty) {
+                  if (serialNumberEc.text.trim().isEmpty ||
+                      utilizationEc.text.trim().isEmpty) {
                     showDialog(
                       context: context,
                       builder: (context) => alert(context, "Lengkapi Field",
@@ -422,13 +422,13 @@ class _RegisterAssetState extends State<RegisterAsset> {
                   }
                   Asset asset = Asset(
                     null,
-                    utilizationEc.text,
+                    utilizationEc.text.trim(),
                     null,
                     assetType,
-                    ramEc.text,
-                    cpuEc.text,
+                    ramEc.text.trim(),
+                    cpuEc.text.trim(),
                     null,
-                    serialNumberEc.text,
+                    serialNumberEc.text.trim(),
                     brand,
                     model,
                     null,

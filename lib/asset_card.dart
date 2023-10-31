@@ -6,9 +6,9 @@ import 'data_classes/asset.dart';
 
 class AssetCard extends StatelessWidget {
   final Asset asset;
-  late bool withDetail;
+  final bool withDetail;
 
-  AssetCard({super.key, required this.asset, required this.withDetail});
+  const AssetCard({super.key, required this.asset, required this.withDetail});
 
   @override
   Widget build(BuildContext context) {
