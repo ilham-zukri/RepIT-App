@@ -93,6 +93,18 @@ class _AssetDetailState extends State<AssetDetail> {
                 TableRow(children: [
                   Container(
                     margin: const EdgeInsets.only(top: 8),
+                    child: const Text('Pemilik', style: tableContentStyle),
+                  ),
+                  Container(
+                      margin: const EdgeInsets.only(top: 8),
+                      child: const Text(':', style: tableContentStyle)),
+                  Container(
+                      margin: const EdgeInsets.only(top: 8),
+                      child: Text((asset.ownerId as String), style: tableContentStyle))
+                ]),
+                TableRow(children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 8),
                     child: const Text('CPU', style: tableContentStyle),
                   ),
                   Container(

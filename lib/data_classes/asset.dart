@@ -1,5 +1,6 @@
 class Asset {
   final int? id;
+  final String? ownerId;
   final String utilization;
   final String? status;
   final String assetType;
@@ -12,7 +13,7 @@ class Asset {
   final String? model;
 
   Asset(this.id,this.utilization, this.status, this.assetType, this.ram, this.cpu,
-      this.location, this.serialNumber, this.brand, this.model, this.qrPath);
+      this.location, this.serialNumber, this.brand, this.model, this.qrPath, this.ownerId);
 
   Map<String,dynamic> toMap(){
     return{

@@ -28,18 +28,18 @@ class _MyAssetsPageState extends State<MyAssetsPage> {
     }
     return assetList.map((asset) {
       return Asset(
-        asset['id'],
-        asset['utilization'],
-        asset['status'],
-        asset['asset_type'],
-        asset['ram'],
-        asset['cpu'],
-        asset['location'],
-        asset['serial_number'],
-        asset['brand'],
-        asset['model'],
-        asset['qr_path'],
-      );
+          asset['id'],
+          asset['utilization'],
+          asset['status'],
+          asset['asset_type'],
+          asset['ram'],
+          asset['cpu'],
+          asset['location'],
+          asset['serial_number'],
+          asset['brand'],
+          asset['model'],
+          asset['qr_path'],
+          asset['owner_id']);
     }).toList();
   }
 

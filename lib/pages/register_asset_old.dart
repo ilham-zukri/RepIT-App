@@ -341,17 +341,19 @@ class _RegisterAssetOldState extends State<RegisterAssetOld> {
                           return;
                         }
                         Asset asset = Asset(
-                            null,
-                            utilizationEc.text.trim(),
-                            null,
-                            assetType,
-                            ramEc.text.trim(),
-                            cpuEc.text.trim(),
-                            null,
-                            serialNumberEc.text.trim(),
-                            brandEc.text.trim(),
-                            modelEc.text.trim(),
-                            null);
+                          null,
+                          utilizationEc.text.trim(),
+                          null,
+                          assetType,
+                          ramEc.text.trim(),
+                          cpuEc.text.trim(),
+                          null,
+                          serialNumberEc.text.trim(),
+                          brandEc.text.trim(),
+                          modelEc.text.trim(),
+                          null,
+                          null,
+                        );
                         Map<String, dynamic> assetData = asset.toMap();
                         assetData["owner_id"] = userId;
                         try {
@@ -363,7 +365,7 @@ class _RegisterAssetOldState extends State<RegisterAssetOld> {
                           setState(() {
                             isLoading = false;
                           });
-                          if(mounted){
+                          if (mounted) {
                             showDialog(
                               context: context,
                               builder: (context) => alert(
@@ -405,7 +407,8 @@ class _RegisterAssetOldState extends State<RegisterAssetOld> {
       ],
     );
   }
-  void clearFields(){
+
+  void clearFields() {
     brandEc.clear();
     modelEc.clear();
     serialNumberEc.clear();

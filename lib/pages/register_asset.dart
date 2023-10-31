@@ -432,6 +432,7 @@ class _RegisterAssetState extends State<RegisterAsset> {
                     brand,
                     model,
                     null,
+                    null
                   );
                   setState(() {
                     addAsset(asset);
@@ -466,8 +467,6 @@ class _RegisterAssetState extends State<RegisterAsset> {
       }
     }
     clearFields();
-
-    print(items);
   }
 
   void clearFields() {
