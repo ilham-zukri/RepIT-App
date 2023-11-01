@@ -86,45 +86,53 @@ class _ManageAssetState extends State<ManageAsset> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppBar(context, "Manage Assets", 'add', () {
-          addAssetsDialog(context);
-        }),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: (assetsLength > 0)
-              ? RefreshIndicator(
-                  onRefresh: () async {
-                    page = 1;
-                    await fetchAssets(isRefresh: true);
+      appBar: customAppBar(context, "Manage Assets", 'add', () {
+        addAssetsDialog(context);
+      }),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: (assetsLength > 0)
+            ? RefreshIndicator(
+                onRefresh: () async {
+                  page = 1;
+                  await fetchAssets(isRefresh: true);
+                },
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemCount: isLoadingMore ? assetsLength + 1 : assetsLength,
+                  itemBuilder: (context, index) {
+                    if (index < assetsLength) {
+                      return Column(
+                        children: [
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          AssetCard(asset: assets[index], withDetail: true),
+                          (index == assetsLength - 1)
+                              ? const SizedBox(height: 16)
+                              : const SizedBox.shrink()
+                        ],
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
                   },
-                  child: ListView.builder(
-                    controller: scrollController,
-                    itemCount: isLoadingMore ? assetsLength + 1 : assetsLength,
-                    itemBuilder: (context, index) {
-                      if (index < assetsLength) {
-                        return Column(
-                          children: [
-                            const SizedBox(
-                              height: 16,
-                            ),
-                            AssetCard(asset: assets[index], withDetail: true),
-                            (index == assetsLength - 1)
-                                ? const SizedBox(height: 16)
-                                : const SizedBox.shrink()
-                          ],
-                        );
-                      } else {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                    },
-                  ),
-                )
-              : const Center(
-                  child: CircularProgressIndicator(),
                 ),
-        ));
+              )
+            : const Center(
+                child: CircularProgressIndicator(),
+              ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+
+        },
+        shape: const CircleBorder(),
+        child: const Icon(Icons.filter_alt),
+      ),
+    );
   }
 
   Future<void> _scrollListener() async {
