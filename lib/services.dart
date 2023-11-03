@@ -361,8 +361,11 @@ abstract class Services {
   }
 
   /// POST Purchasing Form
-  static Future<Response?> createPurchasingForm(int requestId,
-      String vendorName, List<Map<String, dynamic>> items) async {
+  static Future<Response?> createPurchasingForm(
+      int requestId,
+      String vendorName,
+      String description,
+      List<Map<String, dynamic>> items) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
@@ -376,6 +379,7 @@ abstract class Services {
           data: {
             'request_id': requestId,
             'purchased_from': vendorName,
+            'description': description,
             'items': items
           });
       if (response.statusCode == 201) {
@@ -557,10 +561,7 @@ abstract class Services {
             "Authorization": "Bearer $token"
           },
         ),
-        data: {
-          'purchase_id': purchaseId,
-          'items' : items
-        },
+        data: {'purchase_id': purchaseId, 'items': items},
       );
       if (response.statusCode == 201) {
         return response;
@@ -575,7 +576,7 @@ abstract class Services {
   }
 
   /// Register Old Asset
-  static Future<Response?> registerAsset(Map<String,dynamic> asset) async {
+  static Future<Response?> registerAsset(Map<String, dynamic> asset) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
@@ -603,7 +604,7 @@ abstract class Services {
 
   /// Handling Exception From API ///
   static exceptionHandling(var e) {
-    if (e is DioError) {
+    if (e is DioException) {
       if (e.response != null) {
         throw e.response!.data["message"].toString();
       } else {

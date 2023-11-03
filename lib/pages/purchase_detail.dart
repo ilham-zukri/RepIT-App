@@ -6,6 +6,7 @@ import 'package:repit_app/widgets/alert.dart';
 import 'package:repit_app/widgets/loading_overlay.dart';
 import 'package:repit_app/widgets/purchase_item_card.dart';
 import 'package:repit_app/widgets/purchase_status_box_builder.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PurchaseDetail extends StatefulWidget {
   final Purchase purchase;
@@ -36,11 +37,11 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
     Size size = MediaQuery.of(context).size;
     isButtonDisabled =
         purchase.status == 'Cancelled' || purchase.status == 'Received';
-    return Scaffold(
-      appBar: customDownloadAppBar(context, "Purchase Detail"),
-      body: Stack(
-        children: [
-          Padding(
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: customDownloadAppBar(context, "Purchase Detail"),
+          body: Padding(
             padding: const EdgeInsets.all(28),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -403,51 +404,86 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
               ],
             ),
           ),
-          loadingOverlay(isLoading, context)
-        ],
-      ),
+        ),
+        loadingOverlay(isLoading, context),
+      ],
     );
   }
-}
 
-PreferredSizeWidget customDownloadAppBar(BuildContext context, String title) {
-  return AppBar(
-    title: Text(
-      title,
-      style: const TextStyle(
-          fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xff00ABB3)),
-    ),
-    titleSpacing: 0,
-    backgroundColor: Colors.white,
-    leading: BackButton(
-      color: const Color(0xff00ABB3),
-      onPressed: Navigator.of(context).pop,
-    ),
-    actions: [
-      Container(
-        margin: const EdgeInsets.only(right: 6),
-        child: IconButton(
-          onPressed: () {},
-          icon: const Icon(
-            Icons.picture_as_pdf,
-            size: 32,
-            color: Color(0xff00ABB3),
-          ),
-          padding: EdgeInsets.zero,
-        ),
+  PreferredSizeWidget customDownloadAppBar(BuildContext context, String title) {
+    return AppBar(
+      title: Text(
+        title,
+        style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Color(0xff00ABB3)),
       ),
-      Container(
-        margin: const EdgeInsets.only(right: 6),
-        child: IconButton(
-          onPressed: () {},
-          icon: const Icon(
-            Icons.notifications,
-            size: 32,
-            color: Color(0xff00ABB3),
-          ),
-          padding: EdgeInsets.zero,
-        ),
+      titleSpacing: 0,
+      backgroundColor: Colors.white,
+      leading: BackButton(
+        color: const Color(0xff00ABB3),
+        onPressed: Navigator.of(context).pop,
       ),
-    ],
-  );
+      actions: [
+        Container(
+          margin: const EdgeInsets.only(right: 6),
+          child: IconButton(
+            onPressed: () async {
+              String docPath = purchase.docPath!;
+              // Mencari indeks di mana 'purchase-documents' pertama kali muncul dalam path
+              int index = docPath.indexOf('purchase-documents');
+              // Mengambil potongan string mulai dari indeks yang ditemukan
+              String desiredDocPath = docPath.substring(index);
+              String url = '${Services.url}/$desiredDocPath';
+              Uri parsedUrl = Uri.parse(url);
+
+              try {
+                setState(() {
+                  isLoading = true;
+                });
+                await _launchUrl(parsedUrl);
+                setState(() {
+                  isLoading = false;
+                });
+              } catch (e) {
+                if (mounted) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => alert(context, "Error", e.toString()),
+                  );
+                }
+              }
+            },
+            icon: const Icon(
+              Icons.picture_as_pdf,
+              size: 32,
+              color: Color(0xff00ABB3),
+            ),
+            padding: EdgeInsets.zero,
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.only(right: 6),
+          child: IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.notifications,
+              size: 32,
+              color: Color(0xff00ABB3),
+            ),
+            padding: EdgeInsets.zero,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _launchUrl(Uri url) async {
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw Exception('Could not launch $url');
+    }
+  }
 }

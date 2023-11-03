@@ -4,6 +4,7 @@ class Purchase {
   final int id;
   final int requestId;
   final String vendorName;
+  final String? docPath;
   final String purchasedBy;
   final String requester;
   final String createdAt;
@@ -20,5 +21,6 @@ class Purchase {
       required this.status,
       required this.totalPrice,
       required this.vendorName,
+      required this.docPath,
       required this.items});
 }

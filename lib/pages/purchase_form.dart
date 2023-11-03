@@ -18,6 +18,7 @@ class PurchaseForm extends StatefulWidget {
 
 class _PurchaseFormState extends State<PurchaseForm> {
   TextEditingController vendorNameEc = TextEditingController();
+  TextEditingController descriptionEc = TextEditingController();
   TextEditingController typeEc = TextEditingController();
   TextEditingController brandEc = TextEditingController();
   TextEditingController modelEc = TextEditingController();
@@ -60,6 +61,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
           Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Align(
                   alignment: Alignment.topLeft,
@@ -72,21 +74,43 @@ class _PurchaseFormState extends State<PurchaseForm> {
                 const SizedBox(
                   height: 16,
                 ),
-                const Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Nama Toko*",
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black),
-                  ),
+                const Text(
+                  "Nama Toko*",
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black),
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 8),
                   height: 41,
                   child: TextField(
                     controller: vendorNameEc,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(10),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                const Text(
+                  "Deskripsi*",
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 8),
+                  height: 41,
+                  child: TextField(
+                    controller: descriptionEc,
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(10),
                       filled: true,
@@ -146,7 +170,8 @@ class _PurchaseFormState extends State<PurchaseForm> {
                                               );
                                             } else {
                                               String vendorName =
-                                                  vendorNameEc.text;
+                                                  vendorNameEc.text.trim();
+                                              String description = descriptionEc.text.trim();
                                               try {
                                                 setState(() {
                                                   isLoading = true;
@@ -156,6 +181,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
                                                         .createPurchasingForm(
                                                             widget.requestId,
                                                             vendorName,
+                                                            description,
                                                             items);
                                                 setState(() {
                                                   isLoading = false;

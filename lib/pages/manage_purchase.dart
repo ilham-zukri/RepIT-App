@@ -33,10 +33,8 @@ class _ManagePurchaseState extends State<ManagePurchase> {
   Future<void> fetchPurchases({bool isRefresh = false}) async {
     try {
       var data = await Services.getPurchases(page);
-      if (data == null) {
-        purchases += [];
-      } else if (isRefresh) {
-        purchases = data['data'].map((purchase) {
+      if (data != null) {
+        List<Purchase> updatedPurchases = List<Purchase>.from(data['data'].map((purchase) {
           return Purchase(
             requestId: purchase["request_id"],
             purchasedBy: purchase['purchased_by'],
@@ -46,58 +44,28 @@ class _ManagePurchaseState extends State<ManagePurchase> {
             totalPrice: purchase['total_price'],
             id: purchase['id'],
             vendorName: purchase['purchased_from'],
-            items: purchase['items']
-                .map((item) {
-                  return PurchaseItem(
-                    id: item['id'],
-                    assetType: item['asset_type'],
-                    brand: item['brand'],
-                    model: item['model'],
-                    amount: item['amount'],
-                    priceEa: item['price_ea'],
-                    priceTotal: item['total_price'],
-                  );
-                })
-                .toList()
-                .cast<PurchaseItem>(),
+            docPath: purchase['doc_path'],
+            items: List<PurchaseItem>.from(purchase['items'].map((item) => PurchaseItem(
+              id: item['id'],
+              assetType: item['asset_type'],
+              brand: item['brand'],
+              model: item['model'],
+              amount: item['amount'],
+              priceEa: item['price_ea'],
+              priceTotal: item['total_price'],
+            ))),
           );
-        }).toList();
+        }));
         setState(() {
+          purchases = isRefresh ? updatedPurchases : [...purchases, ...updatedPurchases];
           lastPage = data['meta']['last_page'];
-          purchases;
           purchasesLength = purchases.length;
         });
-      } else {
-        purchases = data['data'].map((purchase) {
-          return Purchase(
-            requestId: purchase["request_id"],
-            purchasedBy: purchase['purchased_by'],
-            requester: purchase['requester'],
-            createdAt: purchase['created_at'],
-            status: purchase['status'],
-            totalPrice: purchase['total_price'],
-            id: purchase['id'],
-            vendorName: purchase['purchased_from'],
-            items: purchase['items']
-                .map((item) {
-                  return PurchaseItem(
-                    id: item['id'],
-                    assetType: item['asset_type'],
-                    brand: item['brand'],
-                    model: item['model'],
-                    amount: item['amount'],
-                    priceEa: item['price_ea'],
-                    priceTotal: item['total_price'],
-                  );
-                })
-                .toList()
-                .cast<PurchaseItem>(),
-          );
-        }).toList();
+      } else if (isRefresh) {
         setState(() {
-          lastPage = data['meta']['last_page'];
-          purchases;
-          purchasesLength = purchases.length;
+          purchases = [];
+          lastPage = 1;
+          purchasesLength = 0;
         });
       }
     } catch (e) {
@@ -108,6 +76,8 @@ class _ManagePurchaseState extends State<ManagePurchase> {
       }
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
