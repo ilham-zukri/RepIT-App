@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'data_classes/ticket.dart';
 import 'data_classes/user.dart';
 import 'package:dio/dio.dart';
 
@@ -418,6 +419,57 @@ abstract class Services {
     return null;
   }
 
+  /// Get Ticket Categories
+  static Future<List?> getTicketCategories() async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().get(
+        '$apiUrl/ticket-categories',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        return response.data as List;
+      } else {
+        exceptionHandling(response.data['message']);
+      }
+    } catch (e) {
+      exceptionHandling(e);
+    }
+    return null;
+  }
+
+  /// Get Asset List for Ticket Form
+  static Future<List?> getAssetList() async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().get(
+        '$apiUrl/asset-list',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        return response.data as List;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+    }
+    return null;
+  }
+
   /// Get All Purchases with pagination
   static Future<Map?> getPurchases(int? page) async {
     try {
@@ -590,6 +642,85 @@ abstract class Services {
         ),
         data: asset,
       );
+      if (response.statusCode == 201) {
+        return response;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
+  /// Create Ticket
+  // static Future<Response?> createTicket(Map<String, dynamic> ticket) async {
+  //   try {
+  //     prefs = await SharedPreferences.getInstance();
+  //     String token = prefs.getString('token').toString();
+  //     Response? response = await Dio().post(
+  //       '$apiUrl/ticket',
+  //       options: Options(
+  //         headers: {
+  //           "Accept": "application/json",
+  //           "Authorization": "Bearer $token",
+  //           "Content-Type": "application/json"
+  //         },
+  //       ),
+  //       data: ticket,
+  //     );
+  //     if (response.statusCode == 201) {
+  //       return response;
+  //     } else {
+  //       exceptionHandling(response.data['message']);
+  //       return null;
+  //     }
+  //   } catch (e) {
+  //     exceptionHandling(e);
+  //     return null;
+  //   }
+  // }
+
+  static Future<Response?> createTicket(Ticket ticket) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+
+      FormData formData = FormData.fromMap({
+        'asset_id': ticket.assetId,
+        'title': ticket.title,
+        'description': ticket.description,
+        'priority_id': ticket.priorityId,
+        'ticket_category_id': ticket.categoryId,
+      });
+
+      if (ticket.images != null) {
+        for (var image in ticket.images!) {
+          formData.files.add(
+            MapEntry(
+              'images[]',
+              MultipartFile.fromFileSync(
+                image.path,
+                filename: image.path.split('/').last,
+              ),
+            ),
+          );
+        }
+      }
+
+      Response? response = await Dio().post(
+        '$apiUrl/ticket',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token",
+            "Content-Type": "multipart/form-data", // Perhatikan tipe konten
+          },
+        ),
+        data: formData,
+      );
+
       if (response.statusCode == 201) {
         return response;
       } else {
