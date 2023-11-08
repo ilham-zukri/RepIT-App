@@ -2,18 +2,22 @@ import 'dart:io';
 
 class Ticket {
   final int? id;
+  final String? createdBy;
+  final String? handler;
   final String title;
   final int categoryId;
-  final int assetId;
+  final int? assetId;
   final String description;
   final int priorityId;
   final List<File>? images;
 
   Ticket({
     this.id,
+    this.createdBy,
+    this.handler,
     required this.title,
     required this.categoryId,
-    required this.assetId,
+    this.assetId,
     required this.description,
     required this.priorityId,
     this.images

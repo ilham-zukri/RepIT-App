@@ -655,33 +655,6 @@ abstract class Services {
   }
 
   /// Create Ticket
-  // static Future<Response?> createTicket(Map<String, dynamic> ticket) async {
-  //   try {
-  //     prefs = await SharedPreferences.getInstance();
-  //     String token = prefs.getString('token').toString();
-  //     Response? response = await Dio().post(
-  //       '$apiUrl/ticket',
-  //       options: Options(
-  //         headers: {
-  //           "Accept": "application/json",
-  //           "Authorization": "Bearer $token",
-  //           "Content-Type": "application/json"
-  //         },
-  //       ),
-  //       data: ticket,
-  //     );
-  //     if (response.statusCode == 201) {
-  //       return response;
-  //     } else {
-  //       exceptionHandling(response.data['message']);
-  //       return null;
-  //     }
-  //   } catch (e) {
-  //     exceptionHandling(e);
-  //     return null;
-  //   }
-  // }
-
   static Future<Response?> createTicket(Ticket ticket) async {
     try {
       prefs = await SharedPreferences.getInstance();

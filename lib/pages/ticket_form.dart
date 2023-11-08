@@ -21,12 +21,13 @@ class _TicketFormState extends State<TicketForm> {
   final TextEditingController descEc = TextEditingController();
   late int priorityId;
   late Future<List?> prioritiesList;
-  late int categoryId;
+  int categoryId = 1;
   late Future<List> categoriesList;
   late int assetId;
   late Future<List> assetList;
   List<File> images = [];
   bool isLoading = false;
+
 
   @override
   void initState() {
@@ -159,71 +160,75 @@ class _TicketFormState extends State<TicketForm> {
                     }
                   },
                 ),
-                const SizedBox(
-                  height: 24,
-                ),
-                const Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Aset",
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black),
-                  ),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                FutureBuilder(
-                  future: assetList,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return Text(snapshot.error.toString());
-                    } else if (snapshot.connectionState ==
-                        ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    } else {
-                      List? assets = snapshot.data;
-                      return DecoratedBox(
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black54, width: 1),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10))),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton(
-                              isExpanded: true,
-                              value: assetId,
-                              items: assets!.map((asset) {
-                                return DropdownMenuItem(
-                                  value: asset['id'],
-                                  child: Row(
-                                    children: [
-                                      Text(asset['id'].toString()),
-                                      const SizedBox(
-                                        width: 8,
+                (categoryId == 1) ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    const Text(
+                      "Aset",
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    FutureBuilder(
+                      future: assetList,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Text(snapshot.error.toString());
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else {
+                          List? assets = snapshot.data;
+                          return DecoratedBox(
+                            decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.black54, width: 1),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(10))),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 10),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton(
+                                  isExpanded: true,
+                                  value: assetId,
+                                  items: assets!.map((asset) {
+                                    return DropdownMenuItem(
+                                      value: asset['id'],
+                                      child: Row(
+                                        children: [
+                                          Text(asset['id'].toString()),
+                                          const SizedBox(
+                                            width: 8,
+                                          ),
+                                          Text(asset['model']),
+                                        ],
                                       ),
-                                      Text(asset['model']),
-                                    ],
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  assetId =
-                                      int.tryParse(value.toString()) as int;
-                                });
-                              },
-                              borderRadius: BorderRadius.circular(10),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      assetId =
+                                          int.tryParse(value.toString()) as int;
+                                    });
+                                  },
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ) : const SizedBox.shrink(),
                 const SizedBox(
                   height: 24,
                 ),
@@ -428,11 +433,10 @@ class _TicketFormState extends State<TicketForm> {
                       Ticket ticket = Ticket(
                           title: title,
                           categoryId: categoryId,
-                          assetId: assetId,
+                          assetId: (categoryId == 1) ? assetId : null,
                           description: description,
                           priorityId: priorityId,
-                          images: (images.isNotEmpty) ? images : null
-                      );
+                          images: (images.isNotEmpty) ? images : null);
 
                       try {
                         setState(() {
@@ -456,7 +460,7 @@ class _TicketFormState extends State<TicketForm> {
                           isLoading = false;
                         });
                         if (mounted) {
-                          showDialog(
+                          await showDialog(
                             context: context,
                             builder: (BuildContext context) => alert(
                               context,
@@ -465,9 +469,6 @@ class _TicketFormState extends State<TicketForm> {
                             ),
                           );
                         }
-                      }
-                      if (mounted) {
-                        Navigator.of(context).pop;
                       }
                     },
                     child: const Text(
