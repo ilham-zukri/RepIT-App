@@ -10,6 +10,7 @@ import 'package:repit_app/pages/manage_purchase.dart';
 import 'package:repit_app/pages/manage_request.dart';
 import 'package:repit_app/pages/my_assets_page.dart';
 import 'package:repit_app/pages/my_request_page.dart';
+import 'package:repit_app/pages/my_tickets_page.dart';
 import 'package:repit_app/pages/profile_page.dart';
 import 'package:repit_app/pages/ticket_form.dart';
 import 'package:repit_app/services.dart';
@@ -82,10 +83,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
             ],
           ),
-          // IconButton(
-          //   onPressed: () {},
-          //   icon: const Icon(Icons.more_vert, size: 24),
-          // ),
         ],
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -124,9 +121,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           TabBarView(
             controller: _tabController,
             children: [
-              const Center(
-                child: Text('This is Tickets Page'),
-              ),
+              const MyTicketsPage(),
               const MyAssetsPage(),
               MyRequestPage(role: userData.role),
             ],

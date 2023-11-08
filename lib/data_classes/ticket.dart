@@ -9,6 +9,8 @@ class Ticket {
   final int? assetId;
   final String description;
   final int priorityId;
+  String? status;
+  final String? location;
   final List<File>? images;
 
   Ticket({
@@ -20,6 +22,8 @@ class Ticket {
     this.assetId,
     required this.description,
     required this.priorityId,
+    this.status,
+    this.location,
     this.images
   });
 
