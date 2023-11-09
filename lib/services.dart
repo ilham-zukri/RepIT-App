@@ -681,7 +681,6 @@ abstract class Services {
           );
         }
       }
-
       Response? response = await Dio().post(
         '$apiUrl/ticket',
         options: Options(
@@ -696,6 +695,33 @@ abstract class Services {
 
       if (response.statusCode == 201) {
         return response;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
+  /// Get My Ticket
+  static Future<Map?> getMyTickets(int? page) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().get(
+        '$apiUrl/tickets/my-tickets',
+        options: Options(headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        }),
+        queryParameters: {
+          'page': page ?? 1,
+        },
+      );
+      if (response.statusCode == 200) {
+        return response.data as Map;
       } else {
         exceptionHandling(response.data['message']);
         return null;

@@ -121,7 +121,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           TabBarView(
             controller: _tabController,
             children: [
-              const MyTicketsPage(),
+              MyTicketsPage(role: userData.role),
               const MyAssetsPage(),
               MyRequestPage(role: userData.role),
             ],

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:repit_app/widgets/ticket_status_box_builder.dart';
-
-import '../widgets/loading_overlay.dart';
-import '../widgets/priority_box_builder.dart';
+import 'package:repit_app/widgets/ticket_card.dart';
+import '../data_classes/ticket.dart';
+import '../services.dart';
 
 class MyTicketsPage extends StatefulWidget {
-  const MyTicketsPage({super.key});
+  final Map<String, dynamic> role;
+
+  const MyTicketsPage({super.key, required this.role});
 
   @override
   State<MyTicketsPage> createState() => _MyTicketsPageState();
@@ -13,107 +14,167 @@ class MyTicketsPage extends StatefulWidget {
 
 class _MyTicketsPageState extends State<MyTicketsPage> {
   bool isLoading = false;
+  late Map<String, dynamic> role;
+  int page = 1;
+  late int lastPage;
+  int ticketsLength = 0;
+  final scrollController = ScrollController();
+  bool isLoadingMore = false;
+  List tickets = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchTickets();
+    role = widget.role;
+    scrollController.addListener(_scrollListener);
+  }
+
+  Future<void> fetchTickets({bool? isRefresh}) async {
+    var data = await Services.getMyTickets(page);
+    if (data == null) {
+      tickets += [];
+    } else {
+      List<Ticket> fetchedTickets = data['data'].map<Ticket>((ticket) {
+        return Ticket(
+          id: ticket['id'],
+          title: ticket['title'],
+          categoryId: ticket['category']['id'],
+          category: ticket['category']['category'],
+          assetId: ticket['asset_id'],
+          description: ticket['description'],
+          priorityId: ticket['priority']['id'],
+          priority: ticket['priority']['priority'],
+          status: ticket['status'],
+          location: ticket['location'],
+          images: (ticket['images'].isEmpty) ? null : ticket['images'],
+          createdBy: ticket['created_by'],
+          createdAt: ticket['created_at'],
+          handler: ticket['handler'],
+        );
+      }).toList();
+      if (isRefresh == true) {
+        tickets = fetchedTickets;
+      } else {
+        tickets += fetchedTickets;
+      }
+      setState(() {
+        tickets;
+        ticketsLength = tickets.length;
+        lastPage = data['meta']['last_page'];
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return Stack(
-      children: [
-        Padding(
+    if (ticketsLength > 0) {
+      return RefreshIndicator(
+        onRefresh: () async {
+          page = 1;
+          await fetchTickets(isRefresh: true);
+        },
+        child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Center(
-            child: SizedBox(
-              width: size.width,
-              height: 170,
-              child: Card(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
+          child: ListView.builder(
+            controller: scrollController,
+            itemCount: (isLoadingMore) ? ticketsLength + 1 : ticketsLength,
+            itemBuilder: (context, index) {
+              if (index < ticketsLength) {
+                return Column(
+                  children: [
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    TicketCard(
+                      ticket: tickets[index],
+                      role: role,
+                    ),
+                    (index == ticketsLength - 1)? const SizedBox(
+                      height: 16
+                    ) : const SizedBox.shrink()
+                  ]
+                );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            },
+          ),
+        ),
+      );
+    } else {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(50),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "Tiket-tiket anda akan tampil disini",
+                style:
+                TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              const Text(
+                  'Setelah tiket ditambahkan, maka daftar tiket yang sudah terbuat akan muncul disini',
+                  style: TextStyle(
+                    fontSize: 14,
                   ),
-                ),
-                child: InkWell(
-                  onTap: () {},
-                  child: Column(
+                  textAlign: TextAlign.center),
+              const SizedBox(
+                height: 16,
+              ),
+              SizedBox(
+                width: 115,
+                height: 35,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xff00ABB3),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      elevation: 5),
+                  onPressed: () async {
+                    page = 1;
+                    await fetchTickets(isRefresh: true);
+                  },
+                  child: const Row(
                     children: [
-                      Container(
-                        width: size.width,
-                        height: 40,
-                        decoration: const BoxDecoration(
-                          color: Color(0xff009199),
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(10)),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 16, right: 16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "12",
-                                style: const TextStyle(
-                                    color: Colors.white, fontWeight: FontWeight.w600),
-                              ),
-                              priorityBoxBuilder('Low', 'card')
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 2,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "bob",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Text(
-                              "Tidak Bisa Login",
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "CV Sabar Maju HO",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w600
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 14,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                ticketStatusBoxBuilder('Created', "card"),
-                                Text('12-12-022')
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
+                      Icon(Icons.refresh),
+                      SizedBox(width: 4),
+                      Text(
+                        'Refresh',
+                        style: TextStyle(color: Colors.white),
+                      )
                     ],
                   ),
                 ),
               ),
-            ),
+            ],
           ),
         ),
-        loadingOverlay(isLoading, context)
-      ],
-    );
+      );
+    }
+  }
+
+  Future<void> _scrollListener() async {
+    if (isLoadingMore) return;
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
+      if (page < lastPage) {
+        setState(() {
+          isLoadingMore = true;
+        });
+        page++;
+        await fetchTickets();
+        setState(() {
+          isLoadingMore = false;
+        });
+      }
+    }
   }
 }
