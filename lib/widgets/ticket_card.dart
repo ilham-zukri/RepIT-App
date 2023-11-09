@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:repit_app/widgets/cat_box_builder.dart';
 import 'package:repit_app/widgets/priority_box_builder.dart';
 import 'package:repit_app/widgets/ticket_status_box_builder.dart';
 
 import '../data_classes/ticket.dart';
+import '../pages/ticket_detail.dart';
 
 class TicketCard extends StatelessWidget {
   final Map<String, dynamic> role;
@@ -22,7 +24,16 @@ class TicketCard extends StatelessWidget {
           ),
         ),
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context, MaterialPageRoute(
+                builder: (context) => TicketDetail(
+                  ticket: ticket,
+                  role: role,
+                ),
+              ),
+            );
+          },
           child: Column(
             children: [
               Container(
@@ -44,7 +55,15 @@ class TicketCard extends StatelessWidget {
                         style: const TextStyle(
                             color: Colors.white, fontWeight: FontWeight.w600),
                       ),
-                      priorityBoxBuilder('Low', 'card')
+                      Row(
+                        children: [
+                          categoryBoxBuilder(ticket.category!),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          priorityBoxBuilder(ticket.priority!, 'card'),
+                        ],
+                      )
                     ],
                   ),
                 ),

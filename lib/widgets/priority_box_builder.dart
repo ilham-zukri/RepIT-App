@@ -11,7 +11,7 @@ Widget priorityBoxBuilder(String priority, String usage) {
       "textColor": const Color(0xff197517),
     },
     "Medium": {
-      "backgroundColor": const Color(0xffAEE2AA),
+      "backgroundColor": const Color(0xff98BFFA),
       "textColor": Colors.black54,
     },
     "High": {

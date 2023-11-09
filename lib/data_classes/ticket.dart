@@ -11,6 +11,8 @@ class Ticket {
   final String? priority;
   String? status;
   String? createdAt;
+  String? respondedAt;
+  String? resolvedAt;
   final String? location;
   final List? images;
 
@@ -27,6 +29,8 @@ class Ticket {
     this.priority,
     this.status,
     this.createdAt,
+    this.respondedAt,
+    this.resolvedAt,
     this.location,
     this.images
   });

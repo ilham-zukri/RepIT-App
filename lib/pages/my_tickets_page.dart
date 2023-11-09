@@ -50,6 +50,8 @@ class _MyTicketsPageState extends State<MyTicketsPage> {
           images: (ticket['images'].isEmpty) ? null : ticket['images'],
           createdBy: ticket['created_by'],
           createdAt: ticket['created_at'],
+          respondedAt: ticket['responded_at'],
+          resolvedAt: ticket['resolved_at'],
           handler: ticket['handler'],
         );
       }).toList();
