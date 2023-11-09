@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/ticket.dart';
+import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
+import 'package:repit_app/widgets/image_viewer.dart';
 import 'package:repit_app/widgets/loading_overlay.dart';
 import 'package:repit_app/widgets/ticket_status_box_builder.dart';
 
@@ -25,12 +27,18 @@ class _TicketDetailState extends State<TicketDetail> {
     fontWeight: FontWeight.w500,
   );
   static const EdgeInsets tableContentMarginTop = EdgeInsets.only(top: 8);
+  late List images = [];
 
   @override
   void initState() {
     super.initState();
     ticket = widget.ticket;
     role = widget.role;
+    if (ticket.images != null) {
+      setState(() {
+        images = ticket.images!;
+      });
+    }
   }
 
   @override
@@ -284,6 +292,53 @@ class _TicketDetailState extends State<TicketDetail> {
                       ),
                     ],
                   ),
+                  const SizedBox(
+                    height: 24,
+                  ),
+                  (images.isNotEmpty)
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                              const Text(
+                                'Gambar',
+                                style: tableContentStyle,
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Row(
+                                children: images.map((image) {
+                                  String url =
+                                      '${Services.url}/${image['path']}';
+                                  return Row(children: [
+                                    IconButton(
+                                      iconSize: 50,
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ImageViewer(imageUrl: url),
+                                            ));
+                                      },
+                                      icon: Image.network(
+                                        url,
+                                        width: 50,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    (images.indexOf(image) == images.length - 1)
+                                        ? const SizedBox.shrink()
+                                        : const SizedBox(
+                                            width: 8,
+                                          )
+                                  ]);
+                                }).toList(),
+                              )
+                            ])
+                      : const SizedBox.shrink()
                 ],
               ),
             ),
