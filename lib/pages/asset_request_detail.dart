@@ -226,7 +226,7 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
                               backgroundColor: const Color(0xff009199),
                             ),
                             child: const Text("Setujui"),
-                          )
+                          ),
                         ],
                       );
                     },

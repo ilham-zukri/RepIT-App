@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/ticket.dart';
 import 'package:repit_app/services.dart';
-import 'package:repit_app/widgets/custom_app_bar.dart';
+import 'package:repit_app/widgets/alert.dart';
 import 'package:repit_app/widgets/image_viewer.dart';
 import 'package:repit_app/widgets/loading_overlay.dart';
 import 'package:repit_app/widgets/ticket_status_box_builder.dart';
@@ -28,6 +28,8 @@ class _TicketDetailState extends State<TicketDetail> {
   );
   static const EdgeInsets tableContentMarginTop = EdgeInsets.only(top: 8);
   late List images = [];
+  TextEditingController resolveNoteEc = TextEditingController();
+  TextEditingController handlerNoteEc = TextEditingController();
 
   @override
   void initState() {
@@ -46,7 +48,7 @@ class _TicketDetailState extends State<TicketDetail> {
     return Stack(
       children: [
         Scaffold(
-          appBar: customAppBar(context, "Ticket Detail"),
+          appBar: appBarBuilder(context, title: "Ticket Detail"),
           body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(28),
@@ -292,13 +294,13 @@ class _TicketDetailState extends State<TicketDetail> {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 24,
-                  ),
                   (images.isNotEmpty)
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                              const SizedBox(
+                                height: 24,
+                              ),
                               const Text(
                                 'Gambar',
                                 style: tableContentStyle,
@@ -338,14 +340,389 @@ class _TicketDetailState extends State<TicketDetail> {
                                 }).toList(),
                               )
                             ])
-                      : const SizedBox.shrink()
+                      : const SizedBox.shrink(),
+                  const SizedBox(
+                    height: 24,
+                  ),
+                  buttonBuilder(context, ticket.status!),
                 ],
               ),
             ),
           ),
+          endDrawerEnableOpenDragGesture: true,
         ),
         loadingOverlay(isLoading, context)
       ],
     );
+  }
+
+  Widget buttonBuilder(BuildContext context, String status) {
+    final Map<String, dynamic> statusMap = {
+      "Created": {
+        "backgroundColor": const Color(0xffA7E9B5),
+        "textColor": const Color(0xff197517),
+      },
+      "Assigned": {
+        "backgroundColor": const Color(0xffB8A7E9),
+        "textColor": const Color(0xff58148E),
+      },
+      "On Hold": {
+        "backgroundColor": const Color(0xffE9A7A7),
+        "textColor": const Color(0xff852020),
+      },
+      "In Progress": {
+        "backgroundColor": const Color(0xffE9DAA7),
+        "textColor": const Color(0xff4E4121),
+      },
+      "In Review": {
+        "backgroundColor": const Color(0xff98BFFA),
+        "textColor": const Color(0xff12315F),
+      },
+      "Resolved": {
+        "backgroundColor": const Color(0xffA7E9E9),
+        "textColor": const Color(0xff2F546E),
+      },
+    };
+
+    late Color backgroundColor;
+    late Color textColor;
+    late String buttonText;
+    late VoidCallback action;
+
+    if (statusMap.containsKey(status)) {
+      backgroundColor = statusMap[status]['backgroundColor'];
+      textColor = statusMap[status]['textColor'];
+    }
+
+    switch (status) {
+      case "Created":
+        buttonText = "Ambil Tiket";
+        action = () async {
+          try {
+            setState(() {
+              isLoading = true;
+            });
+            var response = await Services.assignTicket(
+              ticket.id!,
+            );
+            setState(() {
+              isLoading = false;
+              ticket.handler = response!['data']['handler'];
+              ticket.status = response['data']['status'];
+              ticket.respondedAt = response['data']['responded_at'];
+            });
+            if (mounted) {
+              showDialog(
+                context: context,
+                builder: (context) =>
+                    alert(context, "Berhail", response!['message']),
+              );
+            }
+          } catch (e) {
+            setState(() {
+              isLoading = false;
+            });
+            if (mounted) {
+              showDialog(
+                context: context,
+                builder: (context) => alert(
+                  context,
+                  "Error",
+                  e.toString(),
+                ),
+              );
+            }
+          }
+        };
+        break;
+      case "Assigned":
+        buttonText = "Kerjakan Tiket";
+        action = () async {
+          try {
+            setState(() {
+              isLoading = true;
+            });
+            var response = await Services.workingOnTicket(
+              ticket.id!,
+            );
+            setState(() {
+              isLoading = false;
+              ticket.status = response!['data']['status'];
+            });
+            if (mounted) {
+              showDialog(
+                context: context,
+                builder: (context) =>
+                    alert(context, "Berhail", response!['message']),
+              );
+            }
+          } catch (e) {
+            if (mounted) {
+              showDialog(
+                context: context,
+                builder: (context) => alert(
+                  context,
+                  "Error",
+                  e.toString(),
+                ),
+              );
+            }
+          }
+        };
+        break;
+      case "In Progress":
+        buttonText = "Pengerjaan Selesai";
+        action = () async {
+          showResolveNoteDialog(context);
+        };
+        break;
+      case "In Review":
+        buttonText = "Selesaikan";
+        action = () async {
+          showConfirmationDialog(
+            context,
+            action: () async {
+              try {
+                setState(() {
+                  isLoading = true;
+                });
+                var response = await Services.closeTicket(
+                  ticket.id!,
+                );
+                setState(() {
+                  ticket.status = response!['data']['status'];
+                  isLoading = false;
+                });
+                if (mounted) {
+                  Navigator.pop(context);
+                }
+              } catch (e) {
+                setState(() {
+                  isLoading = false;
+                });
+                if (mounted) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => alert(
+                      context,
+                      "Error",
+                      e.toString(),
+                    ),
+                  );
+                }
+              }
+            },
+          );
+        };
+        break;
+      case "On Hold":
+        buttonText = "Lanjutkan";
+        action = () async {};
+        break;
+    }
+
+    if (status != "In Review" && role['asset_management'] != 1) {
+      return const SizedBox.shrink();
+    }
+
+    if (status == "In Review" && role['asset_management'] == 1) {
+      return const SizedBox.shrink();
+    }
+
+    if (status == "In Progress") {
+      return Column(
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: backgroundColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  elevation: 5),
+              onPressed: action,
+              child: Text(
+                buttonText,
+                style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xffF05050),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  elevation: 5),
+              onPressed: () async {},
+              child: const Text(
+                "Tunda Pengerjaan",
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            backgroundColor: backgroundColor,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            elevation: 5),
+        onPressed: action,
+        child: Text(
+          buttonText,
+          style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
+        ),
+      ),
+    );
+  }
+
+  PreferredSizeWidget appBarBuilder(BuildContext context, {String? title}) {
+    return AppBar(
+      title: Text(
+        title!,
+        style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Color(0xff00ABB3)),
+      ),
+      titleSpacing: 0,
+      backgroundColor: Colors.white,
+      leading: BackButton(
+        color: const Color(0xff00ABB3),
+        onPressed: Navigator.of(context).pop,
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.sticky_note_2, color: Color(0xff00ABB3)),
+          onPressed: () {},
+        ),
+      ],
+    );
+  }
+
+  void showConfirmationDialog(BuildContext context, {VoidCallback? action}) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Konfirmasi"),
+            content: const Text("Apakah Anda Yakin?"),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xffF05050),
+                ),
+                child: const Text("Batal"),
+              ),
+              ElevatedButton(
+                onPressed: action,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xff009199),
+                ),
+                child: const Text("Setujui"),
+              ),
+            ],
+          );
+        });
+  }
+
+  void showResolveNoteDialog(BuildContext context, {VoidCallback? action}) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              scrollable: true,
+              title: const Text("Catatan Penyelesaian"),
+              content: Column(
+                children: [
+                  const Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "Catatan*",
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 8),
+                    height: 82,
+                    child: TextField(
+                      maxLines: 5,
+                      controller: resolveNoteEc,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(10),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xffF05050),
+                  ),
+                  child: const Text("Batal"),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    try {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      var response = await Services.toBeReviewTicket(
+                          ticket.id!, resolveNoteEc.text);
+                      setState(() {
+                        ticket.status = response!['data']['status'];
+                        isLoading = false;
+                      });
+                      if (mounted) {
+                        resolveNoteEc.clear();
+                        Navigator.pop(context);
+                      }
+                    } catch (e) {
+                      setState(() {
+                        isLoading = false;
+                      });
+                      if (mounted) {
+                        showDialog(
+                            context: context,
+                            builder: (context) => alert(
+                                  context,
+                                  "Error",
+                                  e.toString(),
+                                ));
+                      }
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff009199),
+                  ),
+                  child: const Text("Selesaikan"),
+                ),
+              ]);
+        });
   }
 }

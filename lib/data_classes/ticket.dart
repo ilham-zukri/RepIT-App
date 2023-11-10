@@ -1,7 +1,7 @@
 class Ticket {
   final int? id;
   final String? createdBy;
-  final String? handler;
+  String? handler;
   final String title;
   final int categoryId;
   final String? category;
@@ -13,6 +13,7 @@ class Ticket {
   String? createdAt;
   String? respondedAt;
   String? resolvedAt;
+  String? closedAt;
   final String? location;
   final List? images;
 
@@ -31,6 +32,7 @@ class Ticket {
     this.createdAt,
     this.respondedAt,
     this.resolvedAt,
+    this.closedAt,
     this.location,
     this.images
   });

@@ -8,6 +8,7 @@ import 'package:repit_app/pages/login_page.dart';
 import 'package:repit_app/pages/manage_asset.dart';
 import 'package:repit_app/pages/manage_purchase.dart';
 import 'package:repit_app/pages/manage_request.dart';
+import 'package:repit_app/pages/manage_ticket.dart';
 import 'package:repit_app/pages/my_assets_page.dart';
 import 'package:repit_app/pages/my_request_page.dart';
 import 'package:repit_app/pages/my_tickets_page.dart';
@@ -219,7 +220,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Material(
                 child: InkWell(
                   onTap: () {
-                    if (userData.role['asset_management'] != 1 && userData.role['asset_request'] != 1) {
+                    if (userData.role['asset_management'] != 1 &&
+                        userData.role['asset_request'] != 1) {
                       showDialog(
                         context: context,
                         builder: (context) => alert(context, "Tidak Berwenang",
@@ -301,7 +303,23 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               height: 40,
               child: Material(
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    if (userData.role['asset_management'] != 1 &&
+                        userData.role['asset_request'] != 1) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => alert(context, "Tidak Berwenang",
+                            "Anda tidak memiliki wewenang untuk mengakses menu ini"),
+                      );
+                      return;
+                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ManageTicket(role: userData.role),
+                      ),
+                    );
+                  },
                   customBorder: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),
                   child: Container(

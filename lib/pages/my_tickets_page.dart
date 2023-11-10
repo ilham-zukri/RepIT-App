@@ -25,13 +25,13 @@ class _MyTicketsPageState extends State<MyTicketsPage> {
   @override
   void initState() {
     super.initState();
-    fetchTickets();
     role = widget.role;
+    fetchTickets();
     scrollController.addListener(_scrollListener);
   }
 
   Future<void> fetchTickets({bool? isRefresh}) async {
-    var data = await Services.getMyTickets(page);
+    var data = (role['asset_management'] != 1) ? await Services.getMyTickets(page) : await Services.getHandledTickets(page);
     if (data == null) {
       tickets += [];
     } else {
@@ -52,6 +52,7 @@ class _MyTicketsPageState extends State<MyTicketsPage> {
           createdAt: ticket['created_at'],
           respondedAt: ticket['responded_at'],
           resolvedAt: ticket['resolved_at'],
+          closedAt: ticket['closed_at'],
           handler: ticket['handler'],
         );
       }).toList();
@@ -109,7 +110,7 @@ class _MyTicketsPageState extends State<MyTicketsPage> {
     } else {
       return Center(
         child: Padding(
-          padding: const EdgeInsets.all(50),
+          padding: const EdgeInsets.all(40  ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
