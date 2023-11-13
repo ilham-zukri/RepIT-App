@@ -41,7 +41,7 @@ class _ManageRequestState extends State<ManageRequest>
     // TODO: implement initState
     super.initState();
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
-    _tabController.addListener(_handleTabChanges);
+    _tabController.addListener(_tabChangesListener);
     role = widget.role;
     page = 1;
     scrollController.addListener(_scrollListener);
@@ -135,8 +135,9 @@ class _ManageRequestState extends State<ManageRequest>
     var data = await Services.getSparePartRequests(page);
     if (data == null) {
       sparePartRequests += [];
-    }else{
-      List<SparePartRequest> fetchedRequest = data['data'].map<SparePartRequest>((request) {
+    } else {
+      List<SparePartRequest> fetchedRequest =
+          data['data'].map<SparePartRequest>((request) {
         return SparePartRequest(
           id: request['id'],
           title: request['title'],
@@ -147,9 +148,9 @@ class _ManageRequestState extends State<ManageRequest>
           approvedAt: request['approved_at'],
         );
       }).toList();
-      if(isRefresh == true){
+      if (isRefresh == true) {
         sparePartRequests = fetchedRequest;
-      }else{
+      } else {
         sparePartRequests += fetchedRequest;
       }
       setState(() {
@@ -158,7 +159,6 @@ class _ManageRequestState extends State<ManageRequest>
         lastPage = data['meta']['last_page'];
       });
     }
-
   }
 
   Future<List<LocationForList>> fetchLocations() async {
@@ -178,12 +178,13 @@ class _ManageRequestState extends State<ManageRequest>
       appBar: appBarWithSort(context, "Manage Request"),
       body: TabBarView(
         controller: _tabController,
-        children: [assetRequestsListView(), sparePartRequestsListView()],
+        children: [
+          assetRequestsListView(),
+          sparePartRequestsListView(),
+        ],
       ),
     );
   }
-
-
 
   PreferredSizeWidget appBarWithSort(BuildContext context, String title) {
     return AppBar(
@@ -453,7 +454,7 @@ class _ManageRequestState extends State<ManageRequest>
   }
 
   Widget assetRequestsListView() {
-    if(assetRequests.isEmpty){
+    if (assetRequests.isEmpty) {
       return const Center(
         child: CircularProgressIndicator(),
       );
@@ -500,64 +501,66 @@ class _ManageRequestState extends State<ManageRequest>
   }
 
   Widget sparePartRequestsListView() {
-    if(sparePartRequestsLength == 0){
+    if (sparePartRequestsLength == 0) {
       return const Center(
         child: CircularProgressIndicator(),
       );
     }
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: (sparePartRequestsLength > 0) ? RefreshIndicator(
-        onRefresh: () async {
-          page = 1;
-          await fetchSparePartRequests(isRefresh: true);
-        },
-        child: ListView.builder(
-          controller: scrollController,
-          itemCount: isLoadingMore ? sparePartRequestsLength + 1 : sparePartRequestsLength,
-          itemBuilder: (context, index) {
-            if (index < sparePartRequestsLength) {
-              return Column(
-                children: [
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  SparePartRequestCard(
-                    sparePartRequest: sparePartRequests[index],
-                    role: role,
-                  ),
-                  (index == sparePartRequestsLength - 1)
-                      ? const SizedBox(height: 16)
-                      : const SizedBox.shrink()
-                ]
-              );
-            } else {
-              return const Center(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: (sparePartRequestsLength > 0)
+            ? RefreshIndicator(
+                onRefresh: () async {
+                  page = 1;
+                  await fetchSparePartRequests(isRefresh: true);
+                },
+                child: ListView.builder(
+                    controller: scrollController,
+                    itemCount: isLoadingMore
+                        ? sparePartRequestsLength + 1
+                        : sparePartRequestsLength,
+                    itemBuilder: (context, index) {
+                      if (index < sparePartRequestsLength) {
+                        return Column(children: [
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          SparePartRequestCard(
+                            sparePartRequest: sparePartRequests[index],
+                            role: role,
+                          ),
+                          (index == sparePartRequestsLength - 1)
+                              ? const SizedBox(height: 16)
+                              : const SizedBox.shrink()
+                        ]);
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    }),
+              )
+            : const Center(
                 child: CircularProgressIndicator(),
-              );
-            }
-          }
-        ),
-      ): const Center(
-        child: CircularProgressIndicator(),
-      )
-    );
+              ));
   }
 
-  Future<void> _handleTabChanges() async{
+  Future<void> _tabChangesListener() async {
     int newIndex = _tabController.index;
     if (_tabIndex != newIndex) {
       setState(() {
         page = 1;
         _tabIndex = newIndex;
       });
+      if (_tabIndex == 0) {
+        await fetchRequests(refresh: true);
+      } else {
+        await fetchSparePartRequests(isRefresh: true);
+      }
     }
-    if (_tabIndex == 0) {
-      await fetchRequests(refresh: true);
-    } else {
-      await fetchSparePartRequests(isRefresh: true);
-    }
+
   }
+
   Future<void> _scrollListener() async {
     if (isLoadingMore) return;
     if (scrollController.position.pixels ==
@@ -567,7 +570,7 @@ class _ManageRequestState extends State<ManageRequest>
           isLoadingMore = true;
         });
         page++;
-        if(_tabIndex == 0){
+        if (_tabIndex == 0) {
           await fetchRequests();
         } else {
           await fetchSparePartRequests();

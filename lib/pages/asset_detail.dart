@@ -33,7 +33,6 @@ class _AssetDetailState extends State<AssetDetail> {
   }
 
 
-
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;

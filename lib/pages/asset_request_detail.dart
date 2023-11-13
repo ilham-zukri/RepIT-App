@@ -35,9 +35,6 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
     request = widget.request;
     role = widget.role;
   }
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

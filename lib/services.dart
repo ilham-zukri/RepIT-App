@@ -917,12 +917,35 @@ abstract class Services {
           "Accept": "application/json",
           "Authorization": "Bearer $token"
         }),
-        queryParameters: {
-          'page': page ?? 1
-        },
+        queryParameters: {'page': page ?? 1},
       );
       if (response.statusCode == 200) {
         return response.data as Map;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
+  /// Approve Spare part request
+  static Future<Response?> approveSparePartRequest(
+      int requestId, bool approved) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().put(
+          '$apiUrl/spare-parts/request/approve',
+          options: Options(headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          }),
+          data: {'request_id': requestId, 'approved': approved});
+      if (response.statusCode == 200) {
+        return response;
       } else {
         exceptionHandling(response.data['message']);
         return null;

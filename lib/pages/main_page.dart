@@ -293,6 +293,56 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
             ),
             Container(
+              margin: const EdgeInsets.only(top: 16, left: 20, right: 20),
+              width: 245,
+              height: 40,
+              child: Material(
+                child: InkWell(
+                  onTap: () {
+                    if (userData.role['asset_management'] != 1 &&
+                        userData.role['asset_request'] != 1) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => alert(context, "Tidak Berwenang",
+                            "Anda tidak memiliki wewenang untuk mengakses menu ini"),
+                      );
+                      return;
+                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ManageAsset(),
+                      ),
+                    );
+                  },
+                  customBorder: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                        right: 8, left: 8, top: 4, bottom: 5),
+                    width: size.width,
+                    height: 33,
+                    child: const Row(
+                      children: [
+                        Icon(
+                          Icons.construction,
+                          size: 32,
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Text(
+                          'Manage Spare Parts',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w600),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Container(
               margin: const EdgeInsets.only(top: 16, left: 20),
               width: 205,
               height: 40,
@@ -512,7 +562,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(top: size.height / 3.2, left: 20),
+              margin: EdgeInsets.only(top: size.height / 4.4, left: 20),
               width: 205,
               height: 40,
               child: Material(

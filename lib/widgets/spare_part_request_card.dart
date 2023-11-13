@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/spare_part_request.dart';
 import 'package:repit_app/widgets/req_status_box_builder.dart';
 
+import '../pages/spare_part_request_detail.dart';
+
 class SparePartRequestCard extends StatelessWidget {
   final SparePartRequest sparePartRequest;
   final Map<String, dynamic> role;
@@ -20,7 +22,17 @@ class SparePartRequestCard extends StatelessWidget {
           ),
         ),
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SparePartRequestDetail(
+                  sparePartRequest: sparePartRequest,
+                  role: role,
+                )
+              )
+            );
+          },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
