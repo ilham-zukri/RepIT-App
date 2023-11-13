@@ -13,6 +13,7 @@ import 'package:repit_app/pages/my_assets_page.dart';
 import 'package:repit_app/pages/my_request_page.dart';
 import 'package:repit_app/pages/my_tickets_page.dart';
 import 'package:repit_app/pages/profile_page.dart';
+import 'package:repit_app/pages/spare_part_request_form.dart';
 import 'package:repit_app/pages/ticket_form.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/alert.dart';
@@ -147,6 +148,34 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         shape: const CircleBorder(),
         //shape of button
         children: [
+          SpeedDialChild(
+            //speed dial child
+            child: const Icon(Icons.construction, color: Colors.white),
+            label: 'Spare Parts',
+            labelBackgroundColor: const Color(0xff00ABB3),
+            backgroundColor: const Color(0xff00ABB3),
+            labelStyle: const TextStyle(
+                fontSize: 16.0,
+                color: Colors.white,
+                fontWeight: FontWeight.w600),
+            onTap: () {
+              if (userData.role['asset_request'] != 1) {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) => alert(
+                        context,
+                        "Tidak Berwenang",
+                        "Anda tidak memiliki wewenang untuk membuat Asset Request"));
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SparePartRequestForm(),
+                  ),
+                );
+              }
+            },
+          ),
           SpeedDialChild(
             //speed dial child
             child: const Icon(CupertinoIcons.cube_box, color: Colors.white),

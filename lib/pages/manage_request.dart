@@ -40,6 +40,12 @@ class _ManageRequestState extends State<ManageRequest> {
     locations = fetchLocations();
   }
 
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
   Future<void> fetchRequests({bool? refresh}) async {
     var data = await Services.getListOfRequests(page,
         filterLocation: locationFilter,

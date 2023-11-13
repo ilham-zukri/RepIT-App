@@ -32,6 +32,8 @@ class _AssetDetailState extends State<AssetDetail> {
     status = asset.status!;
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;

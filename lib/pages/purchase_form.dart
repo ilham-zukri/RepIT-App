@@ -37,6 +37,17 @@ class _PurchaseFormState extends State<PurchaseForm> {
     assetTypes = fetchAssetTypes();
   }
 
+  @override
+  void dispose() {
+    vendorNameEc.dispose();
+    descriptionEc.dispose();
+    typeEc.dispose();
+    brandEc.dispose();
+    modelEc.dispose();
+    amountEc.dispose();
+    super.dispose();
+  }
+
   /// GET asset Types
   Future<List?> fetchAssetTypes() async {
     try {

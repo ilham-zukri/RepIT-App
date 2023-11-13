@@ -16,6 +16,13 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool isLoading = false;
+
+  @override
+  void dispose() {
+    widget.passwordController.dispose();
+    widget.userNameController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;

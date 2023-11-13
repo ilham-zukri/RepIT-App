@@ -30,6 +30,12 @@ class _ManagePurchaseState extends State<ManagePurchase> {
     scrollController.addListener(_scrollListener);
   }
 
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
   Future<void> fetchPurchases({bool isRefresh = false}) async {
     try {
       var data = await Services.getPurchases(page);

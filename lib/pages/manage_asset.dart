@@ -30,6 +30,12 @@ class _ManageAssetState extends State<ManageAsset> {
     scrollController.addListener(_scrollListener);
   }
 
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
   Future<void> fetchAssets({bool? isRefresh}) async {
     var data = await Services.getAllAssets(page);
     if (data == null) {

@@ -37,6 +37,13 @@ class _TicketFormState extends State<TicketForm> {
     assetList = fetchAssetList();
   }
 
+  @override
+  void dispose() {
+    titleEc.dispose();
+    descEc.dispose();
+    super.dispose();
+  }
+
   Future<List> fetchCategories() async {
     final data = await Services.getTicketCategories();
     if (data == null) {

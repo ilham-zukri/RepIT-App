@@ -35,6 +35,17 @@ class _RegisterAssetOldState extends State<RegisterAssetOld> {
     userData = fetchUsers();
   }
 
+  @override
+  void dispose() {
+    brandEc.dispose();
+    modelEc.dispose();
+    serialNumberEc.dispose();
+    cpuEc.dispose();
+    ramEc.dispose();
+    utilizationEc.dispose();
+    super.dispose();
+  }
+
   Future<List<UserForList>> fetchUsers() async {
     final data = await Services.getMySubordinates();
     if (data == null) {

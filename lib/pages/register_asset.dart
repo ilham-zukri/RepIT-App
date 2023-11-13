@@ -46,6 +46,15 @@ class _RegisterAssetState extends State<RegisterAsset> {
   }
 
   @override
+  void dispose() {
+    serialNumberEc.dispose();
+    cpuEc.dispose();
+    ramEc.dispose();
+    utilizationEc.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Stack(

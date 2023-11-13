@@ -31,6 +31,12 @@ class _ManageTicketState extends State<ManageTicket> {
     scrollController.addListener(_scrollListener);
   }
 
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
   Future<void> fetchTickets({bool? isRefresh}) async {
     var data = await Services.getAllTickets(page);
     if (data == null) {

@@ -35,6 +35,12 @@ class _MyRequestPageState extends State<MyRequestPage> {
     scrollController.addListener(_scrollListener);
   }
 
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
   Future<void> fetchRequests({required bool isRefresh}) async {
     var data = await Services.getMyListOfRequests(page);
     if (data == null) {

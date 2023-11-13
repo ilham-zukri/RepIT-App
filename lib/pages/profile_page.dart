@@ -16,6 +16,13 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController emailController = TextEditingController();
 
   @override
+  void dispose() {
+    usernameController.dispose();
+    emailController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var userData = widget.userData;
     return Scaffold(

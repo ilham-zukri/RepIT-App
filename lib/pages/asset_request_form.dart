@@ -3,6 +3,7 @@ import 'package:repit_app/data_classes/location_for_list.dart';
 import 'package:repit_app/data_classes/user_for_list.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
+import 'package:repit_app/widgets/custom_text_field_builder.dart';
 import 'package:repit_app/widgets/loading_overlay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,6 +35,13 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
     userData = fetchUsers();
     locations = fetchLocations();
     prioritiesList = fetchPriorities();
+  }
+
+  @override
+  void dispose() {
+    titleEc.dispose();
+    descEc.dispose();
+    super.dispose();
   }
 
   Future<List<UserForList>> fetchUsers() async {
@@ -83,60 +91,11 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                   const SizedBox(
                     height: 24,
                   ),
-                  const Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Judul*",
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 8),
-                    height: 41,
-                    child: TextField(
-                      controller: titleEc,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(10),
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                  ),
+                  regularTextFieldBuilder(labelText: "Judul*", controller: titleEc),
                   const SizedBox(
                     height: 24,
                   ),
-                  const Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Deskripsi*",
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 8),
-                    height: 112,
-                    child: TextField(
-                      maxLines: 100,
-                      controller: descEc,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(10),
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                  ),
+                  descriptionTextFieldBuilder(labelText: "Deskripsi*", controller: descEc),
                   const SizedBox(
                     height: 24,
                   ),

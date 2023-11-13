@@ -880,6 +880,32 @@ abstract class Services {
     }
   }
 
+  /// Create Spare part Request
+  static Future<Response?> createSparePartRequest(
+      Map<String, dynamic> data) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().post(
+        '$apiUrl/spare-parts/request',
+        options: Options(headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        }),
+        data: data,
+      );
+      if (response.statusCode == 201) {
+        return response;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
   /// Handling Exception From API ///
   static exceptionHandling(var e) {
     if (e is DioException) {

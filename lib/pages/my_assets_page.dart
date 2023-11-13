@@ -26,6 +26,12 @@ class _MyAssetsPageState extends State<MyAssetsPage> {
     scrollController.addListener(_scrollListener);
   }
 
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
   Future<void> fetchAssets({bool? isRefresh}) async {
     var data = await Services.getMyAssets(page);
     if (data == null) {

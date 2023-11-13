@@ -74,12 +74,32 @@ class _TicketDetailState extends State<TicketDetail> {
                   const SizedBox(
                     height: 32,
                   ),
-                  Text(
-                    ticket.title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        ticket.title,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      (ticket.status == "In Progress") ? SizedBox(
+                        width: 150,
+                        child: ElevatedButton(
+                          onPressed: () {
+
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xff009199),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50)),
+                            elevation: 5,
+                          ),
+                          child: const Text("Ganti Sparepart"),
+                        ),
+                      ) : const SizedBox.shrink()
+                    ],
                   ),
                   const SizedBox(
                     height: 24,
