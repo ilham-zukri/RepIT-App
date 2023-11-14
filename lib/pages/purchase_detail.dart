@@ -344,6 +344,9 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
                                                       });
                                                     }
                                                   } catch (e) {
+                                                    setState(() {
+                                                      isLoading = false;
+                                                    });
                                                     if (mounted) {
                                                       showDialog(
                                                         context: context,

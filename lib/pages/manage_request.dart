@@ -558,7 +558,6 @@ class _ManageRequestState extends State<ManageRequest>
         await fetchSparePartRequests(isRefresh: true);
       }
     }
-
   }
 
   Future<void> _scrollListener() async {
