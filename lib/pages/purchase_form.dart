@@ -230,8 +230,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
                                                 fontWeight: FontWeight.w600),
                                           ),
                                         ),
-                                      )
-                                    : const SizedBox(height: 8)
+                                      ) : const SizedBox(height: 8),
                               ],
                             );
                           },
@@ -528,7 +527,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
     int priceTotal = amount * priceEa;
 
     PurchaseItem purchaseItem = PurchaseItem(
-      assetType: assetType,
+      type: assetType,
       brand: brand,
       model: model,
       amount: amount,

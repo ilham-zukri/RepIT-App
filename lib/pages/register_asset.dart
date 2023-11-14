@@ -221,7 +221,7 @@ class _RegisterAssetState extends State<RegisterAsset> {
 
   void showAddItemDialog(BuildContext context, PurchaseItem item) {
     Size size = MediaQuery.of(context).size;
-    String assetType = item.assetType;
+    String assetType = item.type;
     String brand = item.brand;
     String model = item.model;
     Navigator.pop(context);
@@ -462,7 +462,7 @@ class _RegisterAssetState extends State<RegisterAsset> {
     items.add(asset.toMap());
     // Ambil index PurchaseItem yang sesuai dengan asset yang ditambahkan
     int index = purchaseItems.indexWhere((item) =>
-        item.assetType == asset.assetType &&
+        item.type == asset.assetType &&
         item.brand == asset.brand &&
         item.model == asset.model);
 

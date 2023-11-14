@@ -1,6 +1,7 @@
 class PurchaseItem {
   int? id;
-  final String assetType;
+  final String type;
+  final int? typeId;
   final String brand;
   final String model;
   int amount;
@@ -9,7 +10,8 @@ class PurchaseItem {
 
   PurchaseItem(
       {this.id,
-      required this.assetType,
+      required this.type,
+      this.typeId,
       required this.brand,
       required this.model,
       required this.amount,
@@ -18,7 +20,7 @@ class PurchaseItem {
 
   Map<String, dynamic> toMap() {
     return {
-      "asset_type": assetType,
+      "asset_type": type,
       "brand": brand,
       "amount": amount,
       "model": model,
@@ -26,4 +28,13 @@ class PurchaseItem {
       "total_price": priceTotal
     };
   }
+
+  Map<String, dynamic> toMapSp() => {
+        "type_id": typeId,
+        "brand": brand,
+        "amount": amount,
+        "model": model,
+        "price_ea": priceEa,
+        "total_price": priceTotal
+      };
 }

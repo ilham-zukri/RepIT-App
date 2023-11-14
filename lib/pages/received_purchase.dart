@@ -54,7 +54,7 @@ class _ReceivedPurchaseState extends State<ReceivedPurchase> {
             docPath: purchase['doc_path'],
             items: List<PurchaseItem>.from(purchase['items'].map((item) => PurchaseItem(
               id: item['id'],
-              assetType: item['asset_type'],
+              type: item['asset_type'],
               brand: item['brand'],
               model: item['model'],
               amount: item['amount'],

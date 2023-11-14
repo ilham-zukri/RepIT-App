@@ -956,13 +956,66 @@ abstract class Services {
     }
   }
 
+  /// Get Spare Part Types
+  static Future<List?> getSparePartTypes() async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().get(
+        '$apiUrl/spare-parts/types',
+        options: Options(headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        }),
+      );
+      if (response.statusCode == 200) {
+        return response.data as List;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
+  /// POST spare part purchase FORM
+  static Future<Response?> createSparePartPurchaseForm(
+      Map<String, dynamic> data) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().post(
+        '$apiUrl/spare-parts/purchase',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+        data: data,
+      );
+      if (response.statusCode == 201) {
+        return response;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
   /// Handling Exception From API ///
   static exceptionHandling(var e) {
     if (e is DioException) {
       if (e.response != null) {
         throw e.response!.data["message"].toString();
       } else {
-        throw Exception("Terjadi kesalahan pada koneksi.");
+        throw Exception(e.toString());
+        // e.response!.data["message"].toString();
       }
     } else {
       throw Exception(e);

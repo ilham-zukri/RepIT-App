@@ -74,7 +74,7 @@ class SparePartRequestCard extends StatelessWidget {
                     ),
                     Text(
                       sparePartRequest.requester,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                       ),
                     ),

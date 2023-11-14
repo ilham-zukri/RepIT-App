@@ -25,7 +25,7 @@ class PurchaseItemCard extends StatelessWidget {
             child: Column(
               children: [
                 Container(
-                  padding: const EdgeInsets.only(left: 16),
+                  padding: const EdgeInsets.only(left: 16, right: 16),
                   width: size.width,
                   height: 45,
                   decoration: const BoxDecoration(
@@ -35,44 +35,32 @@ class PurchaseItemCard extends StatelessWidget {
                         topRight: Radius.circular(10)),
                   ),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          purchaseItem.assetType,
-                          style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600),
-                        ),
+                      Text(
+                        purchaseItem.type,
+                        style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600),
                       ),
-                      (onDelete != null)
-                          ? Align(
-                              alignment: Alignment.centerRight,
-                              heightFactor: 5,
-                              widthFactor: 5,
-                              child: IconButton(
-                                alignment: Alignment.topCenter,
-                                onPressed: onDelete,
-                                icon: const Icon(
-                                  Icons.remove,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            )
-                          : const SizedBox.shrink(),
-                      (onAdd != null)
-                          ? IconButton(
-                            alignment: Alignment.topCenter,
-                            onPressed: onAdd,
-                            icon: const Icon(
-                              Icons.add,
-                              color: Colors.white,
-                            ),
-                          )
-                          : const SizedBox.shrink(),
+                      if (onDelete != null)
+                        IconButton(
+                          onPressed: onDelete,
+                          icon: const Icon(
+                            Icons.remove,
+                            color: Colors.red,
+                          ),
+                        ),
+                      if (onAdd != null)
+                        IconButton(
+                          alignment: Alignment.topCenter,
+                          onPressed: onAdd,
+                          icon: const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                          ),
+                        )
                     ],
                   ),
                 ),

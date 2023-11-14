@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:repit_app/pages/spare_part_purchase_form.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
 import 'package:repit_app/widgets/loading_overlay.dart';
@@ -242,7 +243,16 @@ class _SparePartRequestDetailState extends State<SparePartRequestDetail> {
 
       case "Approved":
         buttonText = "Ajukan Pembelian";
-        action = () {};
+        action = () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SparePartPurchaseForm(
+                requestId: sparePartRequest.id,
+              ),
+            ),
+          );
+        };
         break;
     }
     if (status == "Requested" && role['asset_approval'] == 0) {
