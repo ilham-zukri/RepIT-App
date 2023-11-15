@@ -8,6 +8,7 @@ import 'package:repit_app/pages/login_page.dart';
 import 'package:repit_app/pages/manage_asset.dart';
 import 'package:repit_app/pages/manage_purchase.dart';
 import 'package:repit_app/pages/manage_request.dart';
+import 'package:repit_app/pages/manage_spare_part.dart';
 import 'package:repit_app/pages/manage_ticket.dart';
 import 'package:repit_app/pages/my_assets_page.dart';
 import 'package:repit_app/pages/my_request_page.dart';
@@ -311,7 +312,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ManageAsset(),
+                        builder: (context) => const ManageSparePart(),
                       ),
                     );
                   },

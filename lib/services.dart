@@ -1110,6 +1110,38 @@ abstract class Services {
     return null;
   }
 
+  /// Get All Spare Parts with Filter
+  static Future<Map?> getAllSpareParts({required int page, int? typeId, int? statusId}) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().get(
+        '$apiUrl/spare-parts',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+        queryParameters: {
+          'page': page,
+          'type_id': typeId,
+          'status_id': statusId
+        }
+      );
+      if (response.statusCode == 200) {
+        return response.data as Map;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
+
   /// Handling Exception From API ///
   static exceptionHandling(var e) {
     if (e is DioException) {

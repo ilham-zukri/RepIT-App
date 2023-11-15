@@ -12,6 +12,8 @@ class Asset {
   final String? brand;
   final String? model;
 
+  // TODO : add purchase id
+
   Asset(this.id,this.utilization, this.status, this.assetType, this.ram, this.cpu,
       this.location, this.serialNumber, this.brand, this.model, this.qrPath, this.ownerId);
 
