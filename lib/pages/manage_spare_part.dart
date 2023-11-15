@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/spare_part.dart';
+import 'package:repit_app/pages/spare_part_received_purchase.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
 import 'package:repit_app/widgets/spare_part_card.dart';
 
@@ -25,6 +26,12 @@ class _ManageSparePartState extends State<ManageSparePart> {
     scrollController.addListener(_scrollListener);
     fetchSpareParts();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   Future<void> fetchSpareParts({bool isRefresh = false}) async {
@@ -63,7 +70,9 @@ class _ManageSparePartState extends State<ManageSparePart> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(context, "Manage Spare Part", 'add', () {}),
+      appBar: customAppBar(context, "Manage Spare Part", 'add', () {
+        addAssetsDialog(context);
+      }),
       body: sparePartListView(context),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
@@ -111,6 +120,55 @@ class _ManageSparePartState extends State<ManageSparePart> {
 
     return const Center(
       child: CircularProgressIndicator(),
+    );
+  }
+
+  void addAssetsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            "Tambahkan Spare Part",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.w500),
+          ),
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          actions: [
+            SizedBox(
+              width: 140,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SparePartReceivedPurchase(),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff00ABB3),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    elevation: 5),
+                child: const Text("Dari Pembelian"),
+              ),
+            ),
+            SizedBox(
+              width: 140,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff00ABB3),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    elevation: 5),
+                child: const Text("Aset Lama"),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

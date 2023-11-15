@@ -2,19 +2,23 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/asset_card.dart';
 import 'package:repit_app/data_classes/purchase.dart';
+import 'package:repit_app/data_classes/spare_part.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/alert.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
+import 'package:repit_app/widgets/custom_text_field_builder.dart';
 import 'package:repit_app/widgets/loading_overlay.dart';
 import 'package:repit_app/widgets/purchase_item_card.dart';
+import 'package:repit_app/widgets/spare_part_card.dart';
 
 import '../data_classes/asset.dart';
 import '../data_classes/purchase_item.dart';
 
 class RegisterAsset extends StatefulWidget {
   final Purchase purchase;
+  final String usage;
 
-  const RegisterAsset({super.key, required this.purchase});
+  const RegisterAsset({super.key, required this.purchase, required this.usage});
 
   @override
   State<RegisterAsset> createState() => _RegisterAssetState();
@@ -22,9 +26,12 @@ class RegisterAsset extends StatefulWidget {
 
 class _RegisterAssetState extends State<RegisterAsset> {
   late final Purchase purchase;
+  late String usage;
+  late String appbarTittle;
   late List<PurchaseItem> purchaseItems;
   List<Map<String, dynamic>> items = [];
   List<Asset> assets = [];
+  List<SparePart> spareParts = [];
   TextEditingController serialNumberEc = TextEditingController();
   TextEditingController cpuEc = TextEditingController();
   TextEditingController ramEc = TextEditingController();
@@ -39,7 +46,9 @@ class _RegisterAssetState extends State<RegisterAsset> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    usage = widget.usage;
+    appbarTittle =
+        (usage == 'asset') ? 'Register Asset' : 'Register Spare Part';
     super.initState();
     purchase = widget.purchase;
     purchaseItems = purchase.items;
@@ -56,83 +65,113 @@ class _RegisterAssetState extends State<RegisterAsset> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return Stack(
       children: [
         Scaffold(
           appBar: customAppBar(
             context,
-            "Register Asset",
+            appbarTittle,
             "purchaseItems",
             () {
               showPurchaseItemDialog(context);
             },
           ),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
+          body: assetForm(context),
+        ),
+        loadingOverlay(isLoading, context)
+      ],
+    );
+  }
+
+  Widget assetForm(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "No. Pembelian: ${purchase.id}",
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Container(
+              height: size.height / 1.4,
+              decoration: const BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: Colors.black26),
+                  bottom: BorderSide(color: Colors.black26),
+                ),
+              ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "No. Pembelian: ${purchase.id}",
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  Container(
-                    height: size.height / 1.4,
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        top: BorderSide(color: Colors.black26),
-                        bottom: BorderSide(color: Colors.black26),
+                  if (assets.isNotEmpty)
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: assets.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              AssetCard(
+                                asset: assets[index],
+                                withDetail: false,
+                              ),
+                              (index < purchase.items.length - 1)
+                                  ? const SizedBox.shrink()
+                                  : const SizedBox(
+                                      height: 8,
+                                    ),
+                            ],
+                          );
+                        },
                       ),
                     ),
-                    child: Column(
-                      children: [
-                        (assets.isNotEmpty)
-                            ? Expanded(
-                                child: ListView.builder(
-                                  itemCount: assets.length,
-                                  itemBuilder: (context, index) {
-                                    return Column(
-                                      children: [
-                                        const SizedBox(
-                                          height: 8,
-                                        ),
-                                        AssetCard(
-                                          asset: assets[index],
-                                          withDetail: false,
-                                        ),
-                                        (index < purchase.items.length - 1)
-                                            ? const SizedBox.shrink()
-                                            : const SizedBox(
-                                                height: 8,
-                                              ),
-                                      ],
-                                    );
-                                  },
-                                ),
-                              )
-                            : const SizedBox.shrink()
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  SizedBox(
-                    width: size.width,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xff009199),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50)),
-                        elevation: 5,
+                  if (spareParts.isNotEmpty)
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: spareParts.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              SparePartCard(
+                                sparePart: spareParts[index],
+                              ),
+                              (index < purchase.items.length - 1)
+                                  ? const SizedBox.shrink()
+                                  : const SizedBox(
+                                height: 8,
+                              ),
+                            ],
+                          );
+                        },
                       ),
-                      onPressed: (!isButtonDisabled) ? () async {
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            SizedBox(
+              width: size.width,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xff009199),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  elevation: 5,
+                ),
+                onPressed: (!isButtonDisabled)
+                    ? () async {
                         try {
                           setState(() {
                             isLoading = true;
@@ -166,17 +205,14 @@ class _RegisterAssetState extends State<RegisterAsset> {
                             });
                           }
                         }
-                      } : null,
-                      child: const Text('Daftarkan Asset'),
-                    ),
-                  ),
-                ],
+                      }
+                    : null,
+                child: const Text('Daftarkan Asset'),
               ),
             ),
-          ),
+          ],
         ),
-        loadingOverlay(isLoading, context)
-      ],
+      ),
     );
   }
 
@@ -229,7 +265,7 @@ class _RegisterAssetState extends State<RegisterAsset> {
       context: context,
       builder: (context) {
         return SimpleDialog(
-          title: const Text("Data Asset"),
+          title: (usage == 'asset') ? const Text("Data Asset") : const Text("Data Spare Part"),
           titlePadding: const EdgeInsets.all(12),
           contentPadding: const EdgeInsets.all(12),
           children: [
@@ -298,115 +334,25 @@ class _RegisterAssetState extends State<RegisterAsset> {
             const SizedBox(
               height: 8,
             ),
-            const Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                "Serial Number*",
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 8),
-              height: 41,
-              child: TextField(
-                controller: serialNumberEc,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(10),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-            ),
+            regularTextFieldBuilder(labelText: "Serial Number*", controller: serialNumberEc),
             const SizedBox(
               height: 8,
             ),
-            const Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                "CPU",
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 8),
-              height: 41,
-              child: TextField(
-                controller: cpuEc,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(10),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            const Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                "RAM",
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 8),
-              height: 41,
-              child: TextField(
-                controller: ramEc,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(10),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            const Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                "Utilization*",
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 8),
-              height: 41,
-              child: TextField(
-                controller: utilizationEc,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(10),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-            ),
+           if(usage == "asset")
+           Column(
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+               regularTextFieldBuilder(labelText: "CPU", controller: cpuEc),
+               const SizedBox(
+                 height: 8,
+               ),
+               regularTextFieldBuilder(labelText: "RAM", controller: ramEc),
+               const SizedBox(
+                 height: 8,
+               ),
+               regularTextFieldBuilder(labelText: "Utilization", controller: utilizationEc),
+             ],
+           ),
             const SizedBox(
               height: 8,
             ),
@@ -430,19 +376,18 @@ class _RegisterAssetState extends State<RegisterAsset> {
                     return;
                   }
                   Asset asset = Asset(
-                    null,
-                    utilizationEc.text.trim(),
-                    null,
-                    assetType,
-                    ramEc.text.trim(),
-                    cpuEc.text.trim(),
-                    null,
-                    serialNumberEc.text.trim(),
-                    brand,
-                    model,
-                    null,
-                    null
-                  );
+                      null,
+                      utilizationEc.text.trim(),
+                      null,
+                      assetType,
+                      ramEc.text.trim(),
+                      cpuEc.text.trim(),
+                      null,
+                      serialNumberEc.text.trim(),
+                      brand,
+                      model,
+                      null,
+                      null);
                   setState(() {
                     addAsset(asset);
                   });
@@ -456,6 +401,7 @@ class _RegisterAssetState extends State<RegisterAsset> {
       },
     );
   }
+  // TODO : Add addSparePart method
 
   void addAsset(Asset asset) {
     assets.add(asset);

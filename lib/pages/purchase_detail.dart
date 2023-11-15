@@ -418,6 +418,7 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
                               MaterialPageRoute(
                                 builder: (context) => RegisterAsset(
                                   purchase: purchase,
+                                  usage: usage,
                                 ),
                               ),
                             );
