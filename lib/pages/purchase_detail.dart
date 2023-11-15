@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/purchase.dart';
 import 'package:repit_app/pages/register_asset.dart';
@@ -10,8 +11,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 class PurchaseDetail extends StatefulWidget {
   final Purchase purchase;
+  final String usage;
 
-  const PurchaseDetail({super.key, required this.purchase});
+  const PurchaseDetail(
+      {super.key, required this.purchase, required this.usage});
 
   @override
   State<PurchaseDetail> createState() => _PurchaseDetailState();
@@ -19,6 +22,8 @@ class PurchaseDetail extends StatefulWidget {
 
 class _PurchaseDetailState extends State<PurchaseDetail> {
   late Purchase purchase;
+  late String usage;
+  late String appbarTittle;
   bool isButtonDisabled = false;
   bool isLoading = false;
   static const TextStyle tableContentStyle = TextStyle(
@@ -29,7 +34,13 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
   @override
   void initState() {
     super.initState();
+    usage = widget.usage;
     purchase = widget.purchase;
+    if (usage == 'asset') {
+      appbarTittle = 'Purchase Detail';
+    } else {
+      appbarTittle = 'Spare Part Purchase Detail';
+    }
   }
 
   @override
@@ -40,7 +51,7 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
     return Stack(
       children: [
         Scaffold(
-          appBar: customDownloadAppBar(context, "Purchase Detail"),
+          appBar: customDownloadAppBar(context, appbarTittle),
           body: Padding(
             padding: const EdgeInsets.all(28),
             child: Column(
@@ -132,11 +143,13 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
                           ),
                         ),
                         Container(
-                            margin: const EdgeInsets.only(top: 4),
-                            child: const Text(':',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 15))),
+                          margin: const EdgeInsets.only(top: 4),
+                          child: const Text(
+                            ':',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 15),
+                          ),
+                        ),
                         Container(
                           margin: const EdgeInsets.only(top: 4),
                           child: Text(
@@ -226,14 +239,21 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
                                               ),
                                               ElevatedButton(
                                                 onPressed: () async {
+                                                  late Response? response;
                                                   try {
                                                     setState(() {
                                                       isLoading = true;
                                                     });
-                                                    var response =
-                                                        await Services
-                                                            .cancelPurchase(
-                                                                purchase.id);
+                                                    if (usage == 'asset') {
+                                                      response = await Services
+                                                          .cancelPurchase(
+                                                              purchase.id);
+                                                    } else {
+                                                      response = await Services
+                                                          .cancelSparePartPurchase(
+                                                              purchase.id);
+                                                    }
+
                                                     setState(() {
                                                       isLoading = false;
                                                     });
@@ -316,14 +336,20 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
                                               ),
                                               ElevatedButton(
                                                 onPressed: () async {
+                                                  late Response? response;
                                                   try {
                                                     setState(() {
                                                       isLoading = true;
                                                     });
-                                                    var response =
-                                                        await Services
-                                                            .receivePurchase(
-                                                                purchase.id);
+                                                    if (usage == "asset") {
+                                                      response = await Services
+                                                          .receivePurchase(
+                                                              purchase.id);
+                                                    } else {
+                                                      response = await Services
+                                                          .receiveSparePartPurchase(
+                                                              purchase.id);
+                                                    }
                                                     setState(() {
                                                       isLoading = false;
                                                     });
@@ -396,12 +422,19 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
                               ),
                             );
                           },
-                          child: const Text(
-                            "Daftarkan Aset",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600),
-                          ),
+                          child: (usage == "asset")
+                              ? const Text(
+                                  "Daftarkan Aset",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600),
+                                )
+                              : const Text(
+                                  "Daftarkan Spare Part",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600),
+                                ),
                         ),
                       )
               ],

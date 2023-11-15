@@ -5,8 +5,9 @@ import 'package:repit_app/widgets/purchase_status_box_builder.dart';
 
 class PurchaseCard extends StatelessWidget {
   final Purchase purchase;
+  final String usage;
 
-  const PurchaseCard({super.key, required this.purchase});
+  const PurchaseCard({super.key, required this.purchase, required this.usage});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class PurchaseCard extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => PurchaseDetail(purchase: purchase),
+                builder: (context) => PurchaseDetail(purchase: purchase, usage: usage),
               ),
             );
           },

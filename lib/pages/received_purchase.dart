@@ -107,7 +107,7 @@ class _ReceivedPurchaseState extends State<ReceivedPurchase> {
                           const SizedBox(
                             height: 16,
                           ),
-                          PurchaseCard(purchase: purchases[index]),
+                          PurchaseCard(purchase: purchases[index], usage: "asset",),
                           (index == purchasesLength - 1)
                               ? const SizedBox(height: 16)
                               : const SizedBox.shrink()
