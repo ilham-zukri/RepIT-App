@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/ticket.dart';
+import 'package:repit_app/pages/spare_part_replacement.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/alert.dart';
+import 'package:repit_app/widgets/custom_text_field_builder.dart';
 import 'package:repit_app/widgets/image_viewer.dart';
 import 'package:repit_app/widgets/loading_overlay.dart';
 import 'package:repit_app/widgets/ticket_status_box_builder.dart';
@@ -84,21 +86,31 @@ class _TicketDetailState extends State<TicketDetail> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      (ticket.status == "In Progress") ? SizedBox(
-                        width: 150,
-                        child: ElevatedButton(
-                          onPressed: () {
-
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xff009199),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50)),
-                            elevation: 5,
-                          ),
-                          child: const Text("Ganti Sparepart"),
-                        ),
-                      ) : const SizedBox.shrink()
+                      (ticket.status == "In Progress")
+                          ? SizedBox(
+                              width: 150,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          SparePartReplacement(
+                                        assetId: ticket.assetId!,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xff009199),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(50)),
+                                  elevation: 5,
+                                ),
+                                child: const Text("Ganti Sparepart"),
+                              ),
+                            )
+                          : const SizedBox.shrink()
                     ],
                   ),
                   const SizedBox(
@@ -312,6 +324,59 @@ class _TicketDetailState extends State<TicketDetail> {
                           ),
                         ],
                       ),
+                      if (ticket.note != null)
+                        (ticket.note!['resolution_note'] != null)
+                            ? TableRow(
+                                children: [
+                                  Container(
+                                    margin: tableContentMarginTop,
+                                    child: const Text(
+                                      'Note Penyelesaian',
+                                      style: tableContentStyle,
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: tableContentMarginTop,
+                                    child: const Text(
+                                      ':',
+                                      style: tableContentStyle,
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: tableContentMarginTop,
+                                    child: Text(
+                                      ticket.note!['resolution_note']
+                                          .toString(),
+                                      style: tableContentStyle,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : TableRow(
+                                children: [
+                                  Container(
+                                    margin: tableContentMarginTop,
+                                    child: const Text(
+                                      'Note Teknisi',
+                                      style: tableContentStyle,
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: tableContentMarginTop,
+                                    child: const Text(
+                                      ':',
+                                      style: tableContentStyle,
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: tableContentMarginTop,
+                                    child: Text(
+                                      ticket.note!['handler_note'].toString(),
+                                      style: tableContentStyle,
+                                    ),
+                                  ),
+                                ],
+                              ),
                     ],
                   ),
                   (images.isNotEmpty)
@@ -537,7 +602,38 @@ class _TicketDetailState extends State<TicketDetail> {
         break;
       case "On Hold":
         buttonText = "Lanjutkan";
-        action = () async {};
+        action = () async {
+          try {
+            setState(() {
+              isLoading = true;
+            });
+            var response = await Services.workingOnTicket(
+              ticket.id!,
+            );
+            setState(() {
+              isLoading = false;
+              ticket.status = response!['data']['status'];
+            });
+            if (mounted) {
+              showDialog(
+                context: context,
+                builder: (context) =>
+                    alert(context, "Berhasil", response!['message']),
+              );
+            }
+          } catch (e) {
+            if (mounted) {
+              showDialog(
+                context: context,
+                builder: (context) => alert(
+                  context,
+                  "Error",
+                  e.toString(),
+                ),
+              );
+            }
+          }
+        };
         break;
     }
 
@@ -578,7 +674,9 @@ class _TicketDetailState extends State<TicketDetail> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50)),
                   elevation: 5),
-              onPressed: () async {},
+              onPressed: () {
+                showOnHoldNoteDialog(context);
+              },
               child: const Text(
                 "Tunda Pengerjaan",
                 style:
@@ -720,6 +818,69 @@ class _TicketDetailState extends State<TicketDetail> {
                       });
                       if (mounted) {
                         resolveNoteEc.clear();
+                        Navigator.pop(context);
+                      }
+                    } catch (e) {
+                      setState(() {
+                        isLoading = false;
+                      });
+                      if (mounted) {
+                        showDialog(
+                            context: context,
+                            builder: (context) => alert(
+                                  context,
+                                  "Error",
+                                  e.toString(),
+                                ));
+                      }
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff009199),
+                  ),
+                  child: const Text("Selesaikan"),
+                ),
+              ]);
+        });
+  }
+
+  void showOnHoldNoteDialog(BuildContext context, {VoidCallback? action}) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              scrollable: true,
+              title: const Text("Catatan Teknisi"),
+              content: Column(
+                children: [
+                  descriptionTextFieldBuilder(
+                      labelText: "Note*", controller: handlerNoteEc)
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xffF05050),
+                  ),
+                  child: const Text("Batal"),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    try {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      var response = await Services.holdTicket(
+                          ticket.id!, handlerNoteEc.text);
+                      setState(() {
+                        ticket.status = response!['data']['status'];
+                        isLoading = false;
+                      });
+                      if (mounted) {
+                        handlerNoteEc.clear();
                         Navigator.pop(context);
                       }
                     } catch (e) {

@@ -16,6 +16,7 @@ class Ticket {
   String? closedAt;
   final String? location;
   final List? images;
+  final Map<String, dynamic>? note;
 
   Ticket({
     this.id,
@@ -34,7 +35,8 @@ class Ticket {
     this.resolvedAt,
     this.closedAt,
     this.location,
-    this.images
+    this.images,
+    this.note
   });
 
   Map<String, dynamic> toMap() {

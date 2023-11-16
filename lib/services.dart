@@ -880,6 +880,31 @@ abstract class Services {
     }
   }
 
+  /// Hold Ticket
+  static Future<Map?> holdTicket(int ticketId, String handlerNote) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().put(
+        '$apiUrl/ticket/hold',
+        options: Options(headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        }),
+        data: {'ticket_id': ticketId, 'handler_note': handlerNote},
+      );
+      if (response.statusCode == 200) {
+        return response.data as Map;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
   /// Create Spare part Request
   static Future<Response?> createSparePartRequest(
       Map<String, dynamic> data) async {
@@ -1163,6 +1188,38 @@ abstract class Services {
         },
       );
       if (response.statusCode == 201) {
+        return response;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
+  /// Register Spare part to asset
+  static Future<Response?> registerSparePartToAsset(
+      {required int assetId,
+      required List<int> sparePartsIds}) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().put(
+        '$apiUrl/spare-parts/deploy',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+        data: {
+          'asset_id': assetId,
+          'spare_part_ids': sparePartsIds,
+        },
+      );
+      if (response.statusCode == 200) {
         return response;
       } else {
         exceptionHandling(response.data['message']);

@@ -122,7 +122,7 @@ class _RegisterAssetState extends State<RegisterAsset> {
                                 asset: assets[index],
                                 withDetail: false,
                               ),
-                              (index < purchase.items.length - 1)
+                              (index < assets.length - 1)
                                   ? const SizedBox.shrink()
                                   : const SizedBox(
                                       height: 8,
@@ -146,7 +146,7 @@ class _RegisterAssetState extends State<RegisterAsset> {
                                 sparePart: spareParts[index],
                                 withDetail: false,
                               ),
-                              (index < purchase.items.length - 1)
+                              (index < spareParts.length - 1)
                                   ? const SizedBox.shrink()
                                   : const SizedBox(
                                       height: 8,

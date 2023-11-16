@@ -60,6 +60,21 @@ PreferredSizeWidget customAppBar(BuildContext context, String title,
             )
           : const SizedBox.shrink(),
 
+      (additionalAction == 'spare_parts' && action != null)
+          ? Container(
+              margin: const EdgeInsets.only(right: 6),
+              child: IconButton(
+                onPressed: action,
+                icon: const Icon(
+                  Icons.construction,
+                  size: 32,
+                  color: Color(0xff00ABB3),
+                ),
+                padding: EdgeInsets.zero,
+              ),
+            )
+          : const SizedBox.shrink(),
+
       Container(
         margin: const EdgeInsets.only(right: 6),
         child: IconButton(

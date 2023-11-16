@@ -7,7 +7,8 @@ import '../pages/spare_part_detail.dart';
 class SparePartCard extends StatelessWidget {
   final SparePart sparePart;
   final bool withDetail;
-  const SparePartCard({super.key, required this.sparePart, required this.withDetail});
+  final VoidCallback? additionalAction;
+  const SparePartCard({super.key, required this.sparePart, required this.withDetail, this.additionalAction});
 
   @override
   Widget build(BuildContext context) {
@@ -21,17 +22,18 @@ class SparePartCard extends StatelessWidget {
         elevation: 5,
         child: InkWell(
           borderRadius: const BorderRadius.all(Radius.circular(10)),
-          onTap: () {
+          onTap: (additionalAction == null ) ? () {
             if (!withDetail) {
               return;
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SparePartDetail(sparePart: sparePart),
+                ),
+              );
             }
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SparePartDetail(sparePart: sparePart),
-              ),
-            );
-          },
+          } : additionalAction,
           child: Column(
             children: [
               Container(
@@ -70,7 +72,7 @@ class SparePartCard extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.only(left: 16, bottom: 8),
                 child: Table(columnWidths: const {
-                  0: FlexColumnWidth(1.22),
+                  0: FlexColumnWidth(1.5),
                   1: FlexColumnWidth(0.2),
                   2: FlexColumnWidth(2.7)
                 }, children: [
