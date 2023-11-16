@@ -102,6 +102,7 @@ class _ManageSparePartState extends State<ManageSparePart> {
                   ),
                   SparePartCard(
                     sparePart: spareParts[index],
+                    withDetail: true,
                   ),
                   (index == sparePartsLength - 1)
                       ? const SizedBox(height: 16)

@@ -5,7 +5,7 @@ class SparePart {
   final String model;
   final String? qrPath;
   final String serialNumber;
-  String status;
+  final String? status;
   final String? createdAt;
   final int? purchaseId;
   final int? assetId;
@@ -13,14 +13,14 @@ class SparePart {
   SparePart({
     this.id,
     required this.type,
-    required this.purchaseId,
+    this.purchaseId,
     required this.brand,
     required this.model,
     this.qrPath,
     required this.serialNumber,
-    required this.status,
-    required this.assetId,
-    required this.createdAt,
+    this.status,
+    this.assetId,
+    this.createdAt,
   });
 
   Map<String, dynamic> toMap() => {

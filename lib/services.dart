@@ -1067,14 +1067,15 @@ abstract class Services {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      Response? response = await Dio().put('$apiUrl/spare-parts/purchase/cancel',
-          options: Options(
-            headers: {
-              "Accept": "application/json",
-              "Authorization": "Bearer $token"
-            },
-          ),
-          data: {'id': id});
+      Response? response =
+          await Dio().put('$apiUrl/spare-parts/purchase/cancel',
+              options: Options(
+                headers: {
+                  "Accept": "application/json",
+                  "Authorization": "Bearer $token"
+                },
+              ),
+              data: {'id': id});
       if (response.statusCode == 200) {
         return response;
       } else {
@@ -1091,14 +1092,15 @@ abstract class Services {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      Response? response = await Dio().put('$apiUrl/spare-parts/purchase/receive',
-          options: Options(
-            headers: {
-              "Accept": "application/json",
-              "Authorization": "Bearer $token"
-            },
-          ),
-          data: {'id': id});
+      Response? response =
+          await Dio().put('$apiUrl/spare-parts/purchase/receive',
+              options: Options(
+                headers: {
+                  "Accept": "application/json",
+                  "Authorization": "Bearer $token"
+                },
+              ),
+              data: {'id': id});
       if (response.statusCode == 200) {
         return response;
       } else {
@@ -1111,24 +1113,23 @@ abstract class Services {
   }
 
   /// Get All Spare Parts with Filter
-  static Future<Map?> getAllSpareParts({required int page, int? typeId, int? statusId}) async {
+  static Future<Map?> getAllSpareParts(
+      {required int page, int? typeId, int? statusId}) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      Response? response = await Dio().get(
-        '$apiUrl/spare-parts',
-        options: Options(
-          headers: {
-            "Accept": "application/json",
-            "Authorization": "Bearer $token",
-          },
-        ),
-        queryParameters: {
-          'page': page,
-          'type_id': typeId,
-          'status_id': statusId
-        }
-      );
+      Response? response = await Dio().get('$apiUrl/spare-parts',
+          options: Options(
+            headers: {
+              "Accept": "application/json",
+              "Authorization": "Bearer $token",
+            },
+          ),
+          queryParameters: {
+            'page': page,
+            'type_id': typeId,
+            'status_id': statusId
+          });
       if (response.statusCode == 200) {
         return response.data as Map;
       } else {
@@ -1141,6 +1142,37 @@ abstract class Services {
     }
   }
 
+  /// Register Spare Parts From Purchasing
+  static Future<Response?> registerSparePartFromPurchase(
+      {required int purchaseId,
+      required List<Map<String, dynamic>>? items}) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().post(
+        '$apiUrl/spare-parts',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+        data: {
+          'purchase_id': purchaseId,
+          'items': items,
+        },
+      );
+      if (response.statusCode == 201) {
+        return response;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
 
   /// Handling Exception From API ///
   static exceptionHandling(var e) {

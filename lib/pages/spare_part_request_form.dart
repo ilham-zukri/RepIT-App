@@ -16,6 +16,7 @@ class _SparePartRequestFormState extends State<SparePartRequestForm> {
   TextEditingController titleEc = TextEditingController();
   TextEditingController descEc = TextEditingController();
   bool isLoading = false;
+  bool isButtonDisabled = false;
 
   @override
   void dispose() {
@@ -51,7 +52,7 @@ class _SparePartRequestFormState extends State<SparePartRequestForm> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50)),
                       elevation: 5),
-                  onPressed: () async {
+                  onPressed: (!isButtonDisabled) ? () async {
                     if (titleEc.text.trim().isEmpty || descEc.text.trim().isEmpty) {
                       showDialog(
                         context: context,
@@ -74,6 +75,7 @@ class _SparePartRequestFormState extends State<SparePartRequestForm> {
                       var response = await Services.createSparePartRequest(data);
                       setState(() {
                         isLoading = false;
+                        isButtonDisabled = true;
                       });
                       if(mounted){
                         showDialog(
@@ -96,7 +98,7 @@ class _SparePartRequestFormState extends State<SparePartRequestForm> {
                         );
                       }
                     }
-                  },
+                  }: null,
                   child: const Text(
                     "Kirim",
                     style: TextStyle(

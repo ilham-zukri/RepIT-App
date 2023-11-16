@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/spare_part.dart';
 import 'package:repit_app/widgets/spare_part_status_box_builder.dart';
 
+import '../pages/spare_part_detail.dart';
+
 class SparePartCard extends StatelessWidget {
   final SparePart sparePart;
-  const SparePartCard({super.key, required this.sparePart});
+  final bool withDetail;
+  const SparePartCard({super.key, required this.sparePart, required this.withDetail});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +21,17 @@ class SparePartCard extends StatelessWidget {
         elevation: 5,
         child: InkWell(
           borderRadius: const BorderRadius.all(Radius.circular(10)),
-          onTap: () {},
+          onTap: () {
+            if (!withDetail) {
+              return;
+            }
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SparePartDetail(sparePart: sparePart),
+              ),
+            );
+          },
           child: Column(
             children: [
               Container(
@@ -36,11 +49,11 @@ class SparePartCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        sparePart.id.toString(),
+                      (sparePart.id != null) ? sparePart.id.toString() : "#N/A",
                         style: const TextStyle(
                             color: Colors.white, fontWeight: FontWeight.w600),
                       ),
-                      sparePartStatusBoxBuilder(sparePart.status, "card")
+                      sparePartStatusBoxBuilder(sparePart.status ?? " ", "card")
                     ],
                   ),
                 ),
@@ -74,7 +87,7 @@ class SparePartCard extends StatelessWidget {
                         child: const Text(':')),
                     Container(
                         margin: const EdgeInsets.only(top: 8),
-                        child: Text(sparePart.brand))
+                        child: Text(sparePart.model))
                   ]),
                   TableRow(
                     children: [

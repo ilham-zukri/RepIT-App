@@ -144,12 +144,13 @@ class _RegisterAssetState extends State<RegisterAsset> {
                               ),
                               SparePartCard(
                                 sparePart: spareParts[index],
+                                withDetail: false,
                               ),
                               (index < purchase.items.length - 1)
                                   ? const SizedBox.shrink()
                                   : const SizedBox(
-                                height: 8,
-                              ),
+                                      height: 8,
+                                    ),
                             ],
                           );
                         },
@@ -176,9 +177,14 @@ class _RegisterAssetState extends State<RegisterAsset> {
                           setState(() {
                             isLoading = true;
                           });
-                          Response? response =
-                              await Services.registerAssetFromPurchase(
-                                  items: items, purchaseId: purchase.id);
+                          Response? response;
+                          if (usage == 'asset') {
+                            response = await Services.registerAssetFromPurchase(
+                                items: items, purchaseId: purchase.id);
+                          } else {
+                            response = await Services.registerSparePartFromPurchase(
+                                items: items, purchaseId: purchase.id);
+                          }
                           setState(() {
                             isLoading = false;
                             isButtonDisabled = true;
@@ -207,7 +213,9 @@ class _RegisterAssetState extends State<RegisterAsset> {
                         }
                       }
                     : null,
-                child: const Text('Daftarkan Asset'),
+                child: (usage == 'asset')
+                    ? const Text('Daftarkan Asset')
+                    : const Text('Daftarkan Spare Part'),
               ),
             ),
           ],
@@ -257,7 +265,7 @@ class _RegisterAssetState extends State<RegisterAsset> {
 
   void showAddItemDialog(BuildContext context, PurchaseItem item) {
     Size size = MediaQuery.of(context).size;
-    String assetType = item.type;
+    String type = item.type;
     String brand = item.brand;
     String model = item.model;
     Navigator.pop(context);
@@ -265,7 +273,9 @@ class _RegisterAssetState extends State<RegisterAsset> {
       context: context,
       builder: (context) {
         return SimpleDialog(
-          title: (usage == 'asset') ? const Text("Data Asset") : const Text("Data Spare Part"),
+          title: (usage == 'asset')
+              ? const Text("Data Asset")
+              : const Text("Data Spare Part"),
           titlePadding: const EdgeInsets.all(12),
           contentPadding: const EdgeInsets.all(12),
           children: [
@@ -285,7 +295,7 @@ class _RegisterAssetState extends State<RegisterAsset> {
                     ":",
                     style: tableContentStyle,
                   ),
-                  Text(assetType),
+                  Text(type),
                 ]),
                 TableRow(
                   children: [
@@ -334,25 +344,27 @@ class _RegisterAssetState extends State<RegisterAsset> {
             const SizedBox(
               height: 8,
             ),
-            regularTextFieldBuilder(labelText: "Serial Number*", controller: serialNumberEc),
+            regularTextFieldBuilder(
+                labelText: "Serial Number*", controller: serialNumberEc),
             const SizedBox(
               height: 8,
             ),
-           if(usage == "asset")
-           Column(
-             crossAxisAlignment: CrossAxisAlignment.start,
-             children: [
-               regularTextFieldBuilder(labelText: "CPU", controller: cpuEc),
-               const SizedBox(
-                 height: 8,
-               ),
-               regularTextFieldBuilder(labelText: "RAM", controller: ramEc),
-               const SizedBox(
-                 height: 8,
-               ),
-               regularTextFieldBuilder(labelText: "Utilization", controller: utilizationEc),
-             ],
-           ),
+            if (usage == "asset")
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  regularTextFieldBuilder(labelText: "CPU", controller: cpuEc),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  regularTextFieldBuilder(labelText: "RAM", controller: ramEc),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  regularTextFieldBuilder(
+                      labelText: "Utilization", controller: utilizationEc),
+                ],
+              ),
             const SizedBox(
               height: 8,
             ),
@@ -366,30 +378,51 @@ class _RegisterAssetState extends State<RegisterAsset> {
                   elevation: 5,
                 ),
                 onPressed: () {
-                  if (serialNumberEc.text.trim().isEmpty ||
-                      utilizationEc.text.trim().isEmpty) {
+                  if(usage == "asset"){
+                    if (serialNumberEc.text.trim().isEmpty ||
+                        utilizationEc.text.trim().isEmpty) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => alert(context, "Lengkapi Field",
+                            "Field Serial Number dan Utilization Wajib diisi"),
+                      );
+                      return;
+                    }
+                    Asset asset = Asset(
+                        null,
+                        utilizationEc.text.trim(),
+                        null,
+                        type,
+                        ramEc.text.trim(),
+                        cpuEc.text.trim(),
+                        null,
+                        serialNumberEc.text.trim(),
+                        brand,
+                        model,
+                        null,
+                        null);
+                    setState(() {
+                      addAsset(asset);
+                    });
+                    Navigator.pop(context);
+                    return;
+                  }
+                  if(serialNumberEc.text.trim().isEmpty){
                     showDialog(
                       context: context,
                       builder: (context) => alert(context, "Lengkapi Field",
-                          "Field Serial Number dan Utilization Wajib diisi"),
+                          "Field Serial Number Wajib diisi"),
                     );
                     return;
                   }
-                  Asset asset = Asset(
-                      null,
-                      utilizationEc.text.trim(),
-                      null,
-                      assetType,
-                      ramEc.text.trim(),
-                      cpuEc.text.trim(),
-                      null,
-                      serialNumberEc.text.trim(),
-                      brand,
-                      model,
-                      null,
-                      null);
+                  SparePart sparePart = SparePart(
+                    brand: brand,
+                    model: model,
+                    type: type,
+                    serialNumber: serialNumberEc.text.trim(),
+                  );
                   setState(() {
-                    addAsset(asset);
+                    addSparePart(sparePart);
                   });
                   Navigator.pop(context);
                 },
@@ -401,7 +434,7 @@ class _RegisterAssetState extends State<RegisterAsset> {
       },
     );
   }
-  // TODO : Add addSparePart method
+
 
   void addAsset(Asset asset) {
     assets.add(asset);
@@ -424,10 +457,33 @@ class _RegisterAssetState extends State<RegisterAsset> {
     clearFields();
   }
 
+  void addSparePart(SparePart sparePart) {
+    spareParts.add(sparePart);
+    items.add(sparePart.toMap());
+    // Ambil index PurchaseItem yang sesuai dengan spare part yang ditambahkan
+    int index = purchaseItems.indexWhere((item) =>
+        item.type == sparePart.type &&
+        item.brand == sparePart.brand &&
+        item.model == sparePart.model);
+
+    if (index != -1) {
+      // Kurangi item yang dibeli (amount) sesuai dengan item yang ditambahkan
+      purchaseItems[index].amount--;
+    }
+
+    // Jika item yang dibeli mencapai 0 atau kurang, hapus dari daftar pembelian
+    if (purchaseItems[index].amount <= 0) {
+      purchaseItems.removeAt(index);
+    }
+    clearFields();
+  }
+
   void clearFields() {
-    serialNumberEc.clear();
-    cpuEc.clear();
-    ramEc.clear();
-    utilizationEc.clear();
+    setState(() {
+      serialNumberEc.clear();
+      cpuEc.clear();
+      ramEc.clear();
+      utilizationEc.clear();
+    });
   }
 }
