@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 PreferredSizeWidget customAppBar(BuildContext context, String title,
-    [String? additionalAction, VoidCallback? action]) {
+    [String? additionalAction,
+    VoidCallback? action,
+    String? additionalAction2,
+    VoidCallback? action2]) {
   return AppBar(
     title: Text(
       title,
@@ -15,6 +18,20 @@ PreferredSizeWidget customAppBar(BuildContext context, String title,
       onPressed: Navigator.of(context).pop,
     ),
     actions: [
+      (additionalAction2 == 'repair_history' && action2 != null)
+          ? Container(
+              margin: const EdgeInsets.only(right: 6),
+              child: IconButton(
+                onPressed: action2,
+                icon: const Icon(
+                  Icons.construction,
+                  size: 32,
+                  color: Color(0xff00ABB3),
+                ),
+                padding: EdgeInsets.zero,
+              ),
+            )
+          : const SizedBox.shrink(),
       (additionalAction == 'qr' && action != null)
           ? Container(
               margin: const EdgeInsets.only(right: 6),
@@ -29,7 +46,6 @@ PreferredSizeWidget customAppBar(BuildContext context, String title,
               ),
             )
           : const SizedBox.shrink(),
-
       (additionalAction == 'add' && action != null)
           ? Container(
               margin: const EdgeInsets.only(right: 6),
@@ -44,7 +60,6 @@ PreferredSizeWidget customAppBar(BuildContext context, String title,
               ),
             )
           : const SizedBox.shrink(),
-
       (additionalAction == 'purchaseItems' && action != null)
           ? Container(
               margin: const EdgeInsets.only(right: 6),
@@ -59,7 +74,6 @@ PreferredSizeWidget customAppBar(BuildContext context, String title,
               ),
             )
           : const SizedBox.shrink(),
-
       (additionalAction == 'spare_parts' && action != null)
           ? Container(
               margin: const EdgeInsets.only(right: 6),
@@ -74,7 +88,6 @@ PreferredSizeWidget customAppBar(BuildContext context, String title,
               ),
             )
           : const SizedBox.shrink(),
-
       Container(
         margin: const EdgeInsets.only(right: 6),
         child: IconButton(

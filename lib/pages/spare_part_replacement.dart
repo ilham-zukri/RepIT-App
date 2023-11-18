@@ -219,7 +219,17 @@ class _SparePartReplacementState extends State<SparePartReplacement> {
 
   void showAddSparePartDialog(BuildContext context) async {
     Size size = MediaQuery.of(context).size;
-    await fetchSpareParts(isRefresh: true);
+    try{
+      await fetchSpareParts(isRefresh: true);
+    } catch(e){
+      if(mounted){
+        showDialog(
+          context: context,
+          builder: (context) => alert(context, "Error", e.toString()),
+        );
+      }
+      return;
+    }
     if (mounted) {
       showDialog(
         context: context,
@@ -307,11 +317,8 @@ class _SparePartReplacementState extends State<SparePartReplacement> {
     setState(() {
       selectedSpareParts.add(sparePart);
       selectedSparePartsLength = selectedSpareParts.length;
-      print(selectedSpareParts);
-      print(selectedSparePartsLength);
     });
     selectedSparePartsIds.add(sparePart.id!);
-    print(selectedSparePartsIds);
   }
 
   Future<void> _scrollListener() async {

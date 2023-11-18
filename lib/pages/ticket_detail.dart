@@ -86,7 +86,7 @@ class _TicketDetailState extends State<TicketDetail> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      (ticket.status == "In Progress")
+                      (ticket.status == "In Progress" && role['asset_management'] == 1)
                           ? SizedBox(
                               width: 150,
                               child: ElevatedButton(
@@ -500,7 +500,7 @@ class _TicketDetailState extends State<TicketDetail> {
               showDialog(
                 context: context,
                 builder: (context) =>
-                    alert(context, "Berhail", response!['message']),
+                    alert(context, "Berhasil", response!['message']),
               );
             }
           } catch (e) {
@@ -538,7 +538,7 @@ class _TicketDetailState extends State<TicketDetail> {
               showDialog(
                 context: context,
                 builder: (context) =>
-                    alert(context, "Berhail", response!['message']),
+                    alert(context, "Berhasil", response!['message']),
               );
             }
           } catch (e) {

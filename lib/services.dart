@@ -5,10 +5,9 @@ import 'package:dio/dio.dart';
 
 abstract class Services {
   static const String url = "http://10.0.2.2:8000";
+  // static const String url = "http://192.168.100.194:8000";
   static const String apiUrl = "$url/api";
   static late SharedPreferences prefs;
-
-  // static const String url = "http://192.168.1.200:3000/";
 
   /// Login ///
   static Future<User?> login(String username, String password) async {
@@ -100,6 +99,33 @@ abstract class Services {
       exceptionHandling(e);
     }
     return null;
+  }
+
+  /// Get roles
+  static Future<Map?> getRoles() async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      var response = await Dio().get(
+        '$apiUrl/user/roles',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data['data'] as Map;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
   }
 
   /// Logout ///
@@ -1221,6 +1247,62 @@ abstract class Services {
       );
       if (response.statusCode == 200) {
         return response;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
+  /// Get Asset's Tickets
+  static Future<Map?> getAssetTickets({required int assetId, required int page}) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().get('$apiUrl/asset/ticket-history',
+          options: Options(
+            headers: {
+              "Accept": "application/json",
+              "Authorization": "Bearer $token",
+            },
+          ),
+          queryParameters: {
+            'page': page,
+            'asset_id': assetId
+          });
+      if (response.statusCode == 200) {
+        return response.data as Map;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
+  /// Get Asset's Spare Parts
+  static Future<Map?> getAssetSpareParts({required int assetId, required int page}) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().get('$apiUrl/asset/attached-spare-parts',
+          options: Options(
+            headers: {
+              "Accept": "application/json",
+              "Authorization": "Bearer $token",
+            },
+          ),
+          queryParameters: {
+            'page': page,
+            'asset_id': assetId
+          });
+      if (response.statusCode == 200) {
+        return response.data as Map;
       } else {
         exceptionHandling(response.data['message']);
         return null;

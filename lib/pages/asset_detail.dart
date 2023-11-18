@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:repit_app/data_classes/asset.dart';
+import 'package:repit_app/pages/repair_history.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/alert.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
@@ -32,7 +33,6 @@ class _AssetDetailState extends State<AssetDetail> {
     status = asset.status!;
   }
 
-
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -43,6 +43,17 @@ class _AssetDetailState extends State<AssetDetail> {
         'qr',
         () {
           showQr(context);
+        },
+        'repair_history',
+        () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RepairHistory(
+                assetId: asset.id!,
+              ),
+            ),
+          );
         },
       ),
       body: Padding(
@@ -101,7 +112,8 @@ class _AssetDetailState extends State<AssetDetail> {
                       child: const Text(':', style: tableContentStyle)),
                   Container(
                       margin: const EdgeInsets.only(top: 8),
-                      child: Text((asset.ownerId as String), style: tableContentStyle))
+                      child: Text((asset.ownerId as String),
+                          style: tableContentStyle))
                 ]),
                 TableRow(children: [
                   Container(
@@ -179,7 +191,8 @@ class _AssetDetailState extends State<AssetDetail> {
                         child: const Text(':', style: tableContentStyle)),
                     Container(
                         margin: const EdgeInsets.only(top: 8),
-                        child: Text(asset.location ?? '#N/A', style: tableContentStyle))
+                        child: Text(asset.location ?? '#N/A',
+                            style: tableContentStyle))
                   ],
                 ),
               ],
@@ -263,8 +276,9 @@ class _AssetDetailState extends State<AssetDetail> {
             SizedBox(
               width: 95,
               child: ElevatedButton(
-                onPressed: () async{
-                  await Clipboard.setData(ClipboardData(text: Services.url + (asset.qrPath as String)));
+                onPressed: () async {
+                  await Clipboard.setData(ClipboardData(
+                      text: Services.url + (asset.qrPath as String)));
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xff00ABB3),
@@ -284,7 +298,6 @@ class _AssetDetailState extends State<AssetDetail> {
                 ),
               ),
             ),
-
           ],
         );
       },
