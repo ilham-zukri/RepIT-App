@@ -358,7 +358,7 @@ class _ManageRequestState extends State<ManageRequest>
                                           locationData!.map((location) {
                                         return DropdownMenuEntry(
                                             value: location.id.toString(),
-                                            label: location.name);
+                                            label: location.userName);
                                       }).toList(),
                                     );
                                   }

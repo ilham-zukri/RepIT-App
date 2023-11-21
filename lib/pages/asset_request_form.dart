@@ -245,7 +245,7 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                             dropdownMenuEntries: locationData!.map((location) {
                               return DropdownMenuEntry(
                                   value: location.id.toString(),
-                                  label: location.name);
+                                  label: location.userName);
                             }).toList(),
                           );
                         }

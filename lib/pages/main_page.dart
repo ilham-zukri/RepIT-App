@@ -21,6 +21,8 @@ import 'package:repit_app/widgets/alert.dart';
 import 'package:repit_app/widgets/loading_overlay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'manage_users.dart';
+
 class MainPage extends StatefulWidget {
   const MainPage({Key? key, required this.userData}) : super(key: key);
 
@@ -349,7 +351,22 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               height: 40,
               child: Material(
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    if (userData.role['user_management'] != 1) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => alert(context, "Tidak Berwenang",
+                            "Anda tidak memiliki wewenang untuk mengakses menu ini"),
+                      );
+                      return;
+                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ManageUsers(),
+                      )
+                    );
+                  },
                   customBorder: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),
                   child: Container(

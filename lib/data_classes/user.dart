@@ -1,13 +1,24 @@
 class User {
   String? id;
   String? email;
-  String? name;
+  String? userName;
+  String? fullName;
   String? branch;
   String? department;
+  String? createdAt;
   Map<String, dynamic> role;
-  final String _token;
+  final String? _token;
 
-  User({required this.name, required token, this.email, this.id, this.branch, this.department, required this.role})
+  User(
+      {required this.userName,
+        this.fullName,
+      required token,
+      this.email,
+      this.id,
+      this.branch,
+      this.department,
+      this.createdAt,
+      required this.role})
       : _token = token;
 
   get token => _token;

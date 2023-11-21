@@ -91,7 +91,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             style: TextStyle(fontSize: 14),
                           ),
                           Text(
-                            userData!.name as String,
+                            userData!.userName as String,
                             style: const TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.w600),
                           ),

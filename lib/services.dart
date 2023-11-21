@@ -50,7 +50,8 @@ abstract class Services {
             id: userResponse.data["data"]["id"],
             email: userResponse.data["data"]["email"],
             token: token,
-            name: userResponse.data["data"]["user_name"],
+            userName: userResponse.data["data"]["user_name"],
+            fullName: userResponse.data["data"]["full_name"],
             branch: userResponse.data["data"]["branch"],
             department: userResponse.data["data"]["department"],
             role: userResponse.data["data"]["role"]);
@@ -148,6 +149,36 @@ abstract class Services {
       return false;
     } catch (e) {
       throw exceptionHandling(e);
+    }
+  }
+
+  /// Get All User with search function
+  static Future<Map?> getUsers(int? page, String? userName) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      var response = await Dio().get(
+        '$apiUrl/users',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        ),
+        queryParameters: {
+          'page': page ?? 1,
+          'user_name': userName
+        },
+      );
+      if (response.statusCode == 200) {
+        return response.data as Map;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
     }
   }
 
