@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/user.dart';
 import 'package:repit_app/widgets/role_box_builder.dart';
 
+import '../pages/profile_page.dart';
 
 class UserCard extends StatelessWidget {
   final User user;
+
   const UserCard({super.key, required this.user});
 
   @override
@@ -21,6 +23,12 @@ class UserCard extends StatelessWidget {
         ),
         child: InkWell(
           onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProfilePage(userData: user),
+              ),
+            );
           },
           child: Column(
             children: [
@@ -43,7 +51,7 @@ class UserCard extends StatelessWidget {
                         style: const TextStyle(
                             color: Colors.white, fontWeight: FontWeight.w600),
                       ),
-                      roleBoxBuilder("User")
+                      roleBoxBuilder(user.role['role_name'])
                     ],
                   ),
                 ),
@@ -76,9 +84,7 @@ class UserCard extends StatelessWidget {
                       alignment: Alignment.topLeft,
                       child: Text(
                         user.branch!,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w600
-                        ),
+                        style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ),
                     const SizedBox(

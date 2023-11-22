@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:repit_app/pages/add_user.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
 import 'package:repit_app/widgets/user_card.dart';
 
@@ -68,7 +69,14 @@ class _ManageUsersState extends State<ManageUsers> {
         context,
         "Manage Users",
         'add',
-        () {},
+        () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddUser(),
+            ),
+          );
+        },
       ),
       body: Stack(
         children: [
@@ -123,6 +131,8 @@ class _ManageUsersState extends State<ManageUsers> {
                   height: 16,
                 ),
                 SearchBar(
+                  elevation: const MaterialStatePropertyAll<double>(4.0),
+
                   padding: const MaterialStatePropertyAll<EdgeInsets>(
                       EdgeInsets.symmetric(horizontal: 16.0)),
                   controller: searchController,
@@ -140,7 +150,7 @@ class _ManageUsersState extends State<ManageUsers> {
                   trailing: <Widget>[
                     IconButton(
                       icon: const Icon(Icons.clear),
-                      onPressed: () async{
+                      onPressed: () async {
                         setState(() {
                           searchController.clear();
                           userName = null;

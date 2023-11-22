@@ -82,12 +82,18 @@ class _SparePartPurchaseFormState extends State<SparePartPurchaseForm> {
                   height: 16,
                 ),
                 regularTextFieldBuilder(
-                    labelText: "Nama Toko*", controller: vendorEc),
+                  labelText: "Nama Toko*",
+                  controller: vendorEc,
+                  obscureText: false,
+                ),
                 const SizedBox(
                   height: 8,
                 ),
                 regularTextFieldBuilder(
-                    labelText: "Deskripsi*", controller: descriptionEc),
+                  labelText: "Deskripsi*",
+                  controller: descriptionEc,
+                  obscureText: false,
+                ),
                 const SizedBox(
                   height: 12,
                 ),
@@ -237,30 +243,30 @@ class _SparePartPurchaseFormState extends State<SparePartPurchaseForm> {
                     height: 8,
                   ),
                   regularTextFieldBuilder(
-                    labelText: "Brand*",
-                    controller: brandEc,
-                  ),
+                      labelText: "Brand*",
+                      controller: brandEc,
+                      obscureText: false),
                   const SizedBox(
                     height: 8,
                   ),
                   regularTextFieldBuilder(
-                    labelText: "Model*",
-                    controller: modelEc,
-                  ),
+                      labelText: "Model*",
+                      controller: modelEc,
+                      obscureText: false),
                   const SizedBox(
                     height: 8,
                   ),
                   regularTextFieldBuilder(
-                    labelText: "Jumlah*",
-                    controller: amountEc,
-                  ),
+                      labelText: "Jumlah*",
+                      controller: amountEc,
+                      obscureText: false),
                   const SizedBox(
                     height: 8,
                   ),
                   regularTextFieldBuilder(
-                    labelText: "Harga satuan*",
-                    controller: priceEaEc,
-                  ),
+                      labelText: "Harga satuan*",
+                      controller: priceEaEc,
+                      obscureText: false),
                   const SizedBox(
                     height: 16,
                   ),

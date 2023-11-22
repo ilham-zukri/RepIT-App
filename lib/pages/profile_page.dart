@@ -14,6 +14,13 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  late User userData;
+
+  @override
+  void initState() {
+    userData = widget.userData!;
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -24,7 +31,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    var userData = widget.userData;
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
@@ -91,7 +97,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             style: TextStyle(fontSize: 14),
                           ),
                           Text(
-                            userData!.userName as String,
+                            userData.userName as String,
                             style: const TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.w600),
                           ),
@@ -128,8 +134,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                       onPressed: () async {
                                         try {
                                           await Services.changeUsername(
-                                              usernameController.text
-                                                  .toString());
+                                            usernameController.text.toString(),
+                                          );
                                           var token =
                                               Services.prefs.getString("token");
                                           await Services.logout(token!);
@@ -168,13 +174,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 });
                                           }
                                         } catch (e) {
-                                          if(mounted){
+                                          if (mounted) {
                                             showDialog(
                                                 context: context,
-                                                builder: (BuildContext context) {
+                                                builder:
+                                                    (BuildContext context) {
                                                   return AlertDialog(
                                                       content:
-                                                      Text(e.toString()));
+                                                          Text(e.toString()));
                                                 });
                                           }
                                         }
@@ -286,13 +293,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 });
                                           }
                                         } catch (e) {
-                                          if(mounted){
+                                          if (mounted) {
                                             showDialog(
                                                 context: context,
-                                                builder: (BuildContext context) {
+                                                builder:
+                                                    (BuildContext context) {
                                                   return AlertDialog(
                                                       content:
-                                                      Text(e.toString()));
+                                                          Text(e.toString()));
                                                 });
                                           }
                                         }

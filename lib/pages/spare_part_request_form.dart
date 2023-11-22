@@ -35,7 +35,11 @@ class _SparePartRequestFormState extends State<SparePartRequestForm> {
           body: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(children: [
-              regularTextFieldBuilder(labelText: "Judul*", controller: titleEc),
+              regularTextFieldBuilder(
+                labelText: "Judul*",
+                controller: titleEc,
+                obscureText: false,
+              ),
               const SizedBox(
                 height: 24,
               ),
@@ -52,53 +56,53 @@ class _SparePartRequestFormState extends State<SparePartRequestForm> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50)),
                       elevation: 5),
-                  onPressed: (!isButtonDisabled) ? () async {
-                    if (titleEc.text.trim().isEmpty || descEc.text.trim().isEmpty) {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) => alert(
-                          context,
-                          'Lengkapi form',
-                          'Judul dan Deskripsi tidak boleh kosong',
-                        ),
-                      );
-                      return;
-                    }
-                    Map<String,dynamic> data = {
-                      'title': titleEc.text,
-                      'description': descEc.text
-                    };
-                    try{
-                      setState(() {
-                        isLoading = true;
-                      });
-                      var response = await Services.createSparePartRequest(data);
-                      setState(() {
-                        isLoading = false;
-                        isButtonDisabled = true;
-                      });
-                      if(mounted){
-                        showDialog(
-                          context: context,
-                          builder: (context) => alert(
-                            context, "Berhasil", response!.data['message']
-                          )
-                        );
-                      }
-                    }catch(e){
-                      setState(() {
-                        isLoading = false;
-                      });
-                      if(mounted){
-                        showDialog(
-                          context: context,
-                          builder: (context) => alert(
-                            context, "Error", e.toString()
-                          )
-                        );
-                      }
-                    }
-                  }: null,
+                  onPressed: (!isButtonDisabled)
+                      ? () async {
+                          if (titleEc.text.trim().isEmpty ||
+                              descEc.text.trim().isEmpty) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) => alert(
+                                context,
+                                'Lengkapi form',
+                                'Judul dan Deskripsi tidak boleh kosong',
+                              ),
+                            );
+                            return;
+                          }
+                          Map<String, dynamic> data = {
+                            'title': titleEc.text,
+                            'description': descEc.text
+                          };
+                          try {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            var response =
+                                await Services.createSparePartRequest(data);
+                            setState(() {
+                              isLoading = false;
+                              isButtonDisabled = true;
+                            });
+                            if (mounted) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => alert(context,
+                                      "Berhasil", response!.data['message']));
+                            }
+                          } catch (e) {
+                            setState(() {
+                              isLoading = false;
+                            });
+                            if (mounted) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) =>
+                                      alert(context, "Error", e.toString()));
+                            }
+                          }
+                        }
+                      : null,
                   child: const Text(
                     "Kirim",
                     style: TextStyle(
@@ -109,7 +113,6 @@ class _SparePartRequestFormState extends State<SparePartRequestForm> {
             ]),
           ),
         ),
-
       ],
     );
   }

@@ -4,6 +4,7 @@ import 'package:repit_app/data_classes/user_for_list.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
 import 'package:repit_app/widgets/custom_text_field_builder.dart';
+import 'package:repit_app/widgets/drop_down_builder.dart';
 import 'package:repit_app/widgets/loading_overlay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -91,11 +92,13 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                   const SizedBox(
                     height: 24,
                   ),
-                  regularTextFieldBuilder(labelText: "Judul*", controller: titleEc),
+                  regularTextFieldBuilder(
+                      labelText: "Judul*", controller: titleEc, obscureText: false),
                   const SizedBox(
                     height: 24,
                   ),
-                  descriptionTextFieldBuilder(labelText: "Deskripsi*", controller: descEc),
+                  descriptionTextFieldBuilder(
+                      labelText: "Deskripsi*", controller: descEc),
                   const SizedBox(
                     height: 24,
                   ),
@@ -203,53 +206,16 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                   const SizedBox(
                     height: 24,
                   ),
-                  const Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Lokasi",
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black),
-                    ),
+                  locationDropdownBuilder(
+                    context,
+                    future: locations,
+                    size: size,
+                    onSelected: (value) {
+                      setState(() {
+                        locationId = int.parse(value as String);
+                      });
+                    },
                   ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  FutureBuilder(
-                      future: locations,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Text(snapshot.error.toString());
-                        } else if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        } else {
-                          List<dynamic>? locationData = snapshot.data;
-                          String? initialLocationSelection;
-                          if (locationData != null && locationData.isNotEmpty) {
-                            initialLocationSelection =
-                                locationData.first.id.toString();
-                          }
-                          return DropdownMenu(
-                            textStyle: const TextStyle(fontSize: 16),
-                            width: size.width - 48,
-                            enableSearch: true,
-                            menuHeight: size.height / 2,
-                            initialSelection: initialLocationSelection,
-                            onSelected: (value) {
-                              setState(() {
-                                locationId = int.parse(value as String);
-                              });
-                            },
-                            dropdownMenuEntries: locationData!.map((location) {
-                              return DropdownMenuEntry(
-                                  value: location.id.toString(),
-                                  label: location.userName);
-                            }).toList(),
-                          );
-                        }
-                      }),
                   Container(
                     margin: const EdgeInsets.only(top: 24),
                     height: 41,

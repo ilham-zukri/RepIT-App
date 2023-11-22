@@ -345,7 +345,7 @@ class _RegisterAssetState extends State<RegisterAsset> {
               height: 8,
             ),
             regularTextFieldBuilder(
-                labelText: "Serial Number*", controller: serialNumberEc),
+                labelText: "Serial Number*", controller: serialNumberEc, obscureText: false),
             const SizedBox(
               height: 8,
             ),
@@ -353,16 +353,16 @@ class _RegisterAssetState extends State<RegisterAsset> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  regularTextFieldBuilder(labelText: "CPU", controller: cpuEc),
+                  regularTextFieldBuilder(labelText: "CPU", controller: cpuEc, obscureText: false),
                   const SizedBox(
                     height: 8,
                   ),
-                  regularTextFieldBuilder(labelText: "RAM", controller: ramEc),
+                  regularTextFieldBuilder(labelText: "RAM", controller: ramEc, obscureText: false),
                   const SizedBox(
                     height: 8,
                   ),
                   regularTextFieldBuilder(
-                      labelText: "Utilization", controller: utilizationEc),
+                      labelText: "Utilization", controller: utilizationEc,obscureText: false),
                 ],
               ),
             const SizedBox(

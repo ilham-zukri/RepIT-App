@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget regularTextFieldBuilder({required String labelText, required TextEditingController controller}) {
+Widget regularTextFieldBuilder({required String labelText, required TextEditingController controller, required bool obscureText}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -16,6 +16,7 @@ Widget regularTextFieldBuilder({required String labelText, required TextEditingC
         height: 41,
         child: TextField(
           controller: controller,
+          obscureText: obscureText,
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.all(10),
             filled: true,
