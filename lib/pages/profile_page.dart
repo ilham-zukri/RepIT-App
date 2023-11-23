@@ -1,11 +1,16 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/user.dart';
-import 'package:repit_app/pages/login_page.dart';
 import 'package:repit_app/services.dart';
+import 'package:repit_app/widgets/alert.dart';
+import 'package:repit_app/widgets/custom_text_field_builder.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key, this.userData}) : super(key: key);
+  const ProfilePage({Key? key, this.userData, required this.withAdvancedMenu})
+      : super(key: key);
   final User? userData;
+  final bool withAdvancedMenu;
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -14,6 +19,11 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController fullNameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController rePasswordController = TextEditingController();
+  TextEditingController oldPasswordController = TextEditingController();
+
   late User userData;
 
   @override
@@ -24,6 +34,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void dispose() {
+    fullNameController.dispose();
+    passwordController.dispose();
+    rePasswordController.dispose();
+    oldPasswordController.dispose();
     usernameController.dispose();
     emailController.dispose();
     super.dispose();
@@ -31,6 +45,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
@@ -39,6 +54,19 @@ class _ProfilePageState extends State<ProfilePage> {
           },
         ),
         title: const Text('Profile'),
+        actions: [
+          if (widget.withAdvancedMenu)
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                Icons.manage_accounts,
+                size: 32,
+              ),
+            ),
+          const SizedBox(
+            width: 8,
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -133,45 +161,23 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ElevatedButton(
                                       onPressed: () async {
                                         try {
-                                          await Services.changeUsername(
+                                          Response? response =
+                                              await Services.changeUsername(
                                             usernameController.text.toString(),
+                                            userData.id!,
                                           );
-                                          var token =
-                                              Services.prefs.getString("token");
-                                          await Services.logout(token!);
-
                                           if (mounted) {
-                                            showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return AlertDialog(
-                                                    content: const Text(
-                                                        "silahkan login ulang"),
-                                                    title: const Text(
-                                                        "username berhasil diubah"),
-                                                    actions: [
-                                                      ElevatedButton(
-                                                          onPressed: () {
-                                                            Navigator.pushReplacement(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) {
-                                                              return LoginPage();
-                                                            }));
-                                                          },
-                                                          style: ElevatedButton
-                                                              .styleFrom(
-                                                            backgroundColor:
-                                                                const Color(
-                                                                    0xff00ABB3),
-                                                          ),
-                                                          child:
-                                                              const Text("OK")),
-                                                    ],
-                                                  );
-                                                });
+                                            Navigator.pop(context);
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                backgroundColor:
+                                                    const Color(0xff00ABB3),
+                                                content: Text(
+                                                  response!.data['message'],
+                                                ),
+                                              ),
+                                            );
                                           }
                                         } catch (e) {
                                           if (mounted) {
@@ -183,6 +189,118 @@ class _ProfilePageState extends State<ProfilePage> {
                                                       content:
                                                           Text(e.toString()));
                                                 });
+                                          }
+                                        }
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            const Color(0xff00ABB3),
+                                      ),
+                                      child: const Text("Ubah"),
+                                    ),
+                                    const SizedBox(
+                                      width: 6,
+                                    )
+                                  ],
+                                );
+                              });
+                        },
+                        icon: const Icon(Icons.edit)),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              decoration: const BoxDecoration(
+                  border: Border(bottom: BorderSide(color: Colors.grey))),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.only(
+                            top: 24, left: 24, bottom: 24, right: 16),
+                        child:
+                            const Icon(CupertinoIcons.person_alt_circle_fill),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Nama Lengkap',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          Text(
+                            userData.fullName != null
+                                ? userData.fullName!
+                                : '#N/A',
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(right: 16),
+                    child: IconButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  content: TextField(
+                                    decoration: const InputDecoration(
+                                      hintText: "Masukan nama lengkap",
+                                    ),
+                                    controller: fullNameController,
+                                  ),
+                                  actions: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            const Color(0xff00ABB3),
+                                      ),
+                                      child: const Text("Batal"),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        try {
+                                          Response? response =
+                                              await Services.changeFullName(
+                                            fullNameController.text
+                                                .trim()
+                                                .toString(),
+                                            userData.id.toString(),
+                                          );
+                                          setState(() {
+                                            userData.fullName =
+                                                fullNameController.text.trim();
+                                          });
+                                          if (mounted) {
+                                            Navigator.pop(context);
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                                    backgroundColor:
+                                                        const Color(0xff00ABB3),
+                                                    content: Text(
+                                                      response!.data['message'],
+                                                    )));
+                                          }
+                                        } catch (e) {
+                                          if (mounted) {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                    content:
+                                                        Text(e.toString()));
+                                              },
+                                            );
                                           }
                                         }
                                       },
@@ -261,36 +379,24 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ElevatedButton(
                                       onPressed: () async {
                                         try {
-                                          await Services.changeEmail(
-                                              emailController.text.toString());
+                                          Response? response =
+                                              await Services.changeEmail(
+                                            emailController.text.toString(),
+                                            userData.id.toString(),
+                                          );
+                                          setState(() {
+                                            userData.email =
+                                                emailController.text.toString();
+                                          });
                                           if (mounted) {
-                                            showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return AlertDialog(
-                                                    title: const Text(
-                                                        "email berhasil diubah"),
-                                                    content: const Text(
-                                                        "perubahan akan terlihat setelah login ulang"),
-                                                    actions: [
-                                                      ElevatedButton(
-                                                          onPressed: () {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          },
-                                                          style: ElevatedButton
-                                                              .styleFrom(
-                                                            backgroundColor:
-                                                                const Color(
-                                                                    0xff00ABB3),
-                                                          ),
-                                                          child:
-                                                              const Text("OK"))
-                                                    ],
-                                                  );
-                                                });
+                                            Navigator.pop(context);
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                                    backgroundColor:
+                                                        const Color(0xff00ABB3),
+                                                    content: Text(
+                                                      response!.data['message'],
+                                                    )));
                                           }
                                         } catch (e) {
                                           if (mounted) {
@@ -416,6 +522,115 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
             ),
+            const SizedBox(
+              height: 24,
+            ),
+            SizedBox(
+                width: size.width - 48,
+                height: 41,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                              scrollable: true,
+                              content: Column(
+                                children: [
+                                  regularTextFieldBuilder(
+                                    labelText: "Password Lama*",
+                                    controller: oldPasswordController,
+                                    obscureText: true,
+                                  ),
+                                  regularTextFieldBuilder(
+                                    labelText: "Password Baru",
+                                    controller: passwordController,
+                                    obscureText: true,
+                                  ),
+                                  regularTextFieldBuilder(
+                                    labelText: "Ulangi Password Baru",
+                                    controller: rePasswordController,
+                                    obscureText: true,
+                                  ),
+                                ],
+                              ),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    setState(() {
+                                      oldPasswordController.clear();
+                                      passwordController.clear();
+                                      rePasswordController.clear();
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xffF05050),
+                                  ),
+                                  child: const Text("Batal"),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    if (passwordController.text !=
+                                        rePasswordController.text) {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => alert(
+                                            context,
+                                            "Error",
+                                            "Password baru tidak sama"),
+                                      );
+                                      return;
+                                    }
+                                    try {
+                                      Response? response =
+                                          await Services.changePassword(
+                                        userData.id!,
+                                        passwordController.text,
+                                        oldPasswordController.text,
+                                      );
+                                      setState(() {
+                                        oldPasswordController.clear();
+                                        passwordController.clear();
+                                        rePasswordController.clear();
+                                      });
+                                      if (mounted) {
+                                        Navigator.pop(context);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              response!.data['message'],
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    } catch (e) {
+                                      if (mounted) {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => alert(
+                                              context, "Error", e.toString()),
+                                        );
+                                      }
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xff00ABB3),
+                                  ),
+                                  child: const Text("Ubah"),
+                                ),
+                              ]);
+                        });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    backgroundColor: const Color(0xff00ABB3),
+                  ),
+                  child: const Text("Ganti Password"),
+                ))
           ],
         ),
       ),

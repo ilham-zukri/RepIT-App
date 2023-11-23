@@ -64,7 +64,8 @@ abstract class Services {
   }
 
   /// change user's username ///
-  static Future<Response?> changeUsername(String username) async {
+  static Future<Response?> changeUsername(
+      String username, String userId) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
@@ -85,7 +86,7 @@ abstract class Services {
   }
 
   /// change user's username ///
-  static Future<Response?> changeEmail(String email) async {
+  static Future<Response?> changeEmail(String email, String userId) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
@@ -94,13 +95,75 @@ abstract class Services {
             "Accept": "application/json",
             "Authorization": "Bearer $token"
           }),
-          data: {"email": email});
+          data: {
+            "email": email,
+            "user_id": userId,
+          });
 
       if (response.statusCode == 200) return response;
     } catch (e) {
       exceptionHandling(e);
     }
     return null;
+  }
+
+  /// Change User's full name
+  static Future<Response?> changeFullName(
+      String fullName, String userId) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      var response = await Dio().put(
+        '$apiUrl/user/full-name',
+        options: Options(headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        }),
+        data: {
+          "full_name": fullName,
+          "user_id": userId,
+        },
+      );
+      if (response.statusCode == 200) {
+        return response;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
+  /// Change User's password
+  static Future<Response?> changePassword(
+      String userId, String password, String oldPassword) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      var response = await Dio().put(
+        '$apiUrl/user/password',
+        options: Options(headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        }),
+        data: {
+          "user_id": userId,
+          "password": password,
+          "old_password": oldPassword,
+        },
+      );
+      if (response.statusCode == 200) {
+        return response;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
   }
 
   /// Get roles

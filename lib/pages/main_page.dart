@@ -70,6 +70,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       builder: (context) {
                         return ProfilePage(
                           userData: userData,
+                          withAdvancedMenu: false,
                         );
                       },
                     ),

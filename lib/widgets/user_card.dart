@@ -26,7 +26,10 @@ class UserCard extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ProfilePage(userData: user),
+                builder: (context) => ProfilePage(
+                  userData: user,
+                  withAdvancedMenu: true,
+                ),
               ),
             );
           },
