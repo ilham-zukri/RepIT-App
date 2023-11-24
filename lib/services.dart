@@ -166,6 +166,101 @@ abstract class Services {
     }
   }
 
+  /// Reset Password
+  static Future<Response?> resetPassword(String userId, String password) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      var response = await Dio().put('$apiUrl/user/password/reset',
+          options: Options(
+            headers: {
+              "Accept": "application/json",
+              "Authorization": "Bearer $token"
+            },
+          ),
+          data: {
+            "user_id": userId,
+            "password": password,
+          });
+      if (response.statusCode == 200) {
+        return response;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
+  /// Advanced User Edit
+  static Future<Response?> advanceUserEdit(
+    String userId,
+    int departmentId,
+    int branchId,
+    roleId,
+  ) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      var response = await Dio().put(
+        '$apiUrl/user',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        ),
+        data: {
+          "user_id": userId,
+          "department_id": departmentId,
+          "branch_id": branchId,
+          "role_id": roleId,
+        },
+      );
+      if (response.statusCode == 200) {
+        return response;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
+  ///Set User Active
+  static Future<Response?> setActive(String userId, bool active) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      var response = await Dio().put(
+        '$apiUrl/user/active',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        ),
+        data: {
+          "user_id": userId,
+          "active": active,
+        },
+      );
+      if (response.statusCode == 200) {
+        return response;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
   /// Get roles
   static Future<Map?> getRoles() async {
     try {

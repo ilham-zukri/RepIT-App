@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/user.dart';
+import 'package:repit_app/pages/advanced_user_menu.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/alert.dart';
 import 'package:repit_app/widgets/custom_text_field_builder.dart';
@@ -57,7 +58,16 @@ class _ProfilePageState extends State<ProfilePage> {
         actions: [
           if (widget.withAdvancedMenu)
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AdvancedUserMenu(
+                      userData: userData,
+                    ),
+                  ),
+                );
+              },
               icon: const Icon(
                 Icons.manage_accounts,
                 size: 32,
@@ -526,114 +536,189 @@ class _ProfilePageState extends State<ProfilePage> {
               height: 24,
             ),
             SizedBox(
-                width: size.width - 48,
-                height: 41,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                              scrollable: true,
-                              content: Column(
-                                children: [
-                                  regularTextFieldBuilder(
-                                    labelText: "Password Lama*",
-                                    controller: oldPasswordController,
-                                    obscureText: true,
-                                  ),
-                                  regularTextFieldBuilder(
-                                    labelText: "Password Baru",
-                                    controller: passwordController,
-                                    obscureText: true,
-                                  ),
-                                  regularTextFieldBuilder(
-                                    labelText: "Ulangi Password Baru",
-                                    controller: rePasswordController,
-                                    obscureText: true,
-                                  ),
-                                ],
-                              ),
-                              actions: [
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    setState(() {
-                                      oldPasswordController.clear();
-                                      passwordController.clear();
-                                      rePasswordController.clear();
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xffF05050),
-                                  ),
-                                  child: const Text("Batal"),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    if (passwordController.text !=
-                                        rePasswordController.text) {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => alert(
-                                            context,
-                                            "Error",
-                                            "Password baru tidak sama"),
-                                      );
-                                      return;
-                                    }
-                                    try {
-                                      Response? response =
-                                          await Services.changePassword(
-                                        userData.id!,
-                                        passwordController.text,
-                                        oldPasswordController.text,
-                                      );
-                                      setState(() {
-                                        oldPasswordController.clear();
-                                        passwordController.clear();
-                                        rePasswordController.clear();
-                                      });
-                                      if (mounted) {
-                                        Navigator.pop(context);
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              response!.data['message'],
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    } catch (e) {
-                                      if (mounted) {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) => alert(
-                                              context, "Error", e.toString()),
-                                        );
-                                      }
-                                    }
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xff00ABB3),
-                                  ),
-                                  child: const Text("Ubah"),
-                                ),
-                              ]);
-                        });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    backgroundColor: const Color(0xff00ABB3),
+              width: size.width - 48,
+              height: 41,
+              child: ElevatedButton(
+                onPressed: () async {
+                  if (widget.withAdvancedMenu) {
+                    showResetPasswordDialog(context);
+                  } else {
+                    showChangePasswordDialog(context);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Text("Ganti Password"),
-                ))
+                  backgroundColor: (!widget.withAdvancedMenu)
+                      ? const Color(0xff00ABB3)
+                      : const Color(0xff2F546E),
+                ),
+                child: (!widget.withAdvancedMenu)
+                    ? const Text("Ganti Password")
+                    : const Text("Reset Password"),
+              ),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  void showChangePasswordDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              scrollable: true,
+              content: Column(
+                children: [
+                  regularTextFieldBuilder(
+                    labelText: "Password Lama*",
+                    controller: oldPasswordController,
+                    obscureText: true,
+                  ),
+                  regularTextFieldBuilder(
+                    labelText: "Password Baru",
+                    controller: passwordController,
+                    obscureText: true,
+                  ),
+                  regularTextFieldBuilder(
+                    labelText: "Ulangi Password Baru",
+                    controller: rePasswordController,
+                    obscureText: true,
+                  ),
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () async {
+                    setState(() {
+                      oldPasswordController.clear();
+                      passwordController.clear();
+                      rePasswordController.clear();
+                    });
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xffF05050),
+                  ),
+                  child: const Text("Batal"),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (passwordController.text != rePasswordController.text) {
+                      showDialog(
+                        context: context,
+                        builder: (context) =>
+                            alert(context, "Error", "Password baru tidak sama"),
+                      );
+                      return;
+                    }
+                    try {
+                      Response? response = await Services.changePassword(
+                        userData.id!,
+                        passwordController.text,
+                        oldPasswordController.text,
+                      );
+                      setState(() {
+                        oldPasswordController.clear();
+                        passwordController.clear();
+                        rePasswordController.clear();
+                      });
+                      if (mounted) {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              response!.data['message'],
+                            ),
+                          ),
+                        );
+                      }
+                    } catch (e) {
+                      if (mounted) {
+                        showDialog(
+                          context: context,
+                          builder: (context) =>
+                              alert(context, "Error", e.toString()),
+                        );
+                      }
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff00ABB3),
+                  ),
+                  child: const Text("Ubah"),
+                ),
+              ]);
+        });
+  }
+
+  void showResetPasswordDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            scrollable: true,
+            title: const Text(
+              "Reset Password",
+            ),
+            content: regularTextFieldBuilder(
+              labelText: "Password*",
+              controller: passwordController,
+              obscureText: true,
+            ),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    passwordController.clear();
+                  });
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xffF05050),
+                ),
+                child: const Text("Batal"),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  String newPassword = passwordController.text;
+                  String userId = userData.id!;
+                  try {
+                    Response? response = await Services.resetPassword(
+                      userId,
+                      newPassword,
+                    );
+                    setState(() {
+                      passwordController.clear();
+                    });
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: const Color(0xff00ABB3),
+                          content: Text(response!.data['message']),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    if (mounted) {
+                      showDialog(
+                        context: context,
+                        builder: (context) =>
+                            alert(context, "error", e.toString()),
+                      );
+                    }
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xff00ABB3),
+                ),
+                child: const Text("Reset"),
+              ),
+            ]);
+      },
     );
   }
 }

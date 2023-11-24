@@ -46,6 +46,7 @@ class _ManageUsersState extends State<ManageUsers> {
           branch: user['branch'],
           department: user['department'],
           createdAt: user['created_at'],
+          active: user['active'],
           token: null,
         );
       }).toList();

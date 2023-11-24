@@ -52,10 +52,13 @@ Widget sparePartTypeDropDownBuilder(BuildContext context,
   );
 }
 
-Widget locationDropdownBuilder(BuildContext context,
-    {required Future future,
-    required Size size,
-    required void Function(dynamic) onSelected}) {
+Widget locationDropdownBuilder(
+  BuildContext context, {
+  required Future future,
+  required Size size,
+  required void Function(dynamic) onSelected,
+  int? initialIndex,
+}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -78,7 +81,9 @@ Widget locationDropdownBuilder(BuildContext context,
               List<dynamic>? locationData = snapshot.data;
               String? initialLocationSelection;
               if (locationData != null && locationData.isNotEmpty) {
-                initialLocationSelection = locationData.first.id.toString();
+                initialLocationSelection = (initialIndex == null)
+                    ? locationData.first.id.toString()
+                    : locationData[initialIndex].id.toString();
               }
               return DropdownMenu(
                 textStyle: const TextStyle(fontSize: 16),
@@ -98,10 +103,13 @@ Widget locationDropdownBuilder(BuildContext context,
   );
 }
 
-Widget departmentDropdownBuilder(BuildContext context,
-    {required Future future,
-    required Size size,
-    required void Function(dynamic) onSelected}) {
+Widget departmentDropdownBuilder(
+  BuildContext context, {
+  required Future future,
+  required Size size,
+  required void Function(dynamic) onSelected,
+  int? initialIndex,
+}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -124,7 +132,9 @@ Widget departmentDropdownBuilder(BuildContext context,
             List<dynamic>? departmentData = snapshot.data;
             String? initialLocationSelection;
             if (departmentData != null && departmentData.isNotEmpty) {
-              initialLocationSelection = departmentData[3].id.toString();
+              initialLocationSelection = (initialIndex == null)
+                  ? departmentData[3].id.toString()
+                  : departmentData[initialIndex].id.toString();
             }
             return DropdownMenu(
               textStyle: const TextStyle(fontSize: 16),
@@ -145,10 +155,14 @@ Widget departmentDropdownBuilder(BuildContext context,
     ],
   );
 }
-Widget roleDropdownBuilder(BuildContext context,
-    {required Future future,
-    required Size size,
-    required void Function(dynamic) onSelected}) {
+
+Widget roleDropdownBuilder(
+  BuildContext context, {
+  required Future future,
+  required Size size,
+  required void Function(dynamic) onSelected,
+  int? initialIndex,
+}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -171,7 +185,9 @@ Widget roleDropdownBuilder(BuildContext context,
             List<dynamic>? roleData = snapshot.data;
             String? initialRoleSelection;
             if (roleData != null && roleData.isNotEmpty) {
-              initialRoleSelection = roleData[2].id.toString();
+              initialRoleSelection = (initialIndex == null)
+                  ? roleData[2].id.toString()
+                  : roleData[initialIndex].id.toString();
             }
             return DropdownMenu(
               textStyle: const TextStyle(fontSize: 16),
@@ -182,8 +198,7 @@ Widget roleDropdownBuilder(BuildContext context,
               onSelected: onSelected,
               dropdownMenuEntries: roleData!.map((role) {
                 return DropdownMenuEntry(
-                    value: role.id.toString(),
-                    label: role.roleName);
+                    value: role.id.toString(), label: role.roleName);
               }).toList(),
             );
           }
