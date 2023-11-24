@@ -16,6 +16,7 @@ class Ticket {
   String? closedAt;
   final String? location;
   final List? images;
+  final String? flag;
   final Map<String, dynamic>? note;
 
   Ticket({
@@ -36,6 +37,7 @@ class Ticket {
     this.closedAt,
     this.location,
     this.images,
+    this.flag,
     this.note
   });
 

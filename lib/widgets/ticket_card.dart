@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:repit_app/widgets/cat_box_builder.dart';
+import 'package:repit_app/widgets/flag_box_builder.dart';
 import 'package:repit_app/widgets/priority_box_builder.dart';
 import 'package:repit_app/widgets/ticket_status_box_builder.dart';
 
@@ -57,11 +58,11 @@ class TicketCard extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          categoryBoxBuilder(ticket.category!),
+                          priorityBoxBuilder(ticket.priority!, 'card'),
                           const SizedBox(
                             width: 8,
                           ),
-                          priorityBoxBuilder(ticket.priority!, 'card'),
+                          categoryBoxBuilder(ticket.category!),
                         ],
                       )
                     ],
@@ -76,12 +77,19 @@ class TicketCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      ticket.createdBy!,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          ticket.createdBy!,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        if(ticket.flag != null)
+                        flagBoxBuilder(ticket.flag!, "card")
+                      ],
                     ),
                     const SizedBox(
                       height: 8,

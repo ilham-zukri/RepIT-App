@@ -62,6 +62,7 @@ class _ManageTicketState extends State<ManageTicket> {
           closedAt: ticket['closed_at'],
           handler: ticket['handler'],
           note: ticket['note'],
+          flag: ticket['flag'],
         );
       }).toList();
       if (isRefresh == true) {

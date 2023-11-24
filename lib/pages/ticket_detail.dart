@@ -4,6 +4,7 @@ import 'package:repit_app/pages/spare_part_replacement.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/alert.dart';
 import 'package:repit_app/widgets/custom_text_field_builder.dart';
+import 'package:repit_app/widgets/flag_box_builder.dart';
 import 'package:repit_app/widgets/image_viewer.dart';
 import 'package:repit_app/widgets/loading_overlay.dart';
 import 'package:repit_app/widgets/ticket_status_box_builder.dart';
@@ -720,10 +721,11 @@ class _TicketDetailState extends State<TicketDetail> {
         onPressed: Navigator.of(context).pop,
       ),
       actions: [
-        IconButton(
-          icon: const Icon(Icons.sticky_note_2, color: Color(0xff00ABB3)),
-          onPressed: () {},
-        ),
+        if(ticket.flag != null)
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: flagBoxBuilder(ticket.flag!, 'detail'),
+        )
       ],
     );
   }
