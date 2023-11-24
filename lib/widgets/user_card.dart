@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/user.dart';
 import 'package:repit_app/widgets/role_box_builder.dart';
+import 'package:repit_app/widgets/user_status_box_builder.dart';
 
 import '../pages/profile_page.dart';
 
@@ -94,8 +95,9 @@ class UserCard extends StatelessWidget {
                       height: 14,
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        userStatusBoxBuilder(active: user.active!),
                         Text(user.createdAt!),
                       ],
                     )

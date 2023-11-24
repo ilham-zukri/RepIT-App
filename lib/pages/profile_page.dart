@@ -24,12 +24,14 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController rePasswordController = TextEditingController();
   TextEditingController oldPasswordController = TextEditingController();
+  late String status;
 
   late User userData;
 
   @override
   void initState() {
     userData = widget.userData!;
+    status = (userData.active == 1) ? 'Active' : 'Inactive';
     super.initState();
   }
 
@@ -85,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  margin: const EdgeInsets.only(top: 32, bottom: 16),
+                  margin: const EdgeInsets.only(top: 16, bottom: 16),
                   child: Stack(
                     children: [
                       const CircleAvatar(
@@ -532,6 +534,38 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
             ),
+            if (widget.withAdvancedMenu)
+              Container(
+                decoration: const BoxDecoration(
+                    border: Border(bottom: BorderSide(color: Colors.grey))),
+                child: Row(
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(
+                              top: 24, left: 24, bottom: 24, right: 16),
+                          child: const Icon(Icons.info),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Status',
+                              style: TextStyle(fontSize: 14),
+                            ),
+                            Text(
+                              status,
+                              style: const TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             const SizedBox(
               height: 24,
             ),
