@@ -5,8 +5,8 @@ import 'package:dio/dio.dart';
 
 abstract class Services {
   static const String url = "http://10.0.2.2:8000";
-
-  // static const String url = "http://192.168.100.194:8000";
+  // static const String url = "http://127.0.0.1:8000";
+  // static const String url = "http://192.168.1.38:8000";
   static const String apiUrl = "$url/api";
   static late SharedPreferences prefs;
 
@@ -550,6 +550,29 @@ abstract class Services {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
       Response? response = await Dio().put('$apiUrl/asset/accept',
+          options: Options(headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          }),
+          data: {"asset_id": assetId});
+      if (response.statusCode == 200) {
+        return response;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+    }
+    return null;
+  }
+
+  /// Scrap Asset
+  static Future<Response?> scrapAsset(int assetId) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().put('$apiUrl/asset/scrap',
           options: Options(headers: {
             "Accept": "application/json",
             "Authorization": "Bearer $token"

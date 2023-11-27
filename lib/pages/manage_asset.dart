@@ -55,7 +55,7 @@ class _ManageAssetState extends State<ManageAsset> {
               asset['brand'],
               asset['model'],
               asset['qr_path'],
-              asset['owner_id']);
+              asset['owner']);
         },
       ).toList();
       setState(() {
@@ -78,7 +78,7 @@ class _ManageAssetState extends State<ManageAsset> {
               asset['brand'],
               asset['model'],
               asset['qr_path'],
-              asset['owner_id']);
+              asset['owner']);
         },
       ).toList();
       setState(() {
@@ -113,7 +113,11 @@ class _ManageAssetState extends State<ManageAsset> {
                           const SizedBox(
                             height: 16,
                           ),
-                          AssetCard(asset: assets[index], withDetail: true),
+                          AssetCard(
+                            asset: assets[index],
+                            withDetail: true,
+                            withAdvancedMenu: true,
+                          ),
                           (index == assetsLength - 1)
                               ? const SizedBox(height: 16)
                               : const SizedBox.shrink()
@@ -132,9 +136,7 @@ class _ManageAssetState extends State<ManageAsset> {
               ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-
-        },
+        onPressed: () {},
         shape: const CircleBorder(),
         child: const Icon(Icons.filter_alt),
       ),

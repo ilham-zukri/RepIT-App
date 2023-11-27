@@ -7,8 +7,9 @@ import 'data_classes/asset.dart';
 class AssetCard extends StatelessWidget {
   final Asset asset;
   final bool withDetail;
+  final bool withAdvancedMenu;
 
-  const AssetCard({super.key, required this.asset, required this.withDetail});
+  const AssetCard({super.key, required this.asset, required this.withDetail, required this.withAdvancedMenu});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class AssetCard extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AssetDetail(asset: asset),
+                  builder: (context) => AssetDetail(asset: asset, withAdvancedMenu: withAdvancedMenu),
                 ),
               );
             }

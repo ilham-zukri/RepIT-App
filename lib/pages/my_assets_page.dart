@@ -50,7 +50,7 @@ class _MyAssetsPageState extends State<MyAssetsPage> {
           asset['brand'],
           asset['model'],
           asset['qr_path'],
-          asset['owner_id'],
+          asset['owner'],
         );
       }).toList();
 
@@ -88,7 +88,11 @@ class _MyAssetsPageState extends State<MyAssetsPage> {
                     const SizedBox(
                       height: 16,
                     ),
-                    AssetCard(asset: assets[index], withDetail: true),
+                    AssetCard(
+                      asset: assets[index],
+                      withDetail: true,
+                      withAdvancedMenu: false,
+                    ),
                     (index == assetsLength - 1)
                         ? const SizedBox(height: 16)
                         : const SizedBox.shrink()
@@ -112,8 +116,7 @@ class _MyAssetsPageState extends State<MyAssetsPage> {
             children: [
               const Text(
                 "Aset-aset anda akan tampil disini",
-                style:
-                TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
               ),
               const SizedBox(
                 height: 16,

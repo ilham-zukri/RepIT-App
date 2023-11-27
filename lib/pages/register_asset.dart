@@ -121,6 +121,7 @@ class _RegisterAssetState extends State<RegisterAsset> {
                               AssetCard(
                                 asset: assets[index],
                                 withDetail: false,
+                                withAdvancedMenu: false,
                               ),
                               (index < assets.length - 1)
                                   ? const SizedBox.shrink()

@@ -10,8 +10,11 @@ import 'package:repit_app/widgets/status_box_builder.dart';
 
 class AssetDetail extends StatefulWidget {
   final Asset asset;
+  final bool withAdvancedMenu;
 
-  const AssetDetail({Key? key, required this.asset}) : super(key: key);
+  const AssetDetail(
+      {Key? key, required this.asset, required this.withAdvancedMenu})
+      : super(key: key);
 
   @override
   State<AssetDetail> createState() => _AssetDetailState();
@@ -111,9 +114,10 @@ class _AssetDetailState extends State<AssetDetail> {
                       margin: const EdgeInsets.only(top: 8),
                       child: const Text(':', style: tableContentStyle)),
                   Container(
-                      margin: const EdgeInsets.only(top: 8),
-                      child: Text((asset.ownerId as String),
-                          style: tableContentStyle))
+                    margin: const EdgeInsets.only(top: 8),
+                    child: Text((asset.owner != null) ? asset.owner! : '#N/A',
+                        style: tableContentStyle),
+                  )
                 ]),
                 TableRow(children: [
                   Container(
@@ -244,7 +248,124 @@ class _AssetDetailState extends State<AssetDetail> {
                       ),
                     ),
                   )
-                : const SizedBox(height: 0)
+                : const SizedBox(height: 0),
+            const SizedBox(
+              height: 24,
+            ),
+            if (widget.withAdvancedMenu && status != 'Scrapped')
+              Column(
+                children: [
+                  SizedBox(
+                    width: size.width,
+                    height: 41,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xff009199),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () {},
+                      child: const Text("Pindah Asset"),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  SizedBox(
+                    width: size.width,
+                    height: 41,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xff12315F),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () {},
+                      child: const Text("Ambil Asset Dari User"),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  SizedBox(
+                    width: size.width,
+                    height: 41,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xffF05050),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () async {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text("Konfirmasi"),
+                              content: const Text("Apakah Anda yakin"),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xffF05050),
+                                  ),
+                                  child: const Text("Batal"),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    try {
+                                      Response? response =
+                                          await Services.scrapAsset(asset.id!);
+                                      if (mounted) {
+                                        setState(() {
+                                          status = response?.data['data']
+                                              ['status'] as String;
+                                        });
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            backgroundColor:
+                                                const Color(0xff00ABB3),
+                                            content: Text(
+                                              response!.data['message'],
+                                            ),
+                                          ),
+                                        );
+                                        Navigator.pop(context);
+                                      }
+                                    } catch (e) {
+                                      if (mounted) {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => alert(
+                                            context,
+                                            "error",
+                                            e.toString(),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xff009199),
+                                  ),
+                                  child: const Text("Yakin"),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: const Text("Scrap Asset"),
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
       ),

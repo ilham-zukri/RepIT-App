@@ -28,6 +28,7 @@ class _TicketFormState extends State<TicketForm> {
   List<File> images = [];
   bool isLoading = false;
 
+  late String hintText;
 
   @override
   void initState() {
@@ -73,6 +74,7 @@ class _TicketFormState extends State<TicketForm> {
 
   @override
   Widget build(BuildContext context) {
+    hintText = (categoryId == 1) ? 'Komputer lamban' : 'Tidak bisa login';
     var size = MediaQuery.of(context).size;
     return Stack(children: [
       Scaffold(
@@ -102,6 +104,7 @@ class _TicketFormState extends State<TicketForm> {
                   child: TextField(
                     controller: titleEc,
                     decoration: InputDecoration(
+                      hintText: hintText,
                       contentPadding: const EdgeInsets.all(10),
                       filled: true,
                       fillColor: Colors.white,
@@ -157,6 +160,7 @@ class _TicketFormState extends State<TicketForm> {
                                 setState(() {
                                   categoryId =
                                       int.tryParse(value.toString()) as int;
+
                                 });
                               },
                               borderRadius: BorderRadius.circular(10),
@@ -167,75 +171,96 @@ class _TicketFormState extends State<TicketForm> {
                     }
                   },
                 ),
-                (categoryId == 1) ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 24,
-                    ),
-                    const Text(
-                      "Aset",
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black),
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    FutureBuilder(
-                      future: assetList,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Text(snapshot.error.toString());
-                        } else if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        } else {
-                          List? assets = snapshot.data;
-                          return DecoratedBox(
-                            decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: Colors.black54, width: 1),
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(10))),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 10, right: 10),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton(
-                                  isExpanded: true,
-                                  value: assetId,
-                                  items: assets!.map((asset) {
-                                    return DropdownMenuItem(
-                                      value: asset['id'],
-                                      child: Row(
-                                        children: [
-                                          Text(asset['id'].toString()),
-                                          const SizedBox(
-                                            width: 8,
-                                          ),
-                                          Text(asset['model']),
-                                        ],
+                (categoryId == 1)
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 24,
+                          ),
+                          const Text(
+                            "Aset",
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          FutureBuilder(
+                            future: assetList,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                if(snapshot.data == null){
+                                  return const Center(
+                                    child: Text(
+                                      "Belum ada aset yang dimiliki",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      assetId =
-                                          int.tryParse(value.toString()) as int;
-                                    });
-                                  },
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                ) : const SizedBox.shrink(),
+                                    ),
+                                  );
+                                }
+                                return Center(
+                                  child: Text(
+                                    snapshot.error.toString(),
+                                    style: const TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                );
+                              } else if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              } else {
+                                List? assets = snapshot.data;
+                                return DecoratedBox(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.black54, width: 1),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 10, right: 10),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton(
+                                        isExpanded: true,
+                                        value: assetId,
+                                        items: assets!.map((asset) {
+                                          return DropdownMenuItem(
+                                            value: asset['id'],
+                                            child: Row(
+                                              children: [
+                                                Text(asset['id'].toString()),
+                                                const SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Text(asset['model']),
+                                              ],
+                                            ),
+                                          );
+                                        }).toList(),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            assetId =
+                                                int.tryParse(value.toString())
+                                                    as int;
+                                          });
+                                        },
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      )
+                    : const SizedBox.shrink(),
                 const SizedBox(
                   height: 24,
                 ),

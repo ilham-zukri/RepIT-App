@@ -1,6 +1,6 @@
 class Asset {
   final int? id;
-  final String? ownerId;
+  final String? owner;
   final String utilization;
   final String? status;
   final String assetType;
@@ -15,7 +15,7 @@ class Asset {
   // TODO : add purchase id
 
   Asset(this.id,this.utilization, this.status, this.assetType, this.ram, this.cpu,
-      this.location, this.serialNumber, this.brand, this.model, this.qrPath, this.ownerId);
+      this.location, this.serialNumber, this.brand, this.model, this.qrPath, this.owner);
 
   Map<String,dynamic> toMap(){
     return{
