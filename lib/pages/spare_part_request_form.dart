@@ -16,7 +16,7 @@ class _SparePartRequestFormState extends State<SparePartRequestForm> {
   TextEditingController titleEc = TextEditingController();
   TextEditingController descEc = TextEditingController();
   bool isLoading = false;
-  bool isButtonDisabled = false;
+  bool isDisabled = false;
 
   @override
   void dispose() {
@@ -39,12 +39,15 @@ class _SparePartRequestFormState extends State<SparePartRequestForm> {
                 labelText: "Judul*",
                 controller: titleEc,
                 obscureText: false,
+                enabled: !isDisabled,
               ),
               const SizedBox(
                 height: 24,
               ),
               descriptionTextFieldBuilder(
-                  labelText: "Deskripsi*", controller: descEc),
+                  labelText: "Deskripsi*",
+                  controller: descEc,
+                  enabled: !isDisabled),
               const SizedBox(
                 height: 24,
               ),
@@ -56,7 +59,7 @@ class _SparePartRequestFormState extends State<SparePartRequestForm> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50)),
                       elevation: 5),
-                  onPressed: (!isButtonDisabled)
+                  onPressed: (!isDisabled)
                       ? () async {
                           if (titleEc.text.trim().isEmpty ||
                               descEc.text.trim().isEmpty) {
@@ -82,7 +85,7 @@ class _SparePartRequestFormState extends State<SparePartRequestForm> {
                                 await Services.createSparePartRequest(data);
                             setState(() {
                               isLoading = false;
-                              isButtonDisabled = true;
+                              isDisabled = true;
                             });
                             if (mounted) {
                               showDialog(
