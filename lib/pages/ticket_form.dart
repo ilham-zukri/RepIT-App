@@ -27,6 +27,7 @@ class _TicketFormState extends State<TicketForm> {
   late Future<List> assetList;
   List<File> images = [];
   bool isLoading = false;
+  bool isDisabled = false;
 
   late String hintText;
   late String descHintText;
@@ -106,6 +107,7 @@ class _TicketFormState extends State<TicketForm> {
                   child: TextField(
                     controller: titleEc,
                     decoration: InputDecoration(
+                      enabled: !isDisabled,
                       hintText: hintText,
                       contentPadding: const EdgeInsets.all(10),
                       filled: true,
@@ -158,13 +160,13 @@ class _TicketFormState extends State<TicketForm> {
                                     value: category['id'],
                                     child: Text(category['category']));
                               }).toList(),
-                              onChanged: (value) {
+                              onChanged: !isDisabled ? (value) {
                                 setState(() {
                                   categoryId =
                                       int.tryParse(value.toString()) as int;
 
                                 });
-                              },
+                              }: null,
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
@@ -198,7 +200,7 @@ class _TicketFormState extends State<TicketForm> {
                                   return const Center(
                                     child: Text(
                                       "Belum ada aset yang dimiliki",
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -245,13 +247,13 @@ class _TicketFormState extends State<TicketForm> {
                                             ),
                                           );
                                         }).toList(),
-                                        onChanged: (value) {
+                                        onChanged: !isDisabled ? (value) {
                                           setState(() {
                                             assetId =
                                                 int.tryParse(value.toString())
                                                     as int;
                                           });
-                                        },
+                                        } : null,
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                     ),
@@ -280,6 +282,7 @@ class _TicketFormState extends State<TicketForm> {
                   margin: const EdgeInsets.only(top: 8),
                   height: 112,
                   child: TextField(
+                    enabled: !isDisabled,
                     maxLines: 100,
                     controller: descEc,
                     decoration: InputDecoration(
@@ -335,12 +338,12 @@ class _TicketFormState extends State<TicketForm> {
                                     value: priority['id'],
                                     child: Text(priority['priority']));
                               }).toList(),
-                              onChanged: (value) {
+                              onChanged: !isDisabled ? (value) {
                                 setState(() {
                                   priorityId =
                                       int.tryParse(value.toString()) as int;
                                 });
-                              },
+                              } : null,
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
@@ -389,11 +392,11 @@ class _TicketFormState extends State<TicketForm> {
                                             margin:
                                                 const EdgeInsets.only(left: 8),
                                             child: IconButton(
-                                              onPressed: () {
+                                              onPressed: !isDisabled ? () {
                                                 setState(() {
                                                   _pickImage();
                                                 });
-                                              },
+                                              } : null,
                                               icon:
                                                   const Icon(Icons.add_a_photo),
                                             ),
@@ -418,9 +421,9 @@ class _TicketFormState extends State<TicketForm> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(50)),
                               elevation: 5),
-                          onPressed: () async {
+                          onPressed: !isDisabled ? () async {
                             await _pickImage();
-                          },
+                          } : null,
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -452,7 +455,7 @@ class _TicketFormState extends State<TicketForm> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50)),
                         elevation: 5),
-                    onPressed: () async {
+                    onPressed: !isDisabled ? () async {
                       if (titleEc.text.isEmpty || descEc.text.isEmpty) {
                         showDialog(
                           context: context,
@@ -480,6 +483,7 @@ class _TicketFormState extends State<TicketForm> {
                         var response = await Services.createTicket(ticket);
                         setState(() {
                           isLoading = false;
+                          isDisabled = true;
                         });
                         if (mounted) {
                           showDialog(
@@ -505,7 +509,7 @@ class _TicketFormState extends State<TicketForm> {
                           );
                         }
                       }
-                    },
+                    } : null,
                     child: const Text(
                       "Kirim",
                       style: TextStyle(
