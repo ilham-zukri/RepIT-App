@@ -511,7 +511,7 @@ abstract class Services {
 
   /// POST Create Asset Request ///
   static Future<Response?> createAssetRequest(String title, String description,
-      int priority, String userId, int locationId) async {
+      int priority, String userId) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
@@ -528,7 +528,6 @@ abstract class Services {
           'description': description,
           'priority': priority,
           'for_user': userId,
-          'location_id': locationId
         },
       );
 

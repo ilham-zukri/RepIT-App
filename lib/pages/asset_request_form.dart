@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:repit_app/data_classes/location_for_list.dart';
 import 'package:repit_app/data_classes/user_for_list.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
 import 'package:repit_app/widgets/custom_text_field_builder.dart';
-import 'package:repit_app/widgets/drop_down_builder.dart';
 import 'package:repit_app/widgets/loading_overlay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,20 +19,20 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
   final TextEditingController titleEc = TextEditingController();
   final TextEditingController descEc = TextEditingController();
   late String userId;
-  late int locationId;
   bool isLoading = false;
+  bool isDisabled = false;
   late int priority;
   late Future<List?> prioritiesList;
-  late Future<List<LocationForList>> locations;
   late SharedPreferences prefs;
   late Future<List<UserForList>> userData;
+  static const titleHint = 'Laptop Untuk WFH';
+  static const descHint = 'Adakan laptop untuk WFH karyawan';
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     userData = fetchUsers();
-    locations = fetchLocations();
     prioritiesList = fetchPriorities();
   }
 
@@ -54,17 +52,6 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
     userId = data[0]['id'];
     return data.map((item) {
       return UserForList(item['id'], item['user_name']);
-    }).toList();
-  }
-
-  Future<List<LocationForList>> fetchLocations() async {
-    final data = await Services.getLocationList();
-    if (data == null) {
-      return [];
-    }
-    locationId = data[0]['id'];
-    return data.map((item) {
-      return LocationForList(item['id'], item['name']);
     }).toList();
   }
 
@@ -93,12 +80,21 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                     height: 24,
                   ),
                   regularTextFieldBuilder(
-                      labelText: "Judul*", controller: titleEc, obscureText: false),
+                    labelText: "Judul*",
+                    controller: titleEc,
+                    obscureText: false,
+                    hintText: titleHint,
+                    enabled: (!isDisabled),
+                  ),
                   const SizedBox(
                     height: 24,
                   ),
                   descriptionTextFieldBuilder(
-                      labelText: "Deskripsi*", controller: descEc),
+                      labelText: "Deskripsi*",
+                      controller: descEc,
+                      hintText: descHint,
+                    enabled: (!isDisabled),
+                  ),
                   const SizedBox(
                     height: 24,
                   ),
@@ -142,12 +138,12 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                                       value: priority['id'],
                                       child: Text(priority['priority']));
                                 }).toList(),
-                                onChanged: (value) {
+                                onChanged: (!isDisabled) ? (value) {
                                   setState(() {
                                     priority =
                                         int.tryParse(value.toString()) as int;
                                   });
-                                },
+                                } : null,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
@@ -187,6 +183,7 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                             initialUserSelection = userData.first.id;
                           }
                           return DropdownMenu(
+                            enabled: (!isDisabled),
                             textStyle: const TextStyle(fontSize: 16),
                             width: size.width - 48,
                             enableSearch: true,
@@ -203,19 +200,6 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                           );
                         }
                       }),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  locationDropdownBuilder(
-                    context,
-                    future: locations,
-                    size: size,
-                    onSelected: (value) {
-                      setState(() {
-                        locationId = int.parse(value as String);
-                      });
-                    },
-                  ),
                   Container(
                     margin: const EdgeInsets.only(top: 24),
                     height: 41,
@@ -226,51 +210,59 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50)),
                           elevation: 5),
-                      onPressed: () async {
-                        if (titleEc.text.isEmpty || descEc.text.isEmpty) {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) => alert(
-                                  context,
-                                  'Lengkapi form',
-                                  'Judul dan Deskripsi tidak boleh kosong'));
-                        } else {
-                          try {
-                            setState(() {
-                              isLoading = true;
-                            });
-                            var response = await Services.createAssetRequest(
-                                titleEc.text.toString(),
-                                descEc.text.toString(),
-                                priority,
-                                userId,
-                                locationId);
-                            setState(() {
-                              isLoading = false;
-                            });
-                            if (mounted) {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) => alert(
-                                      context,
-                                      response!.data['message'],
-                                      "request terbuat"));
+                      onPressed: (!isDisabled)
+                          ? () async {
+                              if (titleEc.text.isEmpty || descEc.text.isEmpty) {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) => alert(
+                                        context,
+                                        'Lengkapi form',
+                                        'Judul dan Deskripsi tidak boleh kosong'));
+                              } else {
+                                try {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                  var response =
+                                      await Services.createAssetRequest(
+                                    titleEc.text.toString(),
+                                    descEc.text.toString(),
+                                    priority,
+                                    userId,
+                                  );
+                                  setState(() {
+                                    isDisabled = true;
+                                    isLoading = false;
+                                  });
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        backgroundColor:
+                                            const Color(0xff00ABB3),
+                                        content: Text(
+                                          response!.data["message"],
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                } catch (e) {
+                                  if (mounted) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return alert(
+                                            context, 'Error', e.toString());
+                                      },
+                                    );
+                                  }
+                                }
+                              }
+                              if (mounted) {
+                                Navigator.of(context).pop;
+                              }
                             }
-                          } catch (e) {
-                            if (mounted) {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return alert(context, 'Error', e.toString());
-                                },
-                              );
-                            }
-                          }
-                        }
-                        if (mounted) {
-                          Navigator.of(context).pop;
-                        }
-                      },
+                          : null,
                       child: const Text(
                         "Kirim",
                         style: TextStyle(
