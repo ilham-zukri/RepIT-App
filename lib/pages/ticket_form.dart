@@ -29,6 +29,7 @@ class _TicketFormState extends State<TicketForm> {
   bool isLoading = false;
 
   late String hintText;
+  late String descHintText;
 
   @override
   void initState() {
@@ -75,6 +76,7 @@ class _TicketFormState extends State<TicketForm> {
   @override
   Widget build(BuildContext context) {
     hintText = (categoryId == 1) ? 'Komputer lamban' : 'Tidak bisa login';
+    descHintText = (categoryId == 1) ? 'Komputer Lamban saat buka aplikasi tertentu' : 'Tidak bisa login ke sistem';
     var size = MediaQuery.of(context).size;
     return Stack(children: [
       Scaffold(
@@ -281,6 +283,7 @@ class _TicketFormState extends State<TicketForm> {
                     maxLines: 100,
                     controller: descEc,
                     decoration: InputDecoration(
+                      hintText: descHintText,
                       contentPadding: const EdgeInsets.all(10),
                       filled: true,
                       fillColor: Colors.white,
