@@ -108,7 +108,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   text: "Tickets",
                 ),
                 Tab(
-                  text: "Assets",
+                  text: "My Assets",
                 ),
                 Tab(
                   text: "Request",

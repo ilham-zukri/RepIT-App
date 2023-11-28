@@ -152,8 +152,16 @@ class _AddUserState extends State<AddUser> {
                   height: 24,
                 ),
                 regularTextFieldBuilder(
-                  labelText: "Nama Lengkap",
+                  labelText: "Nama Lengkap*",
                   controller: fullNameEc,
+                  obscureText: false,
+                ),
+                const SizedBox(
+                  height: 24,
+                ),
+                regularTextFieldBuilder(
+                  labelText: "Nomor Karyawan*",
+                  controller: empNumberEc,
                   obscureText: false,
                 ),
                 const SizedBox(
@@ -162,14 +170,6 @@ class _AddUserState extends State<AddUser> {
                 regularTextFieldBuilder(
                   labelText: "Email",
                   controller: emailEc,
-                  obscureText: false,
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                regularTextFieldBuilder(
-                  labelText: "Nomor Karyawan",
-                  controller: empNumberEc,
                   obscureText: false,
                 ),
                 const SizedBox(
@@ -185,14 +185,19 @@ class _AddUserState extends State<AddUser> {
                             borderRadius: BorderRadius.circular(50)),
                         elevation: 5),
                     onPressed: () async {
-                      if (userNameEc.text.isEmpty || passwordEc.text.isEmpty) {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(const SnackBar(
-                                backgroundColor: Color(0xff00ABB3),
-                                content: Text(
-                                  "Username dan Password harus diisi",
-                                  style: TextStyle(color: Colors.red),
-                                )));
+                      if (userNameEc.text.isEmpty ||
+                          passwordEc.text.isEmpty ||
+                          fullNameEc.text.trim().isEmpty ||
+                          empNumberEc.text.trim().isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            backgroundColor: Color(0xff00ABB3),
+                            content: Text(
+                              "Lengkapi Field Berbintang",
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        );
                         return;
                       }
                       String userName = userNameEc.text.trim();

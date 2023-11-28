@@ -17,7 +17,7 @@ class _ManageUsersState extends State<ManageUsers> {
   bool isLoading = false;
   int page = 1;
   late int lastPage;
-  String? userName;
+  String? searchParam;
   final scrollController = ScrollController();
   bool isLoadingMore = false;
   List users = [];
@@ -32,7 +32,7 @@ class _ManageUsersState extends State<ManageUsers> {
   }
 
   Future<void> fetchUsers({bool? isRefresh}) async {
-    var data = await Services.getUsers(page, userName);
+    var data = await Services.getUsers(page, searchParam);
     if (data == null) {
       users += [];
     } else {
@@ -41,6 +41,7 @@ class _ManageUsersState extends State<ManageUsers> {
           id: user['id'],
           userName: user['user_name'],
           fullName: user['full_name'],
+          empNumber: user['employee_id'],
           email: user['email'],
           role: user['role'],
           branch: user['branch'],
@@ -139,12 +140,12 @@ class _ManageUsersState extends State<ManageUsers> {
                   controller: searchController,
                   onChanged: (value) async {
                     setState(() {
-                      userName = value;
+                      searchParam = value;
                     });
                     await fetchUsers(isRefresh: true);
                   },
                   leading: const Icon(Icons.search),
-                  hintText: "Cari berdasarkan username",
+                  hintText: "Cari username, nama lengkap dan nomor karyawan",
                   hintStyle: const MaterialStatePropertyAll<TextStyle>(
                     TextStyle(color: Colors.black54),
                   ),
@@ -154,7 +155,7 @@ class _ManageUsersState extends State<ManageUsers> {
                       onPressed: () async {
                         setState(() {
                           searchController.clear();
-                          userName = null;
+                          searchParam = null;
                         });
                         await fetchUsers(isRefresh: true);
                       },

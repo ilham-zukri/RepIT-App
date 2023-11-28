@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/purchase.dart';
+import 'package:repit_app/pages/purchase_asset.dart';
 import 'package:repit_app/pages/register_asset.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/alert.dart';
@@ -203,7 +205,7 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
                 const SizedBox(
                   height: 16,
                 ),
-                (purchase.status != 'Received')
+                (purchase.status == 'In Progress')
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -403,41 +405,65 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
                           ),
                         ],
                       )
-                    : SizedBox(
-                        width: size.width,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xff009199),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50)),
-                            elevation: 5,
+                    : const SizedBox.shrink(),
+                if (purchase.status == 'Received')
+                  SizedBox(
+                    width: size.width,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xff009199),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50)),
+                        elevation: 5,
+                      ),
+                      onPressed: () async {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RegisterAsset(
+                              purchase: purchase,
+                              usage: usage,
+                            ),
                           ),
-                          onPressed: () async {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => RegisterAsset(
-                                  purchase: purchase,
-                                  usage: usage,
-                                ),
-                              ),
-                            );
-                          },
-                          child: (usage == "asset")
-                              ? const Text(
-                                  "Daftarkan Aset",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600),
-                                )
-                              : const Text(
-                                  "Daftarkan Spare Part",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600),
-                                ),
+                        );
+                      },
+                      child: (usage == "asset")
+                          ? const Text(
+                              "Daftarkan Aset",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600),
+                            )
+                          : const Text(
+                              "Daftarkan Spare Part",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                    ),
+                  ),
+                if (purchase.status == 'Done')
+                  SizedBox(
+                    width: size.width,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xff009199),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
                         ),
-                      )
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) =>
+                                PurchaseAsset(purchaseId: purchase.id),
+                          ),
+                        );
+                      },
+                      child: const Text("Lihat aset yang berhubungan"),
+                    ),
+                  ),
               ],
             ),
           ),

@@ -69,7 +69,7 @@ class UserCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      (user.fullName != null) ? user.fullName! : "#N/A",
+                      (user.fullName != null) ? user.fullName! : "",
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -79,7 +79,7 @@ class UserCard extends StatelessWidget {
                       height: 8,
                     ),
                     Text(
-                      user.userName!,
+                      user.empNumber!,
                     ),
                     const SizedBox(
                       height: 10,

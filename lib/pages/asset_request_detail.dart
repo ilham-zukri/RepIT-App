@@ -35,6 +35,7 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
     request = widget.request;
     role = widget.role;
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,7 +94,10 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
                       'Ditujukan Untuk',
                       style: tableContentStyle,
                     ),
-                    const Text(':', style: tableContentStyle),
+                    const Text(
+                      ':',
+                      style: tableContentStyle,
+                    ),
                     Text(request!.forUser)
                   ],
                 ),
@@ -205,6 +209,7 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
                           ElevatedButton(
                             onPressed: () {
                               Navigator.of(context).pop();
+                              return;
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xffF05050),
@@ -212,13 +217,21 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
                             child: const Text("Batal"),
                           ),
                           ElevatedButton(
-                            onPressed: () async{
-                              response = await Services.approveRequest(request!.id, true);
+                            onPressed: () async {
+                              response = await Services.approveRequest(
+                                  request!.id, true);
                               if (mounted) {
                                 setState(() {
                                   request!.status = response!.data['status'];
                                 });
-                                Navigator.of(context).pop();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        backgroundColor:
+                                            const Color(0xff00ABB3),
+                                        content: Text(
+                                          response!.data['message'],
+                                        )));
+                                Navigator.pop(context);
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -230,13 +243,6 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
                       );
                     },
                   );
-                  if(mounted){
-                    showDialog(
-                      context: context,
-                      builder: (context) =>
-                          alert(context, "Berhasil", response!.data['message']),
-                    );
-                  }
                 } catch (e) {
                   if (mounted) {
                     showDialog(
@@ -262,45 +268,46 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
                     borderRadius: BorderRadius.circular(50)),
                 elevation: 5,
               ),
-              onPressed: () async{
+              onPressed: () async {
                 try {
                   Response? response;
                   await showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: const Text("Konfirmasi"),
-                      content: const Text("Tolak Request?"),
-                      actions: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xffF05050),
-                          ),
-                          child: const Text("Batal"),
-                        ),
-                        ElevatedButton(
-                          onPressed: () async{
-                            response = await Services.approveRequest(request!.id, false);
-                            if (mounted) {
-                              setState(() {
-                                request!.status = response!.data['status'];
-                              });
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text("Konfirmasi"),
+                        content: const Text("Tolak Request?"),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () {
                               Navigator.of(context).pop();
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xff009199),
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xffF05050),
+                            ),
+                            child: const Text("Batal"),
                           ),
-                          child: const Text("Tolak"),
-                        )
-                      ],
-                    );
-                  },
+                          ElevatedButton(
+                            onPressed: () async {
+                              response = await Services.approveRequest(
+                                  request!.id, false);
+                              if (mounted) {
+                                setState(() {
+                                  request!.status = response!.data['status'];
+                                });
+                                Navigator.of(context).pop();
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xff009199),
+                            ),
+                            child: const Text("Tolak"),
+                          )
+                        ],
+                      );
+                    },
                   );
-                  if(mounted){
+                  if (mounted) {
                     showDialog(
                       context: context,
                       builder: (context) =>
@@ -333,16 +340,21 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xff009199),
-                shape:
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50)),
                 elevation: 5,
               ),
               onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PurchaseForm(requestId: request!.id)));
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            PurchaseForm(requestId: request!.id)));
               },
               child: const Text(
                 "Ajukan Pembelian",
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
               ),
             ),
           ),

@@ -158,7 +158,7 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                   const Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      "User",
+                      "Penerima",
                       style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,

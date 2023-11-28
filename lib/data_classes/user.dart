@@ -3,6 +3,7 @@ class User {
   String? email;
   String? userName;
   String? fullName;
+  final String? empNumber;
   String? branch;
   String? department;
   String? createdAt;
@@ -13,6 +14,7 @@ class User {
   User(
       {required this.userName,
       this.fullName,
+      this.empNumber,
       required token,
       this.email,
       this.id,

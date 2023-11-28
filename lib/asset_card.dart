@@ -55,7 +55,7 @@ class AssetCard extends StatelessWidget {
                             color: Colors.white, fontWeight: FontWeight.w600),
                       ),
                       Text(
-                        asset.location ?? '#N/A',
+                        asset.location ?? '',
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,

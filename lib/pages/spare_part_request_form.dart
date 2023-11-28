@@ -17,6 +17,8 @@ class _SparePartRequestFormState extends State<SparePartRequestForm> {
   TextEditingController descEc = TextEditingController();
   bool isLoading = false;
   bool isDisabled = false;
+  String titleHint = "RAM untuk stok";
+  String descHint = "Pengadaan RAM untuk stok spare part";
 
   @override
   void dispose() {
@@ -39,15 +41,18 @@ class _SparePartRequestFormState extends State<SparePartRequestForm> {
                 labelText: "Judul*",
                 controller: titleEc,
                 obscureText: false,
+                hintText: titleHint,
                 enabled: !isDisabled,
               ),
               const SizedBox(
                 height: 24,
               ),
               descriptionTextFieldBuilder(
-                  labelText: "Deskripsi*",
-                  controller: descEc,
-                  enabled: !isDisabled),
+                labelText: "Deskripsi*",
+                controller: descEc,
+                enabled: !isDisabled,
+                hintText: descHint,
+                ),
               const SizedBox(
                 height: 24,
               ),

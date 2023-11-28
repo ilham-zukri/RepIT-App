@@ -48,7 +48,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
@@ -58,6 +57,18 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         title: const Text('Profile'),
         actions: [
+          IconButton(
+            onPressed: () async {
+              if (widget.withAdvancedMenu) {
+                showResetPasswordDialog(context);
+              } else {
+                showChangePasswordDialog(context);
+              }
+            },
+            icon: const Icon(
+              Icons.vpn_key
+            )
+          ),
           if (widget.withAdvancedMenu)
             IconButton(
               onPressed: () {
@@ -338,6 +349,38 @@ class _ProfilePageState extends State<ProfilePage> {
               decoration: const BoxDecoration(
                   border: Border(bottom: BorderSide(color: Colors.grey))),
               child: Row(
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.only(
+                            top: 24, left: 24, bottom: 24, right: 16),
+                        child: const Icon(Icons.badge),
+
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Nomor Karyawan',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          Text(
+                            userData.empNumber ?? "",
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              decoration: const BoxDecoration(
+                  border: Border(bottom: BorderSide(color: Colors.grey))),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
@@ -568,30 +611,6 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             const SizedBox(
               height: 24,
-            ),
-            SizedBox(
-              width: size.width - 48,
-              height: 41,
-              child: ElevatedButton(
-                onPressed: () async {
-                  if (widget.withAdvancedMenu) {
-                    showResetPasswordDialog(context);
-                  } else {
-                    showChangePasswordDialog(context);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  backgroundColor: (!widget.withAdvancedMenu)
-                      ? const Color(0xff00ABB3)
-                      : const Color(0xff2F546E),
-                ),
-                child: (!widget.withAdvancedMenu)
-                    ? const Text("Ganti Password")
-                    : const Text("Reset Password"),
-              ),
             ),
           ],
         ),
