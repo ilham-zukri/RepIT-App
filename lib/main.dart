@@ -35,21 +35,22 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          primaryColorLight: const Color(0xff00ABB3),
-          primaryColorDark: const Color(0xff006e70),
-          textTheme:
-              GoogleFonts.plusJakartaSansTextTheme(Theme.of(context).textTheme),
-          primaryColor: const Color(0xff00ABB3),
-          appBarTheme: const AppBarTheme(
-            iconTheme: IconThemeData(color: Colors.white),
-            color: Color(0xff00ABB3),
-          ),
-          buttonTheme: const ButtonThemeData(
-            buttonColor: Color(0xff00ABB3),
-          ),
-          floatingActionButtonTheme: const FloatingActionButtonThemeData(
-            backgroundColor: Color(0xff00ABB3),
-          )),
+        primaryColorLight: const Color(0xff00ABB3),
+        primaryColorDark: const Color(0xff006e70),
+        textTheme:
+            GoogleFonts.plusJakartaSansTextTheme(Theme.of(context).textTheme),
+        primaryColor: const Color(0xff00ABB3),
+        appBarTheme: const AppBarTheme(
+          iconTheme: IconThemeData(color: Colors.white),
+          color: Color(0xff00ABB3),
+        ),
+        buttonTheme: const ButtonThemeData(
+          buttonColor: Color(0xff00ABB3),
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Color(0xff00ABB3),
+        ),
+      ),
       // home: SafeArea(
       //   child: LoginPage(),
       //

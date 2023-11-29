@@ -8,6 +8,8 @@ import 'package:repit_app/widgets/alert.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
 import 'package:repit_app/widgets/status_box_builder.dart';
 
+import 'asset_transfer.dart';
+
 class AssetDetail extends StatefulWidget {
   final Asset asset;
   final bool withAdvancedMenu;
@@ -201,7 +203,7 @@ class _AssetDetailState extends State<AssetDetail> {
                 ),
               ],
             ),
-            (status == 'Ready')
+            (status == 'Ready' && !widget.withAdvancedMenu)
                 ? Container(
                     margin: const EdgeInsets.only(top: 32),
                     height: 41,
@@ -252,7 +254,7 @@ class _AssetDetailState extends State<AssetDetail> {
             const SizedBox(
               height: 24,
             ),
-            if (widget.withAdvancedMenu && status != 'Scrapped')
+            if (widget.withAdvancedMenu && status == 'Deployed' )
               Column(
                 children: [
                   SizedBox(
@@ -265,7 +267,16 @@ class _AssetDetailState extends State<AssetDetail> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AssetTransfer(
+                              assetId: asset.id!,
+                            )
+                          )
+                        );
+                      },
                       child: const Text("Pindah Asset"),
                     ),
                   ),

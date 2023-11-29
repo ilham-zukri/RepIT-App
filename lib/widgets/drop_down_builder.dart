@@ -207,3 +207,55 @@ Widget roleDropdownBuilder(
     ],
   );
 }
+
+Widget userDropdownBuilder(
+  BuildContext context, {
+  required Future future,
+  required Size size,
+  required void Function(dynamic) onSelected,
+  int? initialIndex,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        "User",
+        style: TextStyle(
+            fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black),
+      ),
+      const SizedBox(
+        height: 8,
+      ),
+      FutureBuilder(
+        future: future,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else {
+            List<dynamic>? userData = snapshot.data;
+            String? initialUserSelection;
+            if (userData != null && userData.isNotEmpty) {
+              initialUserSelection = (initialIndex == null)
+                  ? userData[0].id
+                  : userData[initialIndex].id.toString();
+            }
+            return DropdownMenu(
+              textStyle: const TextStyle(fontSize: 16),
+              width: size.width - 48,
+              enableSearch: true,
+              menuHeight: size.height / 2,
+              initialSelection: initialUserSelection,
+              onSelected: onSelected,
+              dropdownMenuEntries: userData!.map((user) {
+                return DropdownMenuEntry(
+                    value: user.id.toString(), label: user.userName);
+              }).toList(),
+            );
+          }
+        },
+      ),
+    ],
+  );
+}
