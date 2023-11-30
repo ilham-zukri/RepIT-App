@@ -1,6 +1,6 @@
 class Asset {
   final int? id;
-  final String? owner;
+  String? owner;
   final String utilization;
   final String? status;
   final String assetType;

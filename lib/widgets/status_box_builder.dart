@@ -18,7 +18,7 @@ Widget statusBoxBuilder(String status, String usage) {
       "backgroundColor": const Color(0xffFAD398),
       "textColor": const Color(0xff885B17),
     },
-    "Sub": {
+    "Reserve": {
       "backgroundColor": const Color(0xffAADAE9),
       "textColor": const Color(0xff0C4B5F),
     },

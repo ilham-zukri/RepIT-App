@@ -18,20 +18,34 @@ PreferredSizeWidget customAppBar(BuildContext context, String title,
       onPressed: Navigator.of(context).pop,
     ),
     actions: [
-      (additionalAction2 == 'repair_history' && action2 != null)
-          ? Container(
-              margin: const EdgeInsets.only(right: 6),
-              child: IconButton(
-                onPressed: action2,
-                icon: const Icon(
-                  Icons.construction,
-                  size: 32,
-                  color: Color(0xff00ABB3),
-                ),
-                padding: EdgeInsets.zero,
-              ),
-            )
-          : const SizedBox.shrink(),
+      if (additionalAction2 == 'repair_history' && action2 != null)
+        Container(
+          margin: const EdgeInsets.only(right: 6),
+          child: IconButton(
+            onPressed: action2,
+            icon: const Icon(
+              Icons.construction,
+              size: 32,
+              color: Color(0xff00ABB3),
+            ),
+            padding: EdgeInsets.zero,
+          ),
+        ),
+      if (additionalAction2 == 'refresh' && action2 != null)
+        Container(
+          margin: const EdgeInsets.only(right: 6),
+          child: IconButton(
+            onPressed: action2,
+            icon: const Icon(
+              Icons.refresh ,
+              size: 32,
+              color: Color(0xff00ABB3),
+            ),
+            padding: EdgeInsets.zero,
+          ),
+        ),
+
+
       (additionalAction == 'qr' && action != null)
           ? Container(
               margin: const EdgeInsets.only(right: 6),

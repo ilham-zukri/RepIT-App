@@ -397,6 +397,35 @@ abstract class Services {
     }
   }
 
+  /// Reserve Asset
+  static Future<Response?> reserveAsset(int assetId) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      var response = await Dio().put(
+        '$apiUrl/asset/reserve',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        ),
+        data: {
+          "asset_id": assetId
+        },
+      );
+      if (response.statusCode == 200) {
+        return response;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
   /// get current User's list of assets ///
   static Future<Map?> getMyAssets(int? page) async {
     try {

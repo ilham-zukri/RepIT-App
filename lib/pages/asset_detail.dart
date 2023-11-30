@@ -107,20 +107,21 @@ class _AssetDetailState extends State<AssetDetail> {
                     Text(asset.utilization)
                   ],
                 ),
-                TableRow(children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 8),
-                    child: const Text('Pemilik', style: tableContentStyle),
-                  ),
-                  Container(
+                if (asset.owner != null)
+                  TableRow(children: [
+                    Container(
                       margin: const EdgeInsets.only(top: 8),
-                      child: const Text(':', style: tableContentStyle)),
-                  Container(
-                    margin: const EdgeInsets.only(top: 8),
-                    child: Text((asset.owner != null) ? asset.owner! : '#N/A',
-                        style: tableContentStyle),
-                  )
-                ]),
+                      child: const Text('Pemilik', style: tableContentStyle),
+                    ),
+                    Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        child: const Text(':', style: tableContentStyle)),
+                    Container(
+                      margin: const EdgeInsets.only(top: 8),
+                      child: Text((asset.owner != null) ? asset.owner! : '#N/A',
+                          style: tableContentStyle),
+                    )
+                  ]),
                 TableRow(children: [
                   Container(
                     margin: const EdgeInsets.only(top: 8),
@@ -203,6 +204,30 @@ class _AssetDetailState extends State<AssetDetail> {
                 ),
               ],
             ),
+            if (status == 'Reserve' && widget.withAdvancedMenu)
+              Container(
+                margin: const EdgeInsets.only(top: 32),
+                height: 41,
+                width: size.width,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff00ABB3),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AssetTransfer(
+                            assetId: asset.id!, pageTitle: "Assign Asset"),
+                      ),
+                    );
+                  },
+                  child: const Text("Assign Asset"),
+                ),
+              ),
             (status == 'Ready' && !widget.withAdvancedMenu)
                 ? Container(
                     margin: const EdgeInsets.only(top: 32),
@@ -273,8 +298,9 @@ class _AssetDetailState extends State<AssetDetail> {
                           MaterialPageRoute(
                             builder: (context) => AssetTransfer(
                               assetId: asset.id!,
-                            )
-                          )
+                              pageTitle: 'Transfer Asset',
+                            ),
+                          ),
                         );
                       },
                       child: const Text("Pindah Asset"),
@@ -293,7 +319,64 @@ class _AssetDetailState extends State<AssetDetail> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () async {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text("Konfirmasi"),
+                            content: const Text(
+                                "Apakah anda yakin ingin mengambil asset ini?"),
+                            actions: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xffF05050),
+                                ),
+                                child: const Text("Batal"),
+                              ),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                  try {
+                                    Response? response =
+                                        await Services.reserveAsset(asset.id!);
+                                    if (mounted) {
+                                      setState(() {
+                                        asset.owner = null;
+                                        status = response?.data['data']
+                                            ['status'] as String;
+                                      });
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              backgroundColor:
+                                                  const Color(0xff00ABB3),
+                                              content: Text(
+                                                response!.data['message'],
+                                              )));
+                                    }
+                                  } catch (e) {
+                                    if (mounted) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) => alert(
+                                                context,
+                                                "error",
+                                                e.toString(),
+                                              ));
+                                    }
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xff00ABB3),
+                                ),
+                                child: const Text("Yakin"),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                       child: const Text("Ambil Asset Dari User"),
                     ),
                   ),

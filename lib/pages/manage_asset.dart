@@ -92,9 +92,23 @@ class _ManageAssetState extends State<ManageAsset> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(context, "Manage Assets", 'add', () {
-        addAssetsDialog(context);
-      }),
+      appBar: customAppBar(
+        context,
+        "Manage Assets",
+        'add',
+        () {
+          addAssetsDialog(context);
+        },
+        'refresh',
+        () {
+          setState(() {
+            assets = [];
+            assetsLength = 0;
+            page = 1;
+            fetchAssets(isRefresh: true);
+          });
+        },
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: (assetsLength > 0)

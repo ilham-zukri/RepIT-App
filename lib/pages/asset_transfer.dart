@@ -13,8 +13,9 @@ import '../services.dart';
 
 class AssetTransfer extends StatefulWidget {
   final int assetId;
+  final String pageTitle;
 
-  const AssetTransfer({super.key, required this.assetId});
+  const AssetTransfer({super.key, required this.assetId, required this.pageTitle});
 
   @override
   State<AssetTransfer> createState() => _AssetTransferState();
@@ -93,7 +94,7 @@ class _AssetTransferState extends State<AssetTransfer> {
     return Stack(
       children: [
         Scaffold(
-          appBar: customAppBar(context, "Transfer Asset"),
+          appBar: customAppBar(context, widget.pageTitle),
           body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(24),
