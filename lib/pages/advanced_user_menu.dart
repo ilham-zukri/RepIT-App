@@ -172,6 +172,7 @@ class _AdvancedUserMenuState extends State<AdvancedUserMenu> {
                 ),
                 locationDropdownBuilder(
                   context,
+                  enabled: true,
                   future: locations,
                   size: size,
                   initialIndex: initialLocationIndex,
@@ -186,6 +187,7 @@ class _AdvancedUserMenuState extends State<AdvancedUserMenu> {
                 ),
                 departmentDropdownBuilder(
                   context,
+                  enabled: true,
                   future: departments,
                   size: size,
                   initialIndex: initialDepartmentIndex,

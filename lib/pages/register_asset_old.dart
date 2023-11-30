@@ -30,9 +30,9 @@ class _RegisterAssetOldState extends State<RegisterAssetOld> {
 
   @override
   void initState() {
-    super.initState();
     assetTypes = fetchAssetTypes();
     userData = fetchUsers();
+    super.initState();
   }
 
   @override
@@ -54,7 +54,7 @@ class _RegisterAssetOldState extends State<RegisterAssetOld> {
 
     userId = data[0]['id'];
     return data.map((item) {
-      return UserForList(item['id'], item['user_name']);
+      return UserForList(item['id'], item['full_name']);
     }).toList();
   }
 
@@ -167,7 +167,7 @@ class _RegisterAssetOldState extends State<RegisterAssetOld> {
                             },
                             dropdownMenuEntries: userData!.map((user) {
                               return DropdownMenuEntry(
-                                  value: user.id, label: user.userName);
+                                  value: user.id, label: user.fullName);
                             }).toList(),
                           );
                         }

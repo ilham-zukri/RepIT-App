@@ -99,6 +99,7 @@ class _AddUserState extends State<AddUser> {
               children: [
                 locationDropdownBuilder(
                   context,
+                  enabled: true,
                   future: locations,
                   size: size,
                   onSelected: (value) {
@@ -112,6 +113,7 @@ class _AddUserState extends State<AddUser> {
                 ),
                 departmentDropdownBuilder(
                   context,
+                  enabled: true,
                   future: departments,
                   size: size,
                   onSelected: (value) {

@@ -51,7 +51,7 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
 
     userId = data[0]['id'];
     return data.map((item) {
-      return UserForList(item['id'], item['user_name']);
+      return UserForList(item['id'], item['full_name']);
     }).toList();
   }
 
@@ -90,9 +90,9 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                     height: 24,
                   ),
                   descriptionTextFieldBuilder(
-                      labelText: "Deskripsi*",
-                      controller: descEc,
-                      hintText: descHint,
+                    labelText: "Deskripsi*",
+                    controller: descEc,
+                    hintText: descHint,
                     enabled: (!isDisabled),
                   ),
                   const SizedBox(
@@ -138,12 +138,15 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                                       value: priority['id'],
                                       child: Text(priority['priority']));
                                 }).toList(),
-                                onChanged: (!isDisabled) ? (value) {
-                                  setState(() {
-                                    priority =
-                                        int.tryParse(value.toString()) as int;
-                                  });
-                                } : null,
+                                onChanged: (!isDisabled)
+                                    ? (value) {
+                                        setState(() {
+                                          priority =
+                                              int.tryParse(value.toString())
+                                                  as int;
+                                        });
+                                      }
+                                    : null,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
@@ -195,7 +198,7 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                             },
                             dropdownMenuEntries: userData!.map((user) {
                               return DropdownMenuEntry(
-                                  value: user.id, label: user.userName);
+                                  value: user.id, label: user.fullName);
                             }).toList(),
                           );
                         }

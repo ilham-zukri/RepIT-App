@@ -57,6 +57,7 @@ Widget locationDropdownBuilder(
   required Future future,
   required Size size,
   required void Function(dynamic) onSelected,
+      required bool enabled,
   int? initialIndex,
 }) {
   return Column(
@@ -86,6 +87,7 @@ Widget locationDropdownBuilder(
                     : locationData[initialIndex].id.toString();
               }
               return DropdownMenu(
+                enabled: enabled,
                 textStyle: const TextStyle(fontSize: 16),
                 width: size.width - 48,
                 enableSearch: true,
@@ -108,6 +110,7 @@ Widget departmentDropdownBuilder(
   required Future future,
   required Size size,
   required void Function(dynamic) onSelected,
+  required bool enabled,
   int? initialIndex,
 }) {
   return Column(
@@ -137,6 +140,7 @@ Widget departmentDropdownBuilder(
                   : departmentData[initialIndex].id.toString();
             }
             return DropdownMenu(
+              enabled: enabled,
               textStyle: const TextStyle(fontSize: 16),
               width: size.width - 48,
               enableSearch: true,
@@ -213,6 +217,7 @@ Widget userDropdownBuilder(
   required Future future,
   required Size size,
   required void Function(dynamic) onSelected,
+  required bool enabled,
   int? initialIndex,
 }) {
   return Column(
@@ -242,6 +247,7 @@ Widget userDropdownBuilder(
                   : userData[initialIndex].id.toString();
             }
             return DropdownMenu(
+              enabled: enabled,
               textStyle: const TextStyle(fontSize: 16),
               width: size.width - 48,
               enableSearch: true,
@@ -250,7 +256,7 @@ Widget userDropdownBuilder(
               onSelected: onSelected,
               dropdownMenuEntries: userData!.map((user) {
                 return DropdownMenuEntry(
-                    value: user.id.toString(), label: user.userName);
+                    value: user.id.toString(), label: user.fullName);
               }).toList(),
             );
           }

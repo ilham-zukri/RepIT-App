@@ -253,6 +253,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Material(
                 child: InkWell(
                   onTap: () {
+                    Navigator.of(context, rootNavigator: true).pop();
                     if (userData.role['asset_management'] != 1 &&
                         userData.role['asset_request'] != 1) {
                       showDialog(
@@ -303,6 +304,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Material(
                 child: InkWell(
                   onTap: () {
+                    Navigator.of(context, rootNavigator: true).pop();
                     if (userData.role['asset_management'] != 1 &&
                         userData.role['asset_request'] != 1) {
                       showDialog(
@@ -353,6 +355,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Material(
                 child: InkWell(
                   onTap: () {
+                    Navigator.of(context, rootNavigator: true).pop();
                     if (userData.role['user_management'] != 1) {
                       showDialog(
                         context: context,
@@ -402,6 +405,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Material(
                 child: InkWell(
                   onTap: () {
+                    Navigator.of(context, rootNavigator: true).pop();
                     if (userData.role['asset_management'] != 1 &&
                         userData.role['asset_request'] != 1) {
                       showDialog(
@@ -452,6 +456,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Material(
                 child: InkWell(
                   onTap: () {
+                    Navigator.of(context, rootNavigator: true).pop();
                     if (userData.role['asset_approval'] != 1 &&
                         userData.role['asset_purchasing'] != 1) {
                       showDialog(
@@ -503,6 +508,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Material(
                 child: InkWell(
                   onTap: () {
+                    Navigator.of(context, rootNavigator: true).pop();
                     if (userData.role['asset_approval'] != 1 &&
                         userData.role['asset_purchasing'] != 1) {
                       showDialog(
@@ -552,7 +558,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               height: 40,
               child: Material(
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
                   customBorder: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),
                   child: Container(

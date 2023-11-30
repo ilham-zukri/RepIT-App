@@ -1,6 +1,6 @@
 class UserForList{
   final String id;
-  final String userName;
+  final String fullName;
 
-  UserForList(this.id, this.userName);
+  UserForList(this.id, this.fullName);
 }

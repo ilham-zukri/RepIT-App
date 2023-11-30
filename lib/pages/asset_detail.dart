@@ -254,7 +254,7 @@ class _AssetDetailState extends State<AssetDetail> {
             const SizedBox(
               height: 24,
             ),
-            if (widget.withAdvancedMenu && status == 'Deployed' )
+            if (widget.withAdvancedMenu && status == 'Deployed')
               Column(
                 children: [
                   SizedBox(
@@ -268,7 +268,7 @@ class _AssetDetailState extends State<AssetDetail> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                             builder: (context) => AssetTransfer(
