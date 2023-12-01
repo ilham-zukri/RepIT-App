@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,14 +7,36 @@ import 'package:repit_app/pages/login_page.dart';
 import 'package:repit_app/pages/main_page.dart';
 import 'package:repit_app/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 String? storedToken;
 User? userData;
+final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    badge: true,
+    criticalAlert: true,
+    sound: true,
+  );
   await getUserData();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(const MainApp());
+}
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+
+  debugPrint("Handling a background message: ${message.messageId}");
 }
 
 Future<void> getUserData() async {
@@ -51,10 +74,6 @@ class MainApp extends StatelessWidget {
           backgroundColor: Color(0xff00ABB3),
         ),
       ),
-      // home: SafeArea(
-      //   child: LoginPage(),
-      //
-      // ),
       home: (userData != null) ? MainPage(userData: userData!) : LoginPage(),
     );
   }

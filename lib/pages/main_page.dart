@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -41,6 +42,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     super.initState();
     userData = widget.userData;
     _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
+    FirebaseMessaging.onMessage.listen(
+      (RemoteMessage message) {
+        if (message.notification != null) {
+          showDialog(
+            context: context,
+            builder: (context) => alert(context, "${message.notification!.title}", "${message.notification!.body}"),
+          );
+        }
+      },
+    );
   }
 
   @override
@@ -365,11 +376,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       return;
                     }
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ManageUsers(),
-                      )
-                    );
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ManageUsers(),
+                        ));
                   },
                   customBorder: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),
@@ -558,8 +568,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               height: 40,
               child: Material(
                 child: InkWell(
-                  onTap: () {
-                    Navigator.of(context, rootNavigator: true).pop();
+                  onTap: () async {
+                    final fcmToken = await FirebaseMessaging.instance.getToken();
+                    debugPrint(fcmToken);
+                    if(mounted){
+                      Navigator.of(context, rootNavigator: true).pop();
+                    }
                   },
                   customBorder: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),

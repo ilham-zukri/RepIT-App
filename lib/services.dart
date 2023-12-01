@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data_classes/ticket.dart';
 import 'data_classes/user.dart';
@@ -5,6 +6,7 @@ import 'package:dio/dio.dart';
 
 abstract class Services {
   static const String url = "http://10.0.2.2:8000";
+
   // static const String url = "http://127.0.0.1:8000";
 
   static const String apiUrl = "$url/api";
@@ -12,10 +14,15 @@ abstract class Services {
 
   /// Login ///
   static Future<User?> login(String username, String password) async {
+    final fcmToken = await FirebaseMessaging.instance.getToken();
     try {
       var response = await Dio().post(
         "$apiUrl/login",
-        data: {'user_name': username, 'password': password},
+        data: {
+          'user_name': username,
+          'password': password,
+          'fcm_token': fcmToken
+        },
         options: Options(
           headers: {
             "Accept": "application/json",
@@ -340,7 +347,8 @@ abstract class Services {
   }
 
   /// Get User by Location and Department
-  static Future<List?> getUserByLocationAndDepartment(int? departmentId, int? branchId) async {
+  static Future<List?> getUserByLocationAndDepartment(
+      int? departmentId, int? branchId) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
@@ -367,7 +375,8 @@ abstract class Services {
   }
 
   /// Transfer Asset to another user
-  static Future<Response?> transferAsset(String userId, String utilization, int assetId) async {
+  static Future<Response?> transferAsset(
+      String userId, String utilization, int assetId) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
@@ -410,9 +419,7 @@ abstract class Services {
             "Authorization": "Bearer $token"
           },
         ),
-        data: {
-          "asset_id": assetId
-        },
+        data: {"asset_id": assetId},
       );
       if (response.statusCode == 200) {
         return response;
@@ -822,18 +829,14 @@ abstract class Services {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      Response? response = await Dio().get(
-        '$apiUrl/purchase/assets',
-        options: Options(
-          headers: {
-            "Accept": "application/json",
-            "Authorization": "Bearer $token"
-          },
-        ),
-        queryParameters: {
-          'purchase_id' : purchaseId
-        }
-      );
+      Response? response = await Dio().get('$apiUrl/purchase/assets',
+          options: Options(
+            headers: {
+              "Accept": "application/json",
+              "Authorization": "Bearer $token"
+            },
+          ),
+          queryParameters: {'purchase_id': purchaseId});
       if (response.statusCode == 200) {
         return response.data['data'] as List;
       } else {

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "347010207315",
+    "project_id": "repit-1580d",
+    "storage_bucket": "repit-1580d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:347010207315:android:f0c58cb6216d2d20a780a6",
+        "android_client_info": {
+          "package_name": "com.example.repit_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "347010207315-5eomd1b7goct3k6cultfd9hrd6ovjva8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDz-EGr3BV4lfHHPASS_epFEZ2mKNbaNC0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "347010207315-5eomd1b7goct3k6cultfd9hrd6ovjva8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
