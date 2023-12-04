@@ -36,22 +36,37 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   late TabController _tabController;
   late User userData;
+  Color ticketIconColor = Colors.black;
+  Color requestIconColor = Colors.black;
 
   @override
   void initState() {
     super.initState();
     userData = widget.userData;
     _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
-    FirebaseMessaging.onMessage.listen(
-      (RemoteMessage message) {
-        if (message.notification != null) {
-          showDialog(
-            context: context,
-            builder: (context) => alert(context, "${message.notification!.title}", "${message.notification!.body}"),
-          );
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        showDialog(
+          context: context,
+          builder: (context) => alert(
+            context,
+            "${message.notification!.title}",
+            "${message.notification!.body}",
+          ),
+        );
+        String? messageType = message.data['type'];
+        if (messageType != null) {
+          setState(() {
+            if (messageType == "ticket") {
+              ticketIconColor = Colors.red;
+            } else if (messageType == "request") {
+              requestIconColor = Colors.red;
+            }
+          });
         }
-      },
-    );
+      }
+    });
+
   }
 
   @override
@@ -71,35 +86,29 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         ),
         titleSpacing: 0,
         actions: [
-          Row(
-            children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return ProfilePage(
-                          userData: userData,
-                          withAdvancedMenu: false,
-                        );
-                      },
-                    ),
-                  );
-                },
-                icon: const Icon(
-                  Icons.account_circle,
-                  size: 32,
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return ProfilePage(
+                      userData: userData,
+                      withAdvancedMenu: false,
+                    );
+                  },
                 ),
-                padding: EdgeInsets.zero,
-              ),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.notifications, size: 32),
-                padding: EdgeInsets.zero,
-              ),
-            ],
+              );
+            },
+            icon: const Icon(
+              Icons.account_circle,
+              size: 32,
+            ),
+            padding: EdgeInsets.zero,
           ),
+          const SizedBox(
+            width: 8,
+          )
         ],
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -415,6 +424,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Material(
                 child: InkWell(
                   onTap: () {
+                    setState(() {
+                      ticketIconColor = Colors.black;
+                    });
                     Navigator.of(context, rootNavigator: true).pop();
                     if (userData.role['asset_management'] != 1 &&
                         userData.role['asset_request'] != 1) {
@@ -439,16 +451,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         right: 8, left: 8, top: 4, bottom: 5),
                     width: size.width,
                     height: 33,
-                    child: const Row(
+                    child: Row(
                       children: [
                         Icon(
                           CupertinoIcons.tickets,
                           size: 32,
+                          color: ticketIconColor,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 8,
                         ),
-                        Text(
+                        const Text(
                           'Manage Tickets',
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.w600),
@@ -491,16 +504,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         right: 8, left: 8, top: 4, bottom: 5),
                     width: size.width,
                     height: 33,
-                    child: const Row(
+                    child: Row(
                       children: [
                         Icon(
                           Icons.note_alt_outlined,
                           size: 32,
+                          color: requestIconColor
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 8,
                         ),
-                        Text(
+                        const Text(
                           'Manage Requests',
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.w600),
@@ -569,9 +583,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Material(
                 child: InkWell(
                   onTap: () async {
-                    final fcmToken = await FirebaseMessaging.instance.getToken();
+                    final fcmToken =
+                        await FirebaseMessaging.instance.getToken();
                     debugPrint(fcmToken);
-                    if(mounted){
+                    if (mounted) {
                       Navigator.of(context, rootNavigator: true).pop();
                     }
                   },

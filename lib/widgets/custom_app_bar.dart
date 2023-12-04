@@ -31,11 +31,11 @@ PreferredSizeWidget customAppBar(BuildContext context, String title,
             padding: EdgeInsets.zero,
           ),
         ),
-      if (additionalAction2 == 'refresh' && action2 != null)
+      if ((additionalAction2 == 'refresh' && action2 != null) || (additionalAction == 'refresh' && action != null))
         Container(
           margin: const EdgeInsets.only(right: 6),
           child: IconButton(
-            onPressed: action2,
+            onPressed: action2 ?? action,
             icon: const Icon(
               Icons.refresh ,
               size: 32,
@@ -102,18 +102,6 @@ PreferredSizeWidget customAppBar(BuildContext context, String title,
               ),
             )
           : const SizedBox.shrink(),
-      Container(
-        margin: const EdgeInsets.only(right: 6),
-        child: IconButton(
-          onPressed: () {},
-          icon: const Icon(
-            Icons.notifications,
-            size: 32,
-            color: Color(0xff00ABB3),
-          ),
-          padding: EdgeInsets.zero,
-        ),
-      ),
     ],
   );
 }

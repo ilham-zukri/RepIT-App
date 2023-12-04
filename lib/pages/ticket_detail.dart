@@ -80,11 +80,16 @@ class _TicketDetailState extends State<TicketDetail> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        ticket.title,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 2.5,
+                        child: Text(
+                          ticket.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                       (ticket.status == "In Progress" && role['asset_management'] == 1)
@@ -167,12 +172,13 @@ class _TicketDetailState extends State<TicketDetail> {
                           )
                         ],
                       ),
+                      if(ticket.assetId != null)
                       TableRow(
                         children: [
                           Container(
                             margin: tableContentMarginTop,
                             child: const Text(
-                              'asset ID',
+                              'Asset ID',
                               style: tableContentStyle,
                             ),
                           ),
@@ -219,6 +225,7 @@ class _TicketDetailState extends State<TicketDetail> {
                           ),
                         ],
                       ),
+                      if(ticket.handler != null)
                       TableRow(
                         children: [
                           Container(
@@ -271,6 +278,7 @@ class _TicketDetailState extends State<TicketDetail> {
                           ),
                         ],
                       ),
+                      if(ticket.respondedAt != null)
                       TableRow(
                         children: [
                           Container(
@@ -298,6 +306,7 @@ class _TicketDetailState extends State<TicketDetail> {
                           ),
                         ],
                       ),
+                      if(ticket.resolvedAt != null)
                       TableRow(
                         children: [
                           Container(
@@ -430,6 +439,7 @@ class _TicketDetailState extends State<TicketDetail> {
                   const SizedBox(
                     height: 24,
                   ),
+                  if(ticket.status != "Resolved")
                   buttonBuilder(context, ticket.status!),
                 ],
               ),

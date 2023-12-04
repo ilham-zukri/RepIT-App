@@ -81,7 +81,19 @@ class _ManageTicketState extends State<ManageTicket> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(context, "Manage Ticket"),
+      appBar: customAppBar(
+        context,
+        "Manage Ticket",
+        'refresh',
+        () {
+          setState(() {
+            page = 1;
+            tickets = [];
+            ticketsLength = 0;
+            fetchTickets(isRefresh: true);
+          });
+        },
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: (ticketsLength > 0)
