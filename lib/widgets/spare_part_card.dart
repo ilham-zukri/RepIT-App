@@ -8,7 +8,12 @@ class SparePartCard extends StatelessWidget {
   final SparePart sparePart;
   final bool withDetail;
   final VoidCallback? additionalAction;
-  const SparePartCard({super.key, required this.sparePart, required this.withDetail, this.additionalAction});
+
+  const SparePartCard(
+      {super.key,
+      required this.sparePart,
+      required this.withDetail,
+      this.additionalAction});
 
   @override
   Widget build(BuildContext context) {
@@ -18,22 +23,28 @@ class SparePartCard extends StatelessWidget {
       height: 165,
       child: Card(
         shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10))),
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+        ),
         elevation: 5,
         child: InkWell(
           borderRadius: const BorderRadius.all(Radius.circular(10)),
-          onTap: (additionalAction == null ) ? () {
-            if (!withDetail) {
-              return;
-            } else {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SparePartDetail(sparePart: sparePart),
-                ),
-              );
-            }
-          } : additionalAction,
+          onTap: (additionalAction == null)
+              ? () {
+                  if (!withDetail) {
+                    return;
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            SparePartDetail(sparePart: sparePart),
+                      ),
+                    );
+                  }
+                }
+              : additionalAction,
           child: Column(
             children: [
               Container(
@@ -42,8 +53,9 @@ class SparePartCard extends StatelessWidget {
                 decoration: const BoxDecoration(
                   color: Color(0xff009199),
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10)),
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
+                  ),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 16, right: 16),
@@ -51,7 +63,9 @@ class SparePartCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                      (sparePart.id != null) ? sparePart.id.toString() : "#N/A",
+                        (sparePart.id != null)
+                            ? sparePart.id.toString()
+                            : "#N/A",
                         style: const TextStyle(
                             color: Colors.white, fontWeight: FontWeight.w600),
                       ),
@@ -77,7 +91,11 @@ class SparePartCard extends StatelessWidget {
                   2: FlexColumnWidth(2.7)
                 }, children: [
                   TableRow(
-                    children: [const Text('Brand'), const Text(':'), Text(sparePart.brand)],
+                    children: [
+                      const Text('Brand'),
+                      const Text(':'),
+                      Text(sparePart.brand)
+                    ],
                   ),
                   TableRow(children: [
                     Container(
