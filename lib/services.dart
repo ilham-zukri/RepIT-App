@@ -7,7 +7,7 @@ import 'package:dio/dio.dart';
 abstract class Services {
   static const String url = "http://10.0.2.2:8000";
 
-  // static const String url = "http://127.0.0.1:8000";
+  // static const String url = "https://api.repit.tech";
 
   static const String apiUrl = "$url/api";
   static late SharedPreferences prefs;
@@ -1317,6 +1317,29 @@ abstract class Services {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
       Response? response = await Dio().put('$apiUrl/ticket/close',
+          options: Options(headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          }),
+          data: {'ticket_id': ticketId});
+      if (response.statusCode == 200) {
+        return response.data as Map;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
+  /// Reject to close ticket
+  static Future<Map?> rejectToCloseTicket(int ticketId) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().put('$apiUrl/ticket/reject',
           options: Options(headers: {
             "Accept": "application/json",
             "Authorization": "Bearer $token"

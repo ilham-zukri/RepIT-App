@@ -14,6 +14,7 @@ import 'package:repit_app/pages/manage_ticket.dart';
 import 'package:repit_app/pages/my_assets_page.dart';
 import 'package:repit_app/pages/my_request_page.dart';
 import 'package:repit_app/pages/my_tickets_page.dart';
+import 'package:repit_app/pages/performance.dart';
 import 'package:repit_app/pages/profile_page.dart';
 import 'package:repit_app/pages/spare_part_request_form.dart';
 import 'package:repit_app/pages/ticket_form.dart';
@@ -66,7 +67,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         }
       }
     });
-
   }
 
   @override
@@ -351,7 +351,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     child: const Row(
                       children: [
                         Icon(
-                          Icons.construction,
+                          CupertinoIcons.hammer,
                           size: 32,
                         ),
                         SizedBox(
@@ -506,11 +506,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     height: 33,
                     child: Row(
                       children: [
-                        Icon(
-                          Icons.note_alt_outlined,
-                          size: 32,
-                          color: requestIconColor
-                        ),
+                        Icon(Icons.note_alt_outlined,
+                            size: 32, color: requestIconColor),
                         const SizedBox(
                           width: 8,
                         ),
@@ -559,7 +556,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     child: const Row(
                       children: [
                         Icon(
-                          CupertinoIcons.creditcard_fill,
+                          CupertinoIcons.creditcard,
                           size: 32,
                         ),
                         SizedBox(
@@ -567,6 +564,47 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         ),
                         Text(
                           'Purchasing',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w600),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 16, left: 20),
+              width: 205,
+              height: 40,
+              child: Material(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Performance(),
+                      ),
+                    );
+                  },
+                  customBorder: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                        right: 8, left: 8, top: 4, bottom: 5),
+                    width: size.width,
+                    height: 33,
+                    child: const Row(
+                      children: [
+                        Icon(
+                          CupertinoIcons.chart_pie,
+                          size: 32,
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Text(
+                          'Performance',
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.w600),
                         )
@@ -618,7 +656,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(top: size.height / 4.4, left: 20),
+              margin: EdgeInsets.only(top: size.height / 5, left: 20),
               width: 205,
               height: 40,
               child: Material(

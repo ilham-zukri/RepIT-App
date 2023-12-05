@@ -92,7 +92,8 @@ class _TicketDetailState extends State<TicketDetail> {
                           ),
                         ),
                       ),
-                      (ticket.status == "In Progress" && role['asset_management'] == 1)
+                      (ticket.status == "In Progress" &&
+                              role['asset_management'] == 1)
                           ? SizedBox(
                               width: 150,
                               child: ElevatedButton(
@@ -172,34 +173,34 @@ class _TicketDetailState extends State<TicketDetail> {
                           )
                         ],
                       ),
-                      if(ticket.assetId != null)
-                      TableRow(
-                        children: [
-                          Container(
-                            margin: tableContentMarginTop,
-                            child: const Text(
-                              'Asset ID',
-                              style: tableContentStyle,
+                      if (ticket.assetId != null)
+                        TableRow(
+                          children: [
+                            Container(
+                              margin: tableContentMarginTop,
+                              child: const Text(
+                                'Asset ID',
+                                style: tableContentStyle,
+                              ),
                             ),
-                          ),
-                          Container(
-                            margin: tableContentMarginTop,
-                            child: const Text(
-                              ':',
-                              style: tableContentStyle,
+                            Container(
+                              margin: tableContentMarginTop,
+                              child: const Text(
+                                ':',
+                                style: tableContentStyle,
+                              ),
                             ),
-                          ),
-                          Container(
-                            margin: tableContentMarginTop,
-                            child: Text(
-                              (ticket.assetId != null)
-                                  ? ticket.assetId.toString()
-                                  : '#N/A',
-                              style: tableContentStyle,
+                            Container(
+                              margin: tableContentMarginTop,
+                              child: Text(
+                                (ticket.assetId != null)
+                                    ? ticket.assetId.toString()
+                                    : '#N/A',
+                                style: tableContentStyle,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
                       TableRow(
                         children: [
                           Container(
@@ -225,34 +226,34 @@ class _TicketDetailState extends State<TicketDetail> {
                           ),
                         ],
                       ),
-                      if(ticket.handler != null)
-                      TableRow(
-                        children: [
-                          Container(
-                            margin: tableContentMarginTop,
-                            child: const Text(
-                              'Ditangani Oleh',
-                              style: tableContentStyle,
+                      if (ticket.handler != null)
+                        TableRow(
+                          children: [
+                            Container(
+                              margin: tableContentMarginTop,
+                              child: const Text(
+                                'Ditangani Oleh',
+                                style: tableContentStyle,
+                              ),
                             ),
-                          ),
-                          Container(
-                            margin: tableContentMarginTop,
-                            child: const Text(
-                              ':',
-                              style: tableContentStyle,
+                            Container(
+                              margin: tableContentMarginTop,
+                              child: const Text(
+                                ':',
+                                style: tableContentStyle,
+                              ),
                             ),
-                          ),
-                          Container(
-                            margin: tableContentMarginTop,
-                            child: Text(
-                              (ticket.handler != null)
-                                  ? ticket.handler!
-                                  : '#N/A',
-                              style: tableContentStyle,
+                            Container(
+                              margin: tableContentMarginTop,
+                              child: Text(
+                                (ticket.handler != null)
+                                    ? ticket.handler!
+                                    : '#N/A',
+                                style: tableContentStyle,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
                       TableRow(
                         children: [
                           Container(
@@ -278,62 +279,62 @@ class _TicketDetailState extends State<TicketDetail> {
                           ),
                         ],
                       ),
-                      if(ticket.respondedAt != null)
-                      TableRow(
-                        children: [
-                          Container(
-                            margin: tableContentMarginTop,
-                            child: const Text(
-                              'Direspon Pada',
-                              style: tableContentStyle,
+                      if (ticket.respondedAt != null)
+                        TableRow(
+                          children: [
+                            Container(
+                              margin: tableContentMarginTop,
+                              child: const Text(
+                                'Direspon Pada',
+                                style: tableContentStyle,
+                              ),
                             ),
-                          ),
-                          Container(
-                            margin: tableContentMarginTop,
-                            child: const Text(
-                              ':',
-                              style: tableContentStyle,
+                            Container(
+                              margin: tableContentMarginTop,
+                              child: const Text(
+                                ':',
+                                style: tableContentStyle,
+                              ),
                             ),
-                          ),
-                          Container(
-                            margin: tableContentMarginTop,
-                            child: Text(
-                              (ticket.respondedAt != null)
-                                  ? ticket.respondedAt!
-                                  : '#N/A',
-                              style: tableContentStyle,
+                            Container(
+                              margin: tableContentMarginTop,
+                              child: Text(
+                                (ticket.respondedAt != null)
+                                    ? ticket.respondedAt!
+                                    : '#N/A',
+                                style: tableContentStyle,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      if(ticket.resolvedAt != null)
-                      TableRow(
-                        children: [
-                          Container(
-                            margin: tableContentMarginTop,
-                            child: const Text(
-                              'Ditutup Pada',
-                              style: tableContentStyle,
+                          ],
+                        ),
+                      if (ticket.resolvedAt != null)
+                        TableRow(
+                          children: [
+                            Container(
+                              margin: tableContentMarginTop,
+                              child: const Text(
+                                'Ditutup Pada',
+                                style: tableContentStyle,
+                              ),
                             ),
-                          ),
-                          Container(
-                            margin: tableContentMarginTop,
-                            child: const Text(
-                              ':',
-                              style: tableContentStyle,
+                            Container(
+                              margin: tableContentMarginTop,
+                              child: const Text(
+                                ':',
+                                style: tableContentStyle,
+                              ),
                             ),
-                          ),
-                          Container(
-                            margin: tableContentMarginTop,
-                            child: Text(
-                              (ticket.resolvedAt != null)
-                                  ? ticket.respondedAt!
-                                  : '#N/A',
-                              style: tableContentStyle,
+                            Container(
+                              margin: tableContentMarginTop,
+                              child: Text(
+                                (ticket.resolvedAt != null)
+                                    ? ticket.respondedAt!
+                                    : '#N/A',
+                                style: tableContentStyle,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
                       if (ticket.note != null)
                         (ticket.note!['resolution_note'] != null)
                             ? TableRow(
@@ -439,8 +440,8 @@ class _TicketDetailState extends State<TicketDetail> {
                   const SizedBox(
                     height: 24,
                   ),
-                  if(ticket.status != "Resolved")
-                  buttonBuilder(context, ticket.status!),
+                  if (ticket.status != "Resolved")
+                    buttonBuilder(context, ticket.status!),
                 ],
               ),
             ),
@@ -698,6 +699,90 @@ class _TicketDetailState extends State<TicketDetail> {
         ],
       );
     }
+
+    if (status == "In Review") {
+      return Column(
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xffF05050),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  elevation: 5),
+              onPressed: () {
+                showConfirmationDialog(
+                  context,
+                  action: () async {
+                    Navigator.of(context).pop();
+                    setState(() {
+                      isLoading = true;
+                    });
+                    try {
+                      var response = await Services.rejectToCloseTicket(
+                        ticket.id!,
+                      );
+                      setState(() {
+                        isLoading = false;
+                        ticket.status = response!['data']['status'];
+                      });
+                      if (mounted) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => alert(
+                            context,
+                            "Berhasil",
+                            response!['message'],
+                          ),
+                        );
+                      }
+                    } catch (e) {
+                      setState(() {
+                        isLoading = false;
+                      });
+                      if (mounted) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => alert(
+                            context,
+                            "Error",
+                            e.toString(),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                );
+              },
+              child: const Text(
+                "Belum Selesai",
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: backgroundColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  elevation: 5),
+              onPressed: action,
+              child: Text(
+                buttonText,
+                style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: ElevatedButton(
@@ -731,11 +816,11 @@ class _TicketDetailState extends State<TicketDetail> {
         onPressed: Navigator.of(context).pop,
       ),
       actions: [
-        if(ticket.flag != null)
-        Padding(
-          padding: const EdgeInsets.all(10),
-          child: flagBoxBuilder(ticket.flag!, 'detail'),
-        )
+        if (ticket.flag != null)
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: flagBoxBuilder(ticket.flag!, 'detail'),
+          )
       ],
     );
   }
