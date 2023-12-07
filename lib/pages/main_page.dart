@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -45,28 +46,30 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     super.initState();
     userData = widget.userData;
     _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      if (message.notification != null) {
-        showDialog(
-          context: context,
-          builder: (context) => alert(
-            context,
-            "${message.notification!.title}",
-            "${message.notification!.body}",
-          ),
-        );
-        String? messageType = message.data['type'];
-        if (messageType != null) {
-          setState(() {
-            if (messageType == "ticket") {
-              ticketIconColor = Colors.red;
-            } else if (messageType == "request") {
-              requestIconColor = Colors.red;
-            }
-          });
+    if(!kIsWeb){
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        if (message.notification != null) {
+          showDialog(
+            context: context,
+            builder: (context) => alert(
+              context,
+              "${message.notification!.title}",
+              "${message.notification!.body}",
+            ),
+          );
+          String? messageType = message.data['type'];
+          if (messageType != null) {
+            setState(() {
+              if (messageType == "ticket") {
+                ticketIconColor = Colors.red;
+              } else if (messageType == "request") {
+                requestIconColor = Colors.red;
+              }
+            });
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   @override
@@ -82,6 +85,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           child: SvgPicture.asset(
             "assets/logos/mainlogo_white.svg",
             fit: BoxFit.contain,
+            allowDrawingOutsideViewBox: true,
           ),
         ),
         titleSpacing: 0,

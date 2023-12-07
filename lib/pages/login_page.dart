@@ -1,10 +1,12 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:repit_app/pages/main_page.dart';
 import 'package:repit_app/data_classes/user.dart';
 import 'package:repit_app/services.dart';
+import 'package:repit_app/widgets/loading_overlay.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({super.key});
@@ -17,7 +19,16 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool isLoading = false;
-
+  late EdgeInsets formMargin;
+  @override
+  void initState() {
+    if(!kIsWeb){
+      formMargin =  const EdgeInsets.only(top: 24, right: 24, left: 24);
+    } else {
+      formMargin =  const EdgeInsets.only(top: 24, right: 700, left: 700);
+    }
+    super.initState();
+  }
   @override
   void dispose() {
     widget.passwordController.dispose();
@@ -68,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 ////SUBMITION FORM////
                 Container(
-                  margin: const EdgeInsets.only(top: 24, right: 24, left: 24),
+                  margin: formMargin,
                   child: Column(
                     children: [
                       //// Username Field ////
@@ -231,6 +242,7 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
+            loadingOverlay(isLoading, context),
           ],
         ),
       ),

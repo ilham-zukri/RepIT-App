@@ -1,20 +1,25 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data_classes/ticket.dart';
 import 'data_classes/user.dart';
 import 'package:dio/dio.dart';
 
 abstract class Services {
-  static const String url = "http://10.0.2.2:8000";
+  ///local url
+  static const String url = kIsWeb ? "http://127.0.0.1:8000" : "http://10.0.2.2:8000";
 
+  /// deploy url
   // static const String url = "https://api.repit.tech";
+
+
 
   static const String apiUrl = "$url/api";
   static late SharedPreferences prefs;
 
   /// Login ///
   static Future<User?> login(String username, String password) async {
-    final fcmToken = await FirebaseMessaging.instance.getToken();
+    String? fcmToken = (!kIsWeb) ? await FirebaseMessaging.instance.getToken() : null;
     try {
       var response = await Dio().post(
         "$apiUrl/login",
