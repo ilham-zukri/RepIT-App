@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
-Widget regularTextFieldBuilder({required String labelText, required TextEditingController controller, required bool obscureText, String? hintText, bool enabled = true}) {
+Widget regularTextFieldBuilder({
+  required String labelText,
+  required TextEditingController controller,
+  required bool obscureText,
+  String? hintText,
+  bool enabled = true,
+}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text(
         labelText,
         style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: Colors.black),
+            fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black),
       ),
       Container(
         margin: const EdgeInsets.only(top: 8),
@@ -32,25 +36,30 @@ Widget regularTextFieldBuilder({required String labelText, required TextEditingC
     ],
   );
 }
-
-Widget descriptionTextFieldBuilder({required String labelText, required TextEditingController controller, String? hintText, bool enabled = true}) {
+Widget halfSizeTextFieldBuilder({
+  required String labelText,
+  required TextEditingController controller,
+  required bool obscureText,
+  required Size size,
+  String? hintText,
+  bool enabled = true,
+}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text(
         labelText,
         style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: Colors.black),
+            fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black),
       ),
       Container(
         margin: const EdgeInsets.only(top: 8),
-        height: 112,
+        height: 41,
+        width: size.width / 3,
         child: TextField(
           enabled: enabled,
-          maxLines: 100,
           controller: controller,
+          obscureText: obscureText,
           decoration: InputDecoration(
             hintText: hintText,
             contentPadding: const EdgeInsets.all(10),
@@ -62,6 +71,38 @@ Widget descriptionTextFieldBuilder({required String labelText, required TextEdit
           ),
         ),
       ),
-    ]
+    ],
   );
+}
+
+Widget descriptionTextFieldBuilder(
+    {required String labelText,
+    required TextEditingController controller,
+    String? hintText,
+    bool enabled = true}) {
+  return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    Text(
+      labelText,
+      style: const TextStyle(
+          fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black),
+    ),
+    Container(
+      margin: const EdgeInsets.only(top: 8),
+      height: 112,
+      child: TextField(
+        enabled: enabled,
+        maxLines: 100,
+        controller: controller,
+        decoration: InputDecoration(
+          hintText: hintText,
+          contentPadding: const EdgeInsets.all(10),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      ),
+    ),
+  ]);
 }

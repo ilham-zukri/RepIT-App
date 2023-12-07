@@ -265,3 +265,57 @@ Widget userDropdownBuilder(
     ],
   );
 }
+
+Widget priorityDropdownBuilder(
+  BuildContext context, {
+  required Future future,
+  required Size size,
+      required bool enabled,
+  required void Function(dynamic) onSelected,
+  int? initialIndex,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        "Prioritas",
+        style: TextStyle(
+            fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black),
+      ),
+      const SizedBox(
+        height: 8,
+      ),
+      FutureBuilder(
+        future: future,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else {
+            List<dynamic>? priorityData = snapshot.data;
+            String? initialPrioritySelection;
+            if (priorityData != null && priorityData.isNotEmpty) {
+              initialPrioritySelection = (initialIndex == null)
+                  ? priorityData[0]['id'].toString()
+                  : priorityData[initialIndex]['id'].toString();
+            }
+            return DropdownMenu(
+              textStyle: const TextStyle(fontSize: 16),
+              enabled: enabled,
+              width: size.width - 48,
+              enableSearch: true,
+              menuHeight: size.height / 2,
+              initialSelection: initialPrioritySelection,
+              onSelected: onSelected,
+              dropdownMenuEntries: priorityData!.map((priority) {
+                return DropdownMenuEntry(
+                    value: priority['id'].toString(), label: priority['priority']);
+              }).toList(),
+            );
+          }
+        },
+      ),
+    ],
+  );
+}

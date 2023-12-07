@@ -580,6 +580,15 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Material(
                 child: InkWell(
                   onTap: () {
+                    if (userData.role['asset_approval'] != 1 &&
+                        userData.role['asset_purchasing'] != 1) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => alert(context, "Tidak Berwenang",
+                            "Anda tidak memiliki wewenang untuk mengakses menu ini"),
+                      );
+                      return;
+                    }
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -696,6 +705,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                     if (response) {
                                       if (mounted) {
                                         prefs.clear();
+                                        Navigator.popUntil(context, (route) => route.isFirst);
                                         Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(

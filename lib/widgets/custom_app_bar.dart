@@ -22,7 +22,7 @@ PreferredSizeWidget customAppBar(BuildContext context, String title,
         Container(
           margin: const EdgeInsets.only(right: 6),
           child: IconButton(
-            onPressed: action2,
+            onPressed: action,
             icon: const Icon(
               Icons.settings,
               size: 32,

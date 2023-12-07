@@ -1759,6 +1759,62 @@ abstract class Services {
     }
   }
 
+  /// Get Performances data
+  static Future<Map?> getPerformances({required int page}) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().get('$apiUrl/performances',
+          options: Options(
+            headers: {
+              "Accept": "application/json",
+              "Authorization": "Bearer $token",
+            },
+          ),
+          queryParameters: {'page': page});
+      if (response.statusCode == 200) {
+        return response.data as Map;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
+  /// Update Priority
+  static Future<Response?> updatePriority(int priorityId, int maxResponseTime, int maxResolveTime) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().put(
+        '$apiUrl/priority',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        ),
+        data: {
+          'priority_id': priorityId,
+          'max_response_time': maxResponseTime,
+          'max_resolve_time': maxResolveTime
+        },
+      );
+      if (response.statusCode == 200) {
+        return response;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
   /// Handling Exception From API ///
   static exceptionHandling(var e) {
     if (e is DioException) {
