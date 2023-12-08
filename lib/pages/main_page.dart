@@ -17,6 +17,7 @@ import 'package:repit_app/pages/my_request_page.dart';
 import 'package:repit_app/pages/my_tickets_page.dart';
 import 'package:repit_app/pages/performance.dart';
 import 'package:repit_app/pages/profile_page.dart';
+import 'package:repit_app/pages/qr_page.dart';
 import 'package:repit_app/pages/spare_part_request_form.dart';
 import 'package:repit_app/pages/ticket_form.dart';
 import 'package:repit_app/services.dart';
@@ -46,7 +47,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     super.initState();
     userData = widget.userData;
     _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
-    if(!kIsWeb){
+    if (!kIsWeb) {
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         if (message.notification != null) {
           showDialog(
@@ -584,6 +585,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Material(
                 child: InkWell(
                   onTap: () {
+                    Navigator.of(context, rootNavigator: true).pop();
                     if (userData.role['asset_approval'] != 1 &&
                         userData.role['asset_purchasing'] != 1) {
                       showDialog(
@@ -634,12 +636,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               child: Material(
                 child: InkWell(
                   onTap: () async {
-                    final fcmToken =
-                        await FirebaseMessaging.instance.getToken();
-                    debugPrint(fcmToken);
-                    if (mounted) {
-                      Navigator.of(context, rootNavigator: true).pop();
-                    }
+                    Navigator.of(context, rootNavigator: true).pop();
+                    Navigator.push(
+                      context, MaterialPageRoute(
+                        builder: (context) => const QrPage(),
+                      )
+                    );
                   },
                   customBorder: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),
@@ -709,7 +711,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                     if (response) {
                                       if (mounted) {
                                         prefs.clear();
-                                        Navigator.popUntil(context, (route) => route.isFirst);
+                                        Navigator.popUntil(
+                                            context, (route) => route.isFirst);
                                         Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(

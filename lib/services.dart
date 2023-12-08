@@ -7,12 +7,10 @@ import 'package:dio/dio.dart';
 
 abstract class Services {
   ///local url
-  static const String url = kIsWeb ? "http://127.0.0.1:8000" : "http://10.0.2.2:8000";
-
+  // static const String url = kIsWeb ? "http://127.0.0.1:8000" : "http://10.0.2.2:8000";
+  static const String url = "http://192.168.100.194:8000";
   /// deploy url
   // static const String url = "https://api.repit.tech";
-
-
 
   static const String apiUrl = "$url/api";
   static late SharedPreferences prefs;
@@ -455,6 +453,33 @@ abstract class Services {
       );
       if (response.statusCode == 200) {
         return response.data as Map;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
+  /// get Asset By QRcode
+  static Future<Map?> getAssetByQrCode(String qrCode) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().get(
+        '$apiUrl/asset/qr-code',
+        options: Options(headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        }),
+        queryParameters: {
+          'qr_code': qrCode
+        }
+      );
+      if (response.statusCode == 200) {
+        return response.data['data'] as Map;
       } else {
         exceptionHandling(response.data['message']);
         return null;

@@ -42,9 +42,16 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future<void> getUserData() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   storedToken = prefs.getString('token');
-  userData = (storedToken != null)
-      ? await Services.getUserData(storedToken.toString())
-      : null;
+  try{
+    userData = (storedToken != null)
+        ? await Services.getUserData(storedToken.toString())
+        : null;
+  }catch(e){
+    debugPrint(e.toString());
+    await prefs.clear();
+    userData = null;
+  }
+
 }
 
 class MainApp extends StatelessWidget {
