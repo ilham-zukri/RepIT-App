@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:repit_app/data_classes/asset.dart';
@@ -29,10 +30,11 @@ class _AssetDetailState extends State<AssetDetail> {
   );
   static late Asset asset;
   static late String status;
+  late EdgeInsets mainPadding;
 
   @override
   void initState() {
-    // TODO: implement initState
+    mainPadding = !kIsWeb ? const EdgeInsets.all(28) : const EdgeInsets.symmetric(horizontal: 600, vertical: 28);
     super.initState();
     asset = widget.asset;
     status = asset.status!;
@@ -62,7 +64,7 @@ class _AssetDetailState extends State<AssetDetail> {
         },
       ),
       body: Padding(
-        padding: const EdgeInsets.all(28),
+        padding:mainPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -70,7 +72,7 @@ class _AssetDetailState extends State<AssetDetail> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  asset.id.toString(),
+                  asset.assetType,
                   style: const TextStyle(
                       fontWeight: FontWeight.w600, fontSize: 20),
                 ),
@@ -80,7 +82,7 @@ class _AssetDetailState extends State<AssetDetail> {
             Container(
               margin: const EdgeInsets.only(top: 32),
               child: Text(
-                asset.assetType,
+                asset.name!,
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 20,

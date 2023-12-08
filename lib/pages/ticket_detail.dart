@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/ticket.dart';
 import 'package:repit_app/pages/spare_part_replacement.dart';
@@ -33,9 +34,11 @@ class _TicketDetailState extends State<TicketDetail> {
   late List images = [];
   TextEditingController resolveNoteEc = TextEditingController();
   TextEditingController handlerNoteEc = TextEditingController();
+  late EdgeInsets mainPadding;
 
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.all(28) : const EdgeInsets.symmetric(horizontal: 600, vertical: 28);
     super.initState();
     ticket = widget.ticket;
     role = widget.role;
@@ -54,7 +57,7 @@ class _TicketDetailState extends State<TicketDetail> {
           appBar: appBarBuilder(context, title: "Ticket Detail"),
           body: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(28),
+              padding: mainPadding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -81,7 +84,7 @@ class _TicketDetailState extends State<TicketDetail> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
-                        width: MediaQuery.of(context).size.width / 2.5,
+                        width: (!kIsWeb) ? MediaQuery.of(context).size.width / 2.5 : (MediaQuery.of(context).size.width / 2.5) - 300,
                         child: Text(
                           ticket.title,
                           maxLines: 1,

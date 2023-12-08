@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/spare_part.dart';
 import 'package:repit_app/widgets/alert.dart';
@@ -30,9 +31,10 @@ class _RepairHistoryState extends State<RepairHistory>
   int sparePartsLength = 0;
   bool isLoadingMore = false;
   int _tabIndex = 0;
-
+  late EdgeInsets mainPadding;
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
     assetId = widget.assetId;
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
     _tabController.addListener(_tabChangesListener);
@@ -192,7 +194,7 @@ class _RepairHistoryState extends State<RepairHistory>
         await fetchTickets(isRefresh: true);
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: mainPadding,
         child: ListView.builder(
           controller: scrollController,
           itemCount: ticketsLength + (isLoadingMore ? 1 : 0),
@@ -233,7 +235,7 @@ class _RepairHistoryState extends State<RepairHistory>
         await fetchSpareParts();
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: mainPadding,
         child: ListView.builder(
           controller: scrollController,
           itemCount: sparePartsLength + (isLoadingMore ? 1 : 0),

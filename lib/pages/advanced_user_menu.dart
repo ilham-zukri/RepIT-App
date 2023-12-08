@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/widgets/alert.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
@@ -32,9 +33,11 @@ class _AdvancedUserMenuState extends State<AdvancedUserMenu> {
   late Future<List<RoleForList>> roles;
   late int roleId;
   int initialRoleIndex = 0;
+  late EdgeInsets mainPadding;
 
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.all(24) : const EdgeInsets.symmetric(horizontal: 600, vertical: 24);
     userData = widget.userData;
     locations = fetchLocations();
     departments = fetchDepartments();
@@ -98,7 +101,7 @@ class _AdvancedUserMenuState extends State<AdvancedUserMenu> {
         Scaffold(
           appBar: customAppBar(context, "Advanced User Menu"),
           body: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: mainPadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

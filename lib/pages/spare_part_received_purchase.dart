@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
 import '../data_classes/purchase.dart';
@@ -21,9 +22,10 @@ class _SparePartReceivedPurchaseState extends State<SparePartReceivedPurchase> {
   int sparePartPurchasesLength = 0;
   final scrollController = ScrollController();
   bool isLoadingMore = false;
-
+  late EdgeInsets mainPadding;
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
     scrollController.addListener(_scrollListener);
     fetchSparePartPurchases();
     super.initState();
@@ -91,7 +93,7 @@ class _SparePartReceivedPurchaseState extends State<SparePartReceivedPurchase> {
   Widget sparePartReceivedPurchaseListView() {
     if (sparePartPurchasesLength > 0) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: mainPadding,
         child: RefreshIndicator(
             onRefresh: () async {
               page = 1;

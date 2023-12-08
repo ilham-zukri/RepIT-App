@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/pages/add_user.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
@@ -23,9 +24,11 @@ class _ManageUsersState extends State<ManageUsers> {
   List users = [];
   int usersLength = 0;
   TextEditingController searchController = TextEditingController();
+  late EdgeInsets mainPadding;
 
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
     scrollController.addListener(_scrollListener);
     fetchUsers();
     super.initState();
@@ -83,7 +86,7 @@ class _ManageUsersState extends State<ManageUsers> {
       body: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: mainPadding,
             child: (usersLength > 0)
                 ? RefreshIndicator(
                     onRefresh: () async {
@@ -126,7 +129,7 @@ class _ManageUsersState extends State<ManageUsers> {
                   ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: mainPadding,
             child: Column(
               children: [
                 const SizedBox(

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/loading_overlay.dart';
@@ -22,12 +23,13 @@ class _MyRequestPageState extends State<MyRequestPage> {
   int requestsLength = 0;
   final scrollController = ScrollController();
   bool isLoadingMore = false;
+  late EdgeInsets mainPadding;
 
   bool isLoading = false;
 
   @override
   void initState() {
-    // TODO: implement initState
+    mainPadding = !kIsWeb ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
     super.initState();
     role = widget.role;
     page = 1;
@@ -89,7 +91,7 @@ class _MyRequestPageState extends State<MyRequestPage> {
     return Stack(
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 24, right: 24),
+          padding: mainPadding,
           child: (requestsLength > 0)
               ? RefreshIndicator(
                   onRefresh: () async {

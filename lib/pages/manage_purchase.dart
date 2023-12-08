@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/purchase.dart';
 import 'package:repit_app/data_classes/purchase_item.dart';
@@ -24,9 +25,10 @@ class _ManagePurchaseState extends State<ManagePurchase>
   int _tabIndex = 0;
   List sparePartPurchases = [];
   int sparePartPurchasesLength = 0;
-
+  late EdgeInsets mainPadding;
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
     super.initState();
     page = 1;
@@ -224,7 +226,7 @@ class _ManagePurchaseState extends State<ManagePurchase>
       );
     }
     return Padding(
-      padding: const EdgeInsets.only(left: 24, right: 24),
+      padding: mainPadding,
       child: (purchasesLength > 0)
           ? RefreshIndicator(
               onRefresh: () async {
@@ -272,7 +274,7 @@ class _ManagePurchaseState extends State<ManagePurchase>
       );
     }
     return Padding(
-      padding: const EdgeInsets.only(left: 24, right: 24),
+      padding: mainPadding,
       child: (sparePartPurchasesLength > 0)
           ? RefreshIndicator(
               onRefresh: () async {

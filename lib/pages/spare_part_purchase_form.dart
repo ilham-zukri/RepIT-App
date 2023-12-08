@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
 import 'package:repit_app/widgets/custom_text_field_builder.dart';
@@ -32,9 +33,10 @@ class _SparePartPurchaseFormState extends State<SparePartPurchaseForm> {
   late Future<List?> types;
   late int typeId;
   bool isLoading = false;
-
+  late EdgeInsets mainPadding;
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.all(24) : const EdgeInsets.symmetric(horizontal: 600, vertical: 24);
     types = fetchSparePartTypes();
     super.initState();
   }
@@ -69,7 +71,7 @@ class _SparePartPurchaseFormState extends State<SparePartPurchaseForm> {
             showAddItemDialog();
           }),
           body: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: mainPadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

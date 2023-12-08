@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/pages/purchase_form.dart';
 import 'package:repit_app/services.dart';
@@ -29,8 +30,11 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
     fontWeight: FontWeight.w500,
   );
 
+  late EdgeInsets mainPadding;
+
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.all(28) : const EdgeInsets.symmetric(horizontal: 600, vertical: 28);
     super.initState();
     request = widget.request;
     role = widget.role;
@@ -41,7 +45,7 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
     return Scaffold(
       appBar: customAppBar(context, "Detail Request"),
       body: Padding(
-        padding: const EdgeInsets.all(28),
+        padding: mainPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

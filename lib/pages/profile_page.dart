@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/user.dart';
 import 'package:repit_app/pages/advanced_user_menu.dart';
@@ -25,11 +26,13 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController rePasswordController = TextEditingController();
   TextEditingController oldPasswordController = TextEditingController();
   late String status;
-
   late User userData;
+  late EdgeInsets mainPadding;
+
 
   @override
   void initState() {
+    mainPadding = !kIsWeb  ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
     userData = widget.userData!;
     status = (userData.active == 1) ? 'Active' : 'Inactive';
     super.initState();

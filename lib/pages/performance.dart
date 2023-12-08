@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/performance_data.dart';
 import 'package:repit_app/pages/sla_setting.dart';
@@ -20,9 +21,10 @@ class _PerformanceState extends State<Performance> {
   int performanceDataLength = 0;
   final scrollController = ScrollController();
   bool isLoadingMore = false;
-
+  late EdgeInsets mainPadding;
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
     fetchPerformanceData();
     scrollController.addListener(_scrollListener);
     super.initState();
@@ -71,7 +73,7 @@ class _PerformanceState extends State<Performance> {
         },
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: mainPadding,
         child: RefreshIndicator(
           onRefresh: () async {},
           child: (performanceDataLength > 0)

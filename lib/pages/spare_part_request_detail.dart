@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/pages/spare_part_purchase_form.dart';
 import 'package:repit_app/services.dart';
@@ -28,9 +29,11 @@ class _SparePartRequestDetailState extends State<SparePartRequestDetail> {
     fontWeight: FontWeight.w500,
   );
   static const EdgeInsets tableContentMargin = EdgeInsets.only(top: 8);
+  late EdgeInsets mainPadding;
 
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.all(28) : const EdgeInsets.symmetric(horizontal: 600, vertical: 28);
     super.initState();
     sparePartRequest = widget.sparePartRequest;
     role = widget.role;
@@ -43,7 +46,7 @@ class _SparePartRequestDetailState extends State<SparePartRequestDetail> {
         Scaffold(
           appBar: customAppBar(context, "Spare Part Request Detail"),
           body: Padding(
-              padding: const EdgeInsets.all(28),
+              padding: mainPadding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

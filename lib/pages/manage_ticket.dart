@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
 import '../data_classes/ticket.dart';
@@ -22,9 +23,11 @@ class _ManageTicketState extends State<ManageTicket> {
   final scrollController = ScrollController();
   bool isLoadingMore = false;
   List tickets = [];
+  late EdgeInsets mainPadding;
 
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
     super.initState();
     fetchTickets();
     role = widget.role;
@@ -95,7 +98,7 @@ class _ManageTicketState extends State<ManageTicket> {
         },
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: mainPadding,
         child: (ticketsLength > 0)
             ? RefreshIndicator(
                 onRefresh: () async {

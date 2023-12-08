@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/user_for_list.dart';
 import 'package:repit_app/services.dart';
@@ -27,10 +28,10 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
   late Future<List<UserForList>> userData;
   static const titleHint = 'Laptop Untuk WFH';
   static const descHint = 'Adakan laptop untuk WFH karyawan';
-
+  late EdgeInsets mainPadding;
   @override
   void initState() {
-    // TODO: implement initState
+    mainPadding = !kIsWeb ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
     super.initState();
     userData = fetchUsers();
     prioritiesList = fetchPriorities();
@@ -73,7 +74,7 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
         children: [
           SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.only(left: 24, right: 24),
+              padding: mainPadding,
               child: Column(
                 children: [
                   const SizedBox(
@@ -188,7 +189,7 @@ class _AssetRequestFormState extends State<AssetRequestForm> {
                           return DropdownMenu(
                             enabled: (!isDisabled),
                             textStyle: const TextStyle(fontSize: 16),
-                            width: size.width - 48,
+                            width:(!kIsWeb) ?size.width - 48 : size.width - 1200,
                             enableSearch: true,
                             initialSelection: initialUserSelection,
                             onSelected: (value) {

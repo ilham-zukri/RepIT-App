@@ -72,10 +72,15 @@ class AssetCard extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    (asset.name!=null)
+                        ?
                     Text(
-                      asset.utilization,
+                      asset.name!,
                       style: const TextStyle(fontWeight: FontWeight.w600),
-                    ),
+                    ) : Text(
+                        asset.utilization,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
                     (asset.status!=null) ? statusBoxBuilder(asset.status!, "card") : const SizedBox.shrink(),
                   ],
                 ),

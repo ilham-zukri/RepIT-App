@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/purchase.dart';
 import 'package:repit_app/pages/purchase_asset.dart';
@@ -32,9 +33,11 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
     fontSize: 14,
     fontWeight: FontWeight.w500,
   );
+  late EdgeInsets mainPadding;
 
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.all(28) : const EdgeInsets.symmetric(horizontal: 640, vertical: 28);
     super.initState();
     usage = widget.usage;
     purchase = widget.purchase;
@@ -55,7 +58,7 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
         Scaffold(
           appBar: customDownloadAppBar(context, appbarTittle),
           body: Padding(
-            padding: const EdgeInsets.all(28),
+            padding: mainPadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/widgets/alert.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
@@ -31,9 +32,11 @@ class _AssetTransferState extends State<AssetTransfer> {
   TextEditingController utilizationEc = TextEditingController();
   bool isLoading = false;
   bool isEnabled = true;
+  late EdgeInsets mainPadding;
 
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.all(24) : const EdgeInsets.symmetric(horizontal: 600, vertical: 24);
     locations = fetchLocations();
     departments = fetchDepartments();
     users = fetchUsers();

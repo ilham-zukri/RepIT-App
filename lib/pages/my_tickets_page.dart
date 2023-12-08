@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/widgets/ticket_card.dart';
 import '../data_classes/ticket.dart';
@@ -21,9 +22,11 @@ class _MyTicketsPageState extends State<MyTicketsPage> {
   final scrollController = ScrollController();
   bool isLoadingMore = false;
   List tickets = [];
+  late EdgeInsets mainPadding;
 
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
     super.initState();
     role = widget.role;
     fetchTickets();
@@ -86,7 +89,7 @@ class _MyTicketsPageState extends State<MyTicketsPage> {
           await fetchTickets(isRefresh: true);
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: mainPadding,
           child: ListView.builder(
             controller: scrollController,
             itemCount: (isLoadingMore) ? ticketsLength + 1 : ticketsLength,

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/asset_card.dart';
 import 'package:repit_app/services.dart';
@@ -18,9 +19,11 @@ class _MyAssetsPageState extends State<MyAssetsPage> {
   int assetsLength = 0;
   final scrollController = ScrollController();
   bool isLoadingMore = false;
+  late EdgeInsets mainPadding;
 
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
     super.initState();
     fetchAssets();
     scrollController.addListener(_scrollListener);
@@ -40,6 +43,7 @@ class _MyAssetsPageState extends State<MyAssetsPage> {
       List<Asset> fetchedAssets = data['data'].map<Asset>((asset) {
         return Asset(
           asset['id'],
+          asset['name'],
           asset['utilization'],
           asset['status'],
           asset['asset_type'],
@@ -77,7 +81,7 @@ class _MyAssetsPageState extends State<MyAssetsPage> {
           await fetchAssets(isRefresh: true);
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: mainPadding,
           child: ListView.builder(
             controller: scrollController,
             itemCount: isLoadingMore ? assetsLength + 1 : assetsLength,

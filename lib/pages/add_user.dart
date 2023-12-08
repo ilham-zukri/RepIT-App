@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/role_for_list.dart';
 import 'package:repit_app/services.dart';
@@ -31,9 +32,10 @@ class _AddUserState extends State<AddUser> {
   TextEditingController fullNameEc = TextEditingController();
   TextEditingController emailEc = TextEditingController();
   TextEditingController empNumberEc = TextEditingController();
-
+  late EdgeInsets mainPadding;
   @override
   void dispose() {
+
     userNameEc.dispose();
     passwordEc.dispose();
     fullNameEc.dispose();
@@ -45,6 +47,7 @@ class _AddUserState extends State<AddUser> {
 
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
     super.initState();
     locations = fetchLocations();
     departments = fetchDepartments();
@@ -94,7 +97,7 @@ class _AddUserState extends State<AddUser> {
         appBar: customAppBar(context, "Add User"),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: mainPadding,
             child: Column(
               children: [
                 locationDropdownBuilder(

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/widgets/custom_text_field_builder.dart';
 
@@ -19,7 +20,14 @@ class _SparePartRequestFormState extends State<SparePartRequestForm> {
   bool isDisabled = false;
   String titleHint = "RAM untuk stok";
   String descHint = "Pengadaan RAM untuk stok spare part";
+  late EdgeInsets mainPadding;
 
+
+  @override
+  void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.all(24) : const EdgeInsets.symmetric(horizontal: 600, vertical: 24);
+    super.initState();
+  }
   @override
   void dispose() {
     titleEc.dispose();
@@ -35,7 +43,7 @@ class _SparePartRequestFormState extends State<SparePartRequestForm> {
         Scaffold(
           appBar: customAppBar(context, "Request Spare Part"),
           body: Padding(
-            padding: const EdgeInsets.all(24),
+            padding:mainPadding,
             child: Column(children: [
               regularTextFieldBuilder(
                 labelText: "Judul*",

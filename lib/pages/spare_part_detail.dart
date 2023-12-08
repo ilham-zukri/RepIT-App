@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:repit_app/data_classes/spare_part.dart';
@@ -22,9 +23,11 @@ class _SparePartDetailState extends State<SparePartDetail> {
     fontWeight: FontWeight.w500,
   );
   static const EdgeInsets tableContentMargin = EdgeInsets.only(top: 8);
+  late EdgeInsets mainPadding;
 
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.all(28) : const EdgeInsets.symmetric(horizontal: 600, vertical: 28);
     sparePart = widget.sparePart;
     super.initState();
   }
@@ -41,7 +44,7 @@ class _SparePartDetailState extends State<SparePartDetail> {
         },
       ),
       body: Padding(
-        padding: const EdgeInsets.all(28),
+        padding: mainPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

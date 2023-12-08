@@ -1,5 +1,6 @@
 class Asset {
   final int? id;
+  final String? name;
   String? owner;
   final String utilization;
   final String? status;
@@ -16,6 +17,7 @@ class Asset {
 
   Asset(
     this.id,
+    this.name,
     this.utilization,
     this.status,
     this.assetType,

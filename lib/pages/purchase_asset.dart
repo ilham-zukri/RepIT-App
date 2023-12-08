@@ -33,6 +33,7 @@ class _PurchaseAssetState extends State<PurchaseAsset> {
         (asset) {
           return Asset(
             asset['id'],
+            asset['name'],
             asset['utilization'],
             asset['status'],
             asset['asset_type'],

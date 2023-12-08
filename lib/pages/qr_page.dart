@@ -116,6 +116,7 @@ class _QrPageState extends State<QrPage> {
       }
       asset = Asset(
         data['id'],
+        data['name'],
         data['utilization'],
         data['status'],
         data['asset_type'],

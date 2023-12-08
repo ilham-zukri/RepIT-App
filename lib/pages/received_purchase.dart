@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/purchase.dart';
 import 'package:repit_app/data_classes/purchase_item.dart';
@@ -21,9 +22,11 @@ class _ReceivedPurchaseState extends State<ReceivedPurchase> {
   int purchasesLength = 0;
   final scrollController = ScrollController();
   bool isLoadingMore = false;
+  late EdgeInsets mainPadding;
 
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
     // TODO: implement initState
     super.initState();
     page = 1;
@@ -89,7 +92,7 @@ class _ReceivedPurchaseState extends State<ReceivedPurchase> {
     return Scaffold(
       appBar: customAppBar(context, "Received Purchases"),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: mainPadding,
         child: (purchasesLength > 0)
             ? RefreshIndicator(
                 onRefresh: () async {

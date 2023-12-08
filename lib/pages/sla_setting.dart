@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
 import 'package:repit_app/widgets/custom_text_field_builder.dart';
@@ -19,13 +20,15 @@ class _SlaSettingState extends State<SlaSetting> {
   final TextEditingController _resolveTimeController = TextEditingController();
   late Future<List> priorities;
   late List prioritiesList;
-
   late int priorityId;
   bool isEnabled = true;
   bool isLoading = false;
 
+  late EdgeInsets mainPadding;
+
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 100);
     priorities = fetchPriorities();
     super.initState();
   }
@@ -52,7 +55,7 @@ class _SlaSettingState extends State<SlaSetting> {
         Scaffold(
           appBar: customAppBar(context, "SLA Setting"),
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: mainPadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

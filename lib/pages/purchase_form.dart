@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/alert.dart';
@@ -29,10 +30,11 @@ class _PurchaseFormState extends State<PurchaseForm> {
   late String assetType;
   late Future<List?> assetTypes;
   bool isLoading = false;
+  late EdgeInsets mainPadding;
 
   @override
   void initState() {
-    // TODO: implement initState
+    mainPadding = !kIsWeb ? const EdgeInsets.all(24) : const EdgeInsets.symmetric(horizontal: 600, vertical: 24);
     super.initState();
     assetTypes = fetchAssetTypes();
   }

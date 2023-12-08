@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/asset.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
@@ -27,9 +28,11 @@ class _RegisterAssetOldState extends State<RegisterAssetOld> {
   TextEditingController utilizationEc = TextEditingController();
   late Future<List<UserForList>> userData;
   late String userId;
+  late EdgeInsets mainPadding;
 
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
     assetTypes = fetchAssetTypes();
     userData = fetchUsers();
     super.initState();
@@ -83,10 +86,13 @@ class _RegisterAssetOldState extends State<RegisterAssetOld> {
           ),
           body: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(24),
+              padding: mainPadding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(
+                    height: 16,
+                  ),
                   const Text(
                     "Tipe Aset*",
                     style: TextStyle(
@@ -113,7 +119,7 @@ class _RegisterAssetOldState extends State<RegisterAssetOld> {
                           }
                           return DropdownMenu(
                             textStyle: const TextStyle(fontSize: 16),
-                            width: size.width - 48,
+                            width: (!kIsWeb) ? size.width - 48 : size.width - 1200,
                             enableSearch: true,
                             initialSelection: initialTypeSelection,
                             onSelected: (value) {
@@ -157,7 +163,7 @@ class _RegisterAssetOldState extends State<RegisterAssetOld> {
                           }
                           return DropdownMenu(
                             textStyle: const TextStyle(fontSize: 16),
-                            width: size.width - 48,
+                            width: (!kIsWeb) ? size.width - 48 : size.width - 1200,
                             enableSearch: true,
                             initialSelection: initialUserSelection,
                             onSelected: (value) {
@@ -352,6 +358,7 @@ class _RegisterAssetOldState extends State<RegisterAssetOld> {
                           return;
                         }
                         Asset asset = Asset(
+                          null,
                           null,
                           utilizationEc.text.trim(),
                           null,

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:repit_app/data_classes/ticket.dart';
@@ -28,12 +29,13 @@ class _TicketFormState extends State<TicketForm> {
   List<File> images = [];
   bool isLoading = false;
   bool isDisabled = false;
-
   late String hintText;
   late String descHintText;
+  late EdgeInsets mainPadding;
 
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
     super.initState();
     prioritiesList = fetchPriorities();
     categoriesList = fetchCategories();
@@ -84,7 +86,7 @@ class _TicketFormState extends State<TicketForm> {
         appBar: customAppBar(context, 'Buat Tiket'),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.only(right: 24, left: 24),
+            padding: mainPadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

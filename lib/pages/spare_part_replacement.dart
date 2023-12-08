@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/widgets/alert.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
@@ -31,6 +32,7 @@ class _SparePartReplacementState extends State<SparePartReplacement> {
   int selectedSparePartsLength = 0;
   List<int> selectedSparePartsIds = <int>[];
   bool isLoading = false;
+  late EdgeInsets mainPadding;
 
   @override
   void dispose() {
@@ -40,6 +42,7 @@ class _SparePartReplacementState extends State<SparePartReplacement> {
 
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.all(24) : const EdgeInsets.symmetric(horizontal: 600, vertical: 24);
     scrollController.addListener(_scrollListener);
     types = fetchSparePartTypes();
     super.initState();
@@ -99,7 +102,7 @@ class _SparePartReplacementState extends State<SparePartReplacement> {
             showAddSparePartDialog(context);
           }),
           body: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: mainPadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/asset_card.dart';
 import 'package:repit_app/data_classes/purchase.dart';
@@ -43,9 +44,10 @@ class _RegisterAssetState extends State<RegisterAsset> {
   static const EdgeInsets tableContentMargin = EdgeInsets.only(top: 4);
   bool isLoading = false;
   bool isButtonDisabled = false;
-
+  late EdgeInsets mainPadding;
   @override
   void initState() {
+    mainPadding = !kIsWeb ? const EdgeInsets.all(24) : const EdgeInsets.symmetric(horizontal: 600, vertical: 24);
     usage = widget.usage;
     appbarTittle =
         (usage == 'asset') ? 'Register Asset' : 'Register Spare Part';
@@ -87,7 +89,7 @@ class _RegisterAssetState extends State<RegisterAsset> {
     Size size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: mainPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -237,8 +239,7 @@ class _RegisterAssetState extends State<RegisterAsset> {
           title: const Text("Purchasing Items"),
           children: [
             SizedBox(
-              width: MediaQuery.of(context).size.width * 0.8,
-              // height: MediaQuery.of(context).size.height * 0.6,
+              width: !kIsWeb ? MediaQuery.of(context).size.width * 0.8 : (MediaQuery.of(context).size.width * 0.8) - 600,
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -390,6 +391,7 @@ class _RegisterAssetState extends State<RegisterAsset> {
                       return;
                     }
                     Asset asset = Asset(
+                        null,
                         null,
                         utilizationEc.text.trim(),
                         null,

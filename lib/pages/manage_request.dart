@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/spare_part_request.dart';
 import 'package:repit_app/services.dart';
@@ -35,10 +36,11 @@ class _ManageRequestState extends State<ManageRequest>
   int _tabIndex = 0;
   List sparePartRequests = [];
   int sparePartRequestsLength = 0;
+  late EdgeInsets mainPadding;
 
   @override
   void initState() {
-    // TODO: implement initState
+    mainPadding = !kIsWeb ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
     super.initState();
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
     _tabController.addListener(_tabChangesListener);
@@ -460,7 +462,7 @@ class _ManageRequestState extends State<ManageRequest>
       );
     }
     return Padding(
-      padding: const EdgeInsets.only(left: 24, right: 24),
+      padding: mainPadding,
       child: (requestsLength > 0)
           ? RefreshIndicator(
               onRefresh: () async {
@@ -507,7 +509,7 @@ class _ManageRequestState extends State<ManageRequest>
       );
     }
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: mainPadding,
         child: (sparePartRequestsLength > 0)
             ? RefreshIndicator(
                 onRefresh: () async {

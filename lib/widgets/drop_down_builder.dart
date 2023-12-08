@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 Widget sparePartTypeDropDownBuilder(BuildContext context,
@@ -89,7 +90,7 @@ Widget locationDropdownBuilder(
               return DropdownMenu(
                 enabled: enabled,
                 textStyle: const TextStyle(fontSize: 16),
-                width: size.width - 48,
+                width: (!kIsWeb)  ? size.width - 48 : size.width - 1200,
                 enableSearch: true,
                 menuHeight: size.height / 2,
                 initialSelection: initialLocationSelection,
@@ -142,7 +143,7 @@ Widget departmentDropdownBuilder(
             return DropdownMenu(
               enabled: enabled,
               textStyle: const TextStyle(fontSize: 16),
-              width: size.width - 48,
+              width: (!kIsWeb)  ? size.width - 48 : size.width - 1200,
               enableSearch: true,
               menuHeight: size.height / 2,
               initialSelection: initialLocationSelection,
@@ -195,7 +196,7 @@ Widget roleDropdownBuilder(
             }
             return DropdownMenu(
               textStyle: const TextStyle(fontSize: 16),
-              width: size.width - 48,
+              width: (!kIsWeb)  ? size.width - 48 : size.width - 1200,
               enableSearch: true,
               menuHeight: size.height / 2,
               initialSelection: initialRoleSelection,
@@ -303,7 +304,7 @@ Widget priorityDropdownBuilder(
             return DropdownMenu(
               textStyle: const TextStyle(fontSize: 16),
               enabled: enabled,
-              width: size.width - 48,
+              width: (!kIsWeb) ? size.width - 48 : size.width - 200,
               enableSearch: true,
               menuHeight: size.height / 2,
               initialSelection: initialPrioritySelection,
