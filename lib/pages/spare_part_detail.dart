@@ -121,6 +121,7 @@ class _SparePartDetailState extends State<SparePartDetail> {
                     ),
                   ],
                 ),
+                if(sparePart.purchaseId != null)
                 TableRow(
                   children: [
                     Container(
@@ -173,7 +174,7 @@ class _SparePartDetailState extends State<SparePartDetail> {
                       child: Text(
                           (sparePart.assetId != null)
                               ? sparePart.assetId!.toString()
-                              : "#N/A",
+                              : "Belum digunakan",
                           style: tableContentStyle),
                     ),
                   ],

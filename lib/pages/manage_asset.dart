@@ -204,11 +204,6 @@ class _ManageAssetState extends State<ManageAsset> {
           )
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        shape: const CircleBorder(),
-        child: const Icon(Icons.filter_alt),
-      ),
     );
   }
 

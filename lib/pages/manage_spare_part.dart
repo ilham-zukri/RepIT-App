@@ -4,6 +4,7 @@ import 'package:repit_app/data_classes/spare_part.dart';
 import 'package:repit_app/pages/register_spare_part_old.dart';
 import 'package:repit_app/pages/spare_part_received_purchase.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
+import 'package:repit_app/widgets/drop_down_builder.dart';
 import 'package:repit_app/widgets/spare_part_card.dart';
 
 import '../services.dart';
@@ -23,13 +24,27 @@ class _ManageSparePartState extends State<ManageSparePart> {
   final scrollController = ScrollController();
   bool isLoadingMore = false;
   late EdgeInsets mainPadding;
+  late Future<List?> types;
+  int? typeId;
 
   @override
   void initState() {
-    mainPadding = !kIsWeb ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
+    types = fetchSparePartTypes();
+    mainPadding = !kIsWeb
+        ? const EdgeInsets.symmetric(horizontal: 24)
+        : const EdgeInsets.symmetric(horizontal: 600);
     scrollController.addListener(_scrollListener);
     fetchSpareParts();
     super.initState();
+  }
+
+  Future<List?> fetchSparePartTypes() async {
+    final data = await Services.getAllSparePartTypes();
+    if (data == null) {
+      return [];
+    }
+    // typeId = data.first['id'];
+    return data;
   }
 
   @override
@@ -39,7 +54,7 @@ class _ManageSparePartState extends State<ManageSparePart> {
   }
 
   Future<void> fetchSpareParts({bool isRefresh = false}) async {
-    var data = await Services.getAllSpareParts(page: page);
+    var data = await Services.getAllSpareParts(page: page, typeId: typeId);
     if (data == null) {
       spareParts += [];
     } else {
@@ -79,7 +94,9 @@ class _ManageSparePartState extends State<ManageSparePart> {
       }),
       body: sparePartListView(context),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          showFilterDialog();
+        },
         shape: const CircleBorder(),
         child: const Icon(Icons.filter_alt),
       ),
@@ -164,11 +181,10 @@ class _ManageSparePartState extends State<ManageSparePart> {
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RegisterSparePartOld(),
-                    )
-                  );
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RegisterSparePartOld(),
+                      ));
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xff00ABB3),
@@ -179,6 +195,64 @@ class _ManageSparePartState extends State<ManageSparePart> {
               ),
             ),
           ],
+        );
+      },
+    );
+  }
+
+  void showFilterDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        int localTypeId = 1;
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              scrollable: true,
+              title: const Text(
+                "Filter Berdasarkan Tipe",
+              ),
+              content: sparePartTypeDropDownBuilder(
+                context,
+                future: types,
+                label: "Tipe",
+                value: localTypeId,
+                onChange: (value) {
+                  setState(() {
+                    localTypeId = value;
+                  });
+                },
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () async {
+                    typeId = null;
+                    page = 1;
+                    sparePartsLength = 0;
+                    Navigator.of(context).pop();
+                    await fetchSpareParts(isRefresh: true);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xffF05050),
+                  ),
+                  child: const Text("Clear Filter"),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    typeId = localTypeId;
+                    page = 1;
+                    sparePartsLength = 0;
+                    Navigator.of(context).pop();
+                    await fetchSpareParts(isRefresh: true);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff00ABB3),
+                  ),
+                  child: const Text("Ok"),
+                ),
+              ],
+            );
+          },
         );
       },
     );
