@@ -1496,6 +1496,30 @@ abstract class Services {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
       Response? response = await Dio().get(
+        '$apiUrl/spare-parts/available-types',
+        options: Options(headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        }),
+      );
+      if (response.statusCode == 200) {
+        return response.data as List;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
+  /// Get All Spare Part Types
+  static Future<List?> getAllSparePartTypes() async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().get(
         '$apiUrl/spare-parts/types',
         options: Options(headers: {
           "Accept": "application/json",
@@ -1694,6 +1718,39 @@ abstract class Services {
         data: {
           'purchase_id': purchaseId,
           'items': items,
+        },
+      );
+      if (response.statusCode == 201) {
+        return response;
+      } else {
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
+  /// Register Old Spare Part
+  static Future<Response?> registerOldSparePart(
+      {required int typeId, required String brand, required String model, required String serialNumber}) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().post(
+        '$apiUrl/spare-parts',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+        data: {
+          'type_id': typeId,
+          'brand': brand,
+          'model': model,
+          'serial_number': serialNumber
         },
       );
       if (response.statusCode == 201) {

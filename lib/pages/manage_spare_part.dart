@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/spare_part.dart';
+import 'package:repit_app/pages/register_spare_part_old.dart';
 import 'package:repit_app/pages/spare_part_received_purchase.dart';
 import 'package:repit_app/widgets/custom_app_bar.dart';
 import 'package:repit_app/widgets/spare_part_card.dart';
@@ -161,13 +162,20 @@ class _ManageSparePartState extends State<ManageSparePart> {
             SizedBox(
               width: 140,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RegisterSparePartOld(),
+                    )
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xff00ABB3),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
                     elevation: 5),
-                child: const Text("Aset Lama"),
+                child: const Text("Spare part lama"),
               ),
             ),
           ],
