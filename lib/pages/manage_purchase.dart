@@ -220,11 +220,7 @@ class _ManagePurchaseState extends State<ManagePurchase>
   }
 
   Widget assetPurchaseListView() {
-    if (purchases.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
+
     return Padding(
       padding: mainPadding,
       child: (purchasesLength > 0)
@@ -268,11 +264,6 @@ class _ManagePurchaseState extends State<ManagePurchase>
   }
 
   Widget sparePartPurchaseListView() {
-    if (purchases.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
     return Padding(
       padding: mainPadding,
       child: (sparePartPurchasesLength > 0)

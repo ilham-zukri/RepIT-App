@@ -777,7 +777,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             Container(
               margin: const EdgeInsets.only(left: 30, top: 24),
               child: const Text(
-                'V.01.00.05',
+                'V.1.1.1',
                 textAlign: TextAlign.start,
               ),
             )

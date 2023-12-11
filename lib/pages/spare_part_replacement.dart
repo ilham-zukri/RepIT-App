@@ -42,13 +42,15 @@ class _SparePartReplacementState extends State<SparePartReplacement> {
 
   @override
   void initState() {
-    mainPadding = !kIsWeb ? const EdgeInsets.all(24) : const EdgeInsets.symmetric(horizontal: 600, vertical: 24);
+    mainPadding = !kIsWeb
+        ? const EdgeInsets.all(24)
+        : const EdgeInsets.symmetric(horizontal: 600, vertical: 24);
     scrollController.addListener(_scrollListener);
     types = fetchSparePartTypes();
     super.initState();
   }
 
-  Future<void> fetchSpareParts({bool isRefresh = false, int typeId = 1}) async {
+  Future<void> fetchSpareParts({bool isRefresh = false}) async {
     var data = await Services.getAllSpareParts(
         page: page, typeId: typeId, statusId: 1);
     if (data == null) {
@@ -183,16 +185,13 @@ class _SparePartReplacementState extends State<SparePartReplacement> {
                         setState(() {
                           isLoading = false;
                         });
-                        if(mounted){
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  backgroundColor: const Color(0xff00ABB3),
-                                  content: Text(
-                                    response!.data['message'],
-                                    style: const TextStyle(color: Colors.white),
-                                  )
-                              )
-                          );
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              backgroundColor: const Color(0xff00ABB3),
+                              content: Text(
+                                response!.data['message'],
+                                style: const TextStyle(color: Colors.white),
+                              )));
                           Navigator.pop(context);
                         }
                       } catch (e) {
@@ -222,10 +221,10 @@ class _SparePartReplacementState extends State<SparePartReplacement> {
 
   void showAddSparePartDialog(BuildContext context) async {
     Size size = MediaQuery.of(context).size;
-    try{
+    try {
       await fetchSpareParts(isRefresh: true);
-    } catch(e){
-      if(mounted){
+    } catch (e) {
+      if (mounted) {
         showDialog(
           context: context,
           builder: (context) => alert(context, "Error", e.toString()),
@@ -258,9 +257,8 @@ class _SparePartReplacementState extends State<SparePartReplacement> {
                             typeId = value;
                           });
                           await fetchSpareParts(
-                              isRefresh: true,
-                              typeId:
-                                  typeId); // Memanggil fetchSpareParts setelah perubahan typeId
+                            isRefresh: true,
+                          ); // Memanggil fetchSpareParts setelah perubahan typeId
                           setState(() {
                             page = 1;
                             spareParts;

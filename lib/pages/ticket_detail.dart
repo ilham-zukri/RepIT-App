@@ -96,7 +96,7 @@ class _TicketDetailState extends State<TicketDetail> {
                         ),
                       ),
                       (ticket.status == "In Progress" &&
-                              role['asset_management'] == 1)
+                              role['asset_management'] == 1 && ticket.category == "Regular")
                           ? SizedBox(
                               width: 150,
                               child: ElevatedButton(
