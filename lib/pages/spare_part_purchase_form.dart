@@ -42,7 +42,7 @@ class _SparePartPurchaseFormState extends State<SparePartPurchaseForm> {
   }
 
   Future<List?> fetchSparePartTypes() async {
-    final data = await Services.getSparePartTypes();
+    final data = await Services.getAllSparePartTypes();
     if (data == null) {
       return [];
     }

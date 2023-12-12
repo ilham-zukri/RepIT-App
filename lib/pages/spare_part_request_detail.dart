@@ -129,7 +129,7 @@ class _SparePartRequestDetailState extends State<SparePartRequestDetail> {
                         ),
                         Container(
                           margin: tableContentMargin,
-                          child: Text(sparePartRequest.approvedAt ?? "#N/A"),
+                          child: Text(sparePartRequest.approvedAt ?? "Belum disetujui"),
                         )
                       ],
                     ),

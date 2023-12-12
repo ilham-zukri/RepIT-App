@@ -401,9 +401,7 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
                                                     });
                                                     if (mounted) {
                                                       Navigator.pop(context);
-                                                      if(usage == 'asset'){
-                                                        showTakePicDialog();
-                                                      }
+                                                      showTakePicDialog();
                                                       setState(() {
                                                         purchase.status =
                                                             'Received';
@@ -626,6 +624,7 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
         var response = await Services.uploadReceivedPurchasePict(
           purchase.id,
           image!,
+          usage
         );
         if (mounted) {
           setState(() {

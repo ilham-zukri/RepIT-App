@@ -858,7 +858,7 @@ abstract class Services {
 
   /// Upload Received Purchase Picture
   static Future<Map?> uploadReceivedPurchasePict(
-      int purchaseId, File image) async {
+      int purchaseId, File image, String usage) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
@@ -871,8 +871,14 @@ abstract class Services {
           ),
         },
       );
+      late String endPoint;
+      if(usage == 'asset'){
+        endPoint = '/purchase/image';
+      } else {
+        endPoint = '/spare-parts/purchase/picture';
+      }
       Response? response = await Dio().post(
-        '$apiUrl/purchase/image',
+        apiUrl+endPoint,
         options: Options(
             headers: {
               "Accept": "application/json",
