@@ -1,12 +1,16 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:repit_app/data_classes/purchase.dart';
 import 'package:repit_app/pages/purchase_asset.dart';
 import 'package:repit_app/pages/register_asset.dart';
 import 'package:repit_app/services.dart';
 import 'package:repit_app/widgets/alert.dart';
+import 'package:repit_app/widgets/image_viewer.dart';
 import 'package:repit_app/widgets/loading_overlay.dart';
 import 'package:repit_app/widgets/purchase_item_card.dart';
 import 'package:repit_app/widgets/purchase_status_box_builder.dart';
@@ -34,13 +38,18 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
     fontWeight: FontWeight.w500,
   );
   late EdgeInsets mainPadding;
+  File? image;
+  String? imageUrl;
 
   @override
   void initState() {
-    mainPadding = !kIsWeb ? const EdgeInsets.all(28) : const EdgeInsets.symmetric(horizontal: 640, vertical: 28);
+    mainPadding = !kIsWeb
+        ? const EdgeInsets.all(28)
+        : const EdgeInsets.symmetric(horizontal: 640, vertical: 28);
     super.initState();
     usage = widget.usage;
     purchase = widget.purchase;
+    imageUrl = purchase.imageUrl;
     if (usage == 'asset') {
       appbarTittle = 'Purchase Detail';
     } else {
@@ -168,10 +177,41 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
                   ],
                 ),
                 const SizedBox(
+                  height: 4,
+                ),
+                if (imageUrl != null)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Gambar :"),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ImageViewer(imageUrl: '${Services.url}/${imageUrl!}'),
+                            ),
+                          );
+                        },
+                        icon: Image.network(
+                        '${Services.url}/${imageUrl!}',
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
+                  ),
+                const SizedBox(
                   height: 16,
                 ),
                 Container(
-                  height: size.height / 1.8,
+                  height:
+                      imageUrl == null ? size.height / 1.8 : size.height / 2.2,
                   decoration: const BoxDecoration(
                     border: Border(
                       top: BorderSide(color: Colors.black26),
@@ -326,7 +366,8 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
                                           return AlertDialog(
                                             title: const Text('Konfirmasi'),
                                             content: const Text(
-                                                'Apakah anda yakin barang yang anda terima sudah sesuai?'),
+                                                'Apakah anda yakin barang yang anda terima sudah sesuai?',
+                                                textAlign: TextAlign.justify),
                                             actions: [
                                               ElevatedButton(
                                                 onPressed: () {
@@ -360,15 +401,9 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
                                                     });
                                                     if (mounted) {
                                                       Navigator.pop(context);
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (context) =>
-                                                            alert(
-                                                                context,
-                                                                "Berhasil",
-                                                                response!.data[
-                                                                    'message']),
-                                                      );
+                                                      if(usage == 'asset'){
+                                                        showTakePicDialog();
+                                                      }
                                                       setState(() {
                                                         purchase.status =
                                                             'Received';
@@ -476,6 +511,39 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
     );
   }
 
+  void showTakePicDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+            title: const Text("Ambil Gambar?"),
+            content: const Text(
+                "Apakah anda ingin mengambil gambar untuk penerimaan pembelian ini?"),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xffF05050),
+                ),
+                child: const Text("Tidak"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _pickImage();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xff009199),
+                ),
+                child: const Text("Ya"),
+              ),
+            ]);
+      },
+    );
+  }
+
   PreferredSizeWidget customDownloadAppBar(BuildContext context, String title) {
     return AppBar(
       title: Text(
@@ -543,6 +611,47 @@ class _PurchaseDetailState extends State<PurchaseDetail> {
         ),
       ],
     );
+  }
+
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedImage =
+        await picker.pickImage(source: ImageSource.camera);
+    if (pickedImage != null) {
+      setState(() {
+        isLoading = true;
+      });
+      image = File(pickedImage.path);
+      try {
+        var response = await Services.uploadReceivedPurchasePict(
+          purchase.id,
+          image!,
+        );
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+            imageUrl = response!['url'];
+          });
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: const Color(0xff00ABB3),
+              content: Text(
+                e.toString(),
+                style: const TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          );
+        }
+      }
+    }
   }
 
   Future<void> _launchUrl(Uri url) async {

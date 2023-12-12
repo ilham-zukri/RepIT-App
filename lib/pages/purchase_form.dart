@@ -31,6 +31,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
   late Future<List?> assetTypes;
   bool isLoading = false;
   late EdgeInsets mainPadding;
+  bool isEnabled = true;
 
   @override
   void initState() {
@@ -98,6 +99,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
                   margin: const EdgeInsets.only(top: 8),
                   height: 41,
                   child: TextField(
+                    enabled: isEnabled,
                     controller: vendorNameEc,
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(10),
@@ -123,6 +125,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
                   margin: const EdgeInsets.only(top: 8),
                   height: 41,
                   child: TextField(
+                    enabled: isEnabled,
                     controller: descriptionEc,
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(10),
@@ -172,7 +175,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
                                                     BorderRadius.circular(50)),
                                             elevation: 5,
                                           ),
-                                          onPressed: () async {
+                                          onPressed: isEnabled ? () async {
                                             if (vendorNameEc.text.isEmpty) {
                                               showDialog(
                                                 context: context,
@@ -198,6 +201,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
                                                             items);
                                                 setState(() {
                                                   isLoading = false;
+                                                  isEnabled = false;
                                                 });
                                                 if (mounted) {
                                                   setState(() {
@@ -224,7 +228,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
                                                 }
                                               }
                                             }
-                                          },
+                                          } : null,
                                           child: const Text(
                                             "Kirim",
                                             style: TextStyle(

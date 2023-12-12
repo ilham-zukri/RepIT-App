@@ -178,6 +178,9 @@ class _LoginPageState extends State<LoginPage> {
                                 }
                               }
                             } catch (e) {
+                              setState(() {
+                                isLoading = false;
+                              });
                               if (mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(

@@ -64,7 +64,7 @@ class _AssetDetailState extends State<AssetDetail> {
         },
       ),
       body: Padding(
-        padding:mainPadding,
+        padding: mainPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

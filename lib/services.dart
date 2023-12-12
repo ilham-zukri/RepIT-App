@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,7 +9,9 @@ import 'package:dio/dio.dart';
 
 abstract class Services {
   ///local url
-  static const String url = kIsWeb ? "http://127.0.0.1:8000" : "http://10.0.2.2:8000";
+  static const String url =
+      kIsWeb ? "http://127.0.0.1:8000" : "http://10.0.2.2:8000";
+
   // static const String url = "http://192.168.100.194:8000";
 
   /// deploy url
@@ -18,7 +22,8 @@ abstract class Services {
 
   /// Login ///
   static Future<User?> login(String username, String password) async {
-    String? fcmToken = (!kIsWeb) ? await FirebaseMessaging.instance.getToken() : null;
+    String? fcmToken =
+        (!kIsWeb) ? await FirebaseMessaging.instance.getToken() : null;
     try {
       var response = await Dio().post(
         "$apiUrl/login",
@@ -469,16 +474,12 @@ abstract class Services {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
-      Response? response = await Dio().get(
-        '$apiUrl/asset/qr-code',
-        options: Options(headers: {
-          "Accept": "application/json",
-          "Authorization": "Bearer $token"
-        }),
-        queryParameters: {
-          'qr_code': qrCode
-        }
-      );
+      Response? response = await Dio().get('$apiUrl/asset/qr-code',
+          options: Options(headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          }),
+          queryParameters: {'qr_code': qrCode});
       if (response.statusCode == 200) {
         return response.data['data'] as Map;
       } else {
@@ -855,6 +856,44 @@ abstract class Services {
     return null;
   }
 
+  /// Upload Received Purchase Picture
+  static Future<Map?> uploadReceivedPurchasePict(
+      int purchaseId, File image) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      FormData formData = FormData.fromMap(
+        {
+          'purchase_id': purchaseId,
+          'image': MultipartFile.fromFileSync(
+            image.path,
+            filename: image.path.split('/').last,
+          ),
+        },
+      );
+      Response? response = await Dio().post(
+        '$apiUrl/purchase/image',
+        options: Options(
+            headers: {
+              "Accept": "application/json",
+              "Authorization": "Bearer $token",
+              "Content-Type": "multipart/form-data",
+            }
+        ),
+        data: formData,
+      );
+      if (response.statusCode == 201) {
+        return response.data as Map;
+      } else{
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    } catch (e) {
+      exceptionHandling(e);
+      return null;
+    }
+  }
+
   /// Get Purchased Assets
   static Future<List?> getPurchasedAssets(int purchaseId) async {
     try {
@@ -1041,10 +1080,7 @@ abstract class Services {
           "Accept": "application/json",
           "Authorization": "Bearer $token"
         }),
-        queryParameters: {
-          'page': page ?? 1,
-          'search_param' : searchParam
-        },
+        queryParameters: {'page': page ?? 1, 'search_param': searchParam},
       );
       if (response.statusCode == 200) {
         return response.data as Map;
@@ -1734,7 +1770,10 @@ abstract class Services {
 
   /// Register Old Spare Part
   static Future<Response?> registerOldSparePart(
-      {required int typeId, required String brand, required String model, required String serialNumber}) async {
+      {required int typeId,
+      required String brand,
+      required String model,
+      required String serialNumber}) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
@@ -1874,7 +1913,8 @@ abstract class Services {
   }
 
   /// Update Priority
-  static Future<Response?> updatePriority(int priorityId, int maxResponseTime, int maxResolveTime) async {
+  static Future<Response?> updatePriority(
+      int priorityId, int maxResponseTime, int maxResolveTime) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();

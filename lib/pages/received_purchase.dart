@@ -55,6 +55,7 @@ class _ReceivedPurchaseState extends State<ReceivedPurchase> {
             id: purchase['id'],
             vendorName: purchase['purchased_from'],
             docPath: purchase['doc_path'],
+            imageUrl: purchase['pic_path'],
             items: List<PurchaseItem>.from(purchase['items'].map((item) => PurchaseItem(
               id: item['id'],
               type: item['asset_type'],

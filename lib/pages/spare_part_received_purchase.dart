@@ -47,6 +47,7 @@ class _SparePartReceivedPurchaseState extends State<SparePartReceivedPurchase> {
             id: purchase['id'],
             vendorName: purchase['purchased_from'],
             docPath: purchase['doc_path'],
+            imageUrl: null  ,
             items: List<PurchaseItem>.from(
                 purchase['items'].map((item) => PurchaseItem(
                       id: item['id'],

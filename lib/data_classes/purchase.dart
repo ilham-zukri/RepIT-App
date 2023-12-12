@@ -9,18 +9,21 @@ class Purchase {
   final String requester;
   final String createdAt;
   String status;
+  String? imageUrl;
   final int totalPrice;
   final List<PurchaseItem> items;
 
-  Purchase(
-      {required this.id,
-      required this.requestId,
-      required this.purchasedBy,
-      required this.requester,
-      required this.createdAt,
-      required this.status,
-      required this.totalPrice,
-      required this.vendorName,
-      required this.docPath,
-      required this.items});
+  Purchase({
+    required this.id,
+    required this.requestId,
+    required this.purchasedBy,
+    required this.requester,
+    required this.createdAt,
+    required this.status,
+    required this.totalPrice,
+    required this.vendorName,
+    required this.docPath,
+    required this.imageUrl,
+    required this.items,
+  });
 }

@@ -170,7 +170,7 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
                         child: const Text(':', style: tableContentStyle)),
                     Container(
                         margin: const EdgeInsets.only(top: 8),
-                        child: Text(request!.approvedAt ?? "#N/A"))
+                        child: Text(request!.approvedAt ?? "Belum disetujui"))
                   ],
                 ),
               ],
