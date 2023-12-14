@@ -26,6 +26,11 @@ class _ManagePurchaseState extends State<ManagePurchase>
   List sparePartPurchases = [];
   int sparePartPurchasesLength = 0;
   late EdgeInsets mainPadding;
+  TextEditingController searchControllerAsset = TextEditingController();
+  String? searchParamAsset;
+  TextEditingController searchControllerSparePart = TextEditingController();
+  String? searchParamSparePart;
+
   @override
   void initState() {
     mainPadding = !kIsWeb ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
@@ -46,7 +51,7 @@ class _ManagePurchaseState extends State<ManagePurchase>
 
   Future<void> fetchPurchases({bool isRefresh = false}) async {
     try {
-      var data = await Services.getPurchases(page);
+      var data = await Services.getPurchases(page, searchParamAsset);
       if (data != null) {
         List<Purchase> updatedPurchases =
             List<Purchase>.from(data['data'].map((purchase) {
@@ -98,7 +103,7 @@ class _ManagePurchaseState extends State<ManagePurchase>
 
   Future<void> fetchSparePartPurchases({bool isRefresh = false}) async {
     try {
-      var data = await Services.getSparePartPurchases(page);
+      var data = await Services.getSparePartPurchases(page, searchParamSparePart);
       if (data != null) {
         List<Purchase> updatedPurchases =
             List<Purchase>.from(data['data'].map((purchase) {
@@ -222,90 +227,189 @@ class _ManagePurchaseState extends State<ManagePurchase>
   }
 
   Widget assetPurchaseListView() {
-
-    return Padding(
-      padding: mainPadding,
-      child: (purchasesLength > 0)
-          ? RefreshIndicator(
-              onRefresh: () async {
-                page = 1;
-                await fetchPurchases(isRefresh: true);
-              },
-              child: ListView.builder(
-                controller: scrollController,
-                itemCount:
-                    isLoadingMore ? purchasesLength + 1 : purchasesLength,
-                itemBuilder: (context, index) {
-                  if (index < purchasesLength) {
-                    return Column(
-                      children: [
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        PurchaseCard(
-                          purchase: purchases[index],
-                          usage: "asset",
-                        ),
-                        (index == purchasesLength - 1)
-                            ? const SizedBox(height: 16)
-                            : const SizedBox.shrink()
-                      ],
-                    );
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
+    return Stack(
+      children: [
+        Padding(
+          padding: mainPadding,
+          child: (purchasesLength > 0)
+              ? RefreshIndicator(
+                  onRefresh: () async {
+                    page = 1;
+                    await fetchPurchases(isRefresh: true);
+                  },
+                  child: ListView.builder(
+                    controller: scrollController,
+                    itemCount:
+                        isLoadingMore ? purchasesLength + 1 : purchasesLength,
+                    itemBuilder: (context, index) {
+                      if (index < purchasesLength) {
+                        return Column(
+                          children: [
+                            if (index == 0)
+                              const SizedBox(
+                                height: 68,
+                              ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            PurchaseCard(
+                              purchase: purchases[index],
+                              usage: "asset",
+                            ),
+                            (index == purchasesLength - 1)
+                                ? const SizedBox(height: 16)
+                                : const SizedBox.shrink()
+                          ],
+                        );
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    },
+                  ),
+                )
+              : const Center(
+                  child: CircularProgressIndicator(),
+                ),
+        ),
+        Padding(
+          padding: mainPadding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              const SizedBox(
+                height: 16,
               ),
-            )
-          : const Center(
-              child: CircularProgressIndicator(),
-            ),
+              SearchBar(
+                elevation: const MaterialStatePropertyAll<double>(4.0),
+                padding: const MaterialStatePropertyAll<EdgeInsets>(
+                    EdgeInsets.symmetric(horizontal: 16.0)),
+                controller: searchControllerAsset,
+                onChanged: (value) async {
+                  setState(() {
+                    page = 1;
+                    searchParamAsset = value;
+                  });
+                  await fetchPurchases(isRefresh: true);
+                },
+                leading: const Icon(Icons.search),
+                hintText: "Cari nomor Pembelian dan Nama Vendor",
+                hintStyle: const MaterialStatePropertyAll<TextStyle>(
+                  TextStyle(color: Colors.black54),
+                ),
+                trailing: <Widget>[
+                  IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () async {
+                      setState(() {
+                        page = 1;
+                        searchControllerAsset.clear();
+                        searchParamAsset = null;
+                      });
+                      await fetchPurchases(isRefresh: true);
+                    },
+                  )
+                ],
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 
   Widget sparePartPurchaseListView() {
-    return Padding(
-      padding: mainPadding,
-      child: (sparePartPurchasesLength > 0)
-          ? RefreshIndicator(
-              onRefresh: () async {
-                page = 1;
-                await fetchSparePartPurchases(isRefresh: true);
-              },
-              child: ListView.builder(
-                controller: scrollController,
-                itemCount: isLoadingMore
-                    ? sparePartPurchasesLength + 1
-                    : sparePartPurchasesLength,
-                itemBuilder: (context, index) {
-                  if (index < sparePartPurchasesLength) {
-                    return Column(
-                      children: [
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        PurchaseCard(
-                          purchase: sparePartPurchases[index],
-                          usage: "spare_part",
-                        ),
-                        (index == sparePartPurchasesLength - 1)
-                            ? const SizedBox(height: 16)
-                            : const SizedBox.shrink()
-                      ],
-                    );
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
+    return Stack(
+      children: [
+        Padding(
+          padding: mainPadding,
+          child: (sparePartPurchasesLength > 0)
+              ? RefreshIndicator(
+                  onRefresh: () async {
+                    page = 1;
+                    await fetchSparePartPurchases(isRefresh: true);
+                  },
+                  child: ListView.builder(
+                    controller: scrollController,
+                    itemCount: isLoadingMore
+                        ? sparePartPurchasesLength + 1
+                        : sparePartPurchasesLength,
+                    itemBuilder: (context, index) {
+                      if (index < sparePartPurchasesLength) {
+                        return Column(
+                          children: [
+                            if (index == 0)
+                              const SizedBox(
+                                height: 68,
+                              ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            PurchaseCard(
+                              purchase: sparePartPurchases[index],
+                              usage: "spare_part",
+                            ),
+                            (index == sparePartPurchasesLength - 1)
+                                ? const SizedBox(height: 16)
+                                : const SizedBox.shrink()
+                          ],
+                        );
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    },
+                  ),
+                )
+              : const Center(
+                  child: CircularProgressIndicator(),
+                ),
+        ),
+        Padding(
+          padding: mainPadding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              const SizedBox(
+                height: 16,
               ),
-            )
-          : const Center(
-              child: CircularProgressIndicator(),
-            ),
+              SearchBar(
+                elevation: const MaterialStatePropertyAll<double>(4.0),
+                padding: const MaterialStatePropertyAll<EdgeInsets>(
+                    EdgeInsets.symmetric(horizontal: 16.0)),
+                controller: searchControllerSparePart,
+                onChanged: (value) async {
+                  setState(() {
+                    page = 1;
+                    searchParamSparePart = value;
+                  });
+                  await fetchSparePartPurchases(isRefresh: true);
+                },
+                leading: const Icon(Icons.search),
+                hintText: "Cari nomor Pembelian dan Nama Vendor",
+                hintStyle: const MaterialStatePropertyAll<TextStyle>(
+                  TextStyle(color: Colors.black54),
+                ),
+                trailing: <Widget>[
+                  IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () async {
+                      setState(() {
+                        page = 1;
+                        searchControllerSparePart.clear();
+                        searchParamSparePart = null;
+                      });
+                      await fetchSparePartPurchases(isRefresh: true);
+                    },
+                  )
+                ],
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 

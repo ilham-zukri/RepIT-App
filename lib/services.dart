@@ -720,10 +720,7 @@ abstract class Services {
   }
 
   /// GET All Asset Requests List with pagination
-  static Future<Map?> getListOfRequests(int? page,
-      {String? prioritySort,
-      String? createdAtSort,
-      int? filterLocation}) async {
+  static Future<Map?> getListOfRequests(int? page, String? searchParam) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
@@ -733,12 +730,7 @@ abstract class Services {
           "Accept": "application/json",
           "Authorization": "Bearer $token"
         }),
-        queryParameters: {
-          'page': page ?? 1,
-          'priority_sort': prioritySort,
-          'created_at_sort': createdAtSort,
-          'filter_location': filterLocation
-        },
+        queryParameters: {'page': page ?? 1, 'search_param': searchParam},
       );
       if (response.statusCode == 200) {
         return response.data as Map;
@@ -871,25 +863,23 @@ abstract class Services {
         },
       );
       late String endPoint;
-      if(usage == 'asset'){
+      if (usage == 'asset') {
         endPoint = '/purchase/image';
       } else {
         endPoint = '/spare-parts/purchase/picture';
       }
       Response? response = await Dio().post(
-        apiUrl+endPoint,
-        options: Options(
-            headers: {
-              "Accept": "application/json",
-              "Authorization": "Bearer $token",
-              "Content-Type": "multipart/form-data",
-            }
-        ),
+        apiUrl + endPoint,
+        options: Options(headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer $token",
+          "Content-Type": "multipart/form-data",
+        }),
         data: formData,
       );
       if (response.statusCode == 201) {
         return response.data as Map;
-      } else{
+      } else {
         exceptionHandling(response.data['message']);
         return null;
       }
@@ -1000,7 +990,7 @@ abstract class Services {
   }
 
   /// Get All Purchases with pagination
-  static Future<Map?> getPurchases(int? page) async {
+  static Future<Map?> getPurchases(int? page, String? searchParam) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
@@ -1010,9 +1000,7 @@ abstract class Services {
           "Accept": "application/json",
           "Authorization": "Bearer $token"
         }),
-        queryParameters: {
-          'page': page ?? 1,
-        },
+        queryParameters: {'page': page ?? 1, 'search_param': searchParam},
       );
       if (response.statusCode == 200) {
         return response.data as Map;
@@ -1296,10 +1284,7 @@ abstract class Services {
             "Accept": "application/json",
             "Authorization": "Bearer $token"
           }),
-          queryParameters: {
-            'page': page ?? 1,
-            'search_param': searchParam
-          });
+          queryParameters: {'page': page ?? 1, 'search_param': searchParam});
       if (response.statusCode == 200) {
         return response.data as Map;
       } else {
@@ -1483,7 +1468,8 @@ abstract class Services {
   }
 
   /// Get all Spare parts requests with pagination
-  static Future<Map?> getSparePartRequests(int? page) async {
+  static Future<Map?> getSparePartRequests(
+      int? page, String? searchParam) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
@@ -1493,7 +1479,10 @@ abstract class Services {
           "Accept": "application/json",
           "Authorization": "Bearer $token"
         }),
-        queryParameters: {'page': page ?? 1},
+        queryParameters: {
+          'page': page ?? 1,
+          'search_param': searchParam,
+        },
       );
       if (response.statusCode == 200) {
         return response.data as Map;
@@ -1609,7 +1598,8 @@ abstract class Services {
   }
 
   /// GET spare part purchases with pagination
-  static Future<Map?> getSparePartPurchases(int? page) async {
+  static Future<Map?> getSparePartPurchases(
+      int? page, String? searchParam) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
@@ -1621,7 +1611,10 @@ abstract class Services {
             "Authorization": "Bearer $token",
           },
         ),
-        queryParameters: {'page': page ?? 1},
+        queryParameters: {
+          'page': page ?? 1,
+          'search_param': searchParam,
+        },
       );
       if (response.statusCode == 200) {
         return response.data as Map;

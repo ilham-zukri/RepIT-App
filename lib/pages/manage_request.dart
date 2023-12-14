@@ -2,11 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/data_classes/spare_part_request.dart';
 import 'package:repit_app/services.dart';
-import 'package:repit_app/widgets/alert.dart';
 import 'package:repit_app/widgets/request_card.dart';
 import 'package:repit_app/widgets/spare_part_request_card.dart';
 import '../data_classes/asset_request.dart';
-import '../data_classes/location_for_list.dart';
 
 class ManageRequest extends StatefulWidget {
   final Map<String, dynamic> role;
@@ -26,21 +24,21 @@ class _ManageRequestState extends State<ManageRequest>
   int requestsLength = 0;
   final scrollController = ScrollController();
   bool isLoadingMore = false;
-  static const List<String> sortOrders = <String>['asc', 'desc'];
-  String? prioritySort;
-  String? createdAtSort;
-  int? locationFilter;
-  late Future<List<LocationForList>> locations;
-  late int? locationId;
   late TabController _tabController;
   int _tabIndex = 0;
   List sparePartRequests = [];
   int sparePartRequestsLength = 0;
   late EdgeInsets mainPadding;
+  String? searchParamAsset;
+  final TextEditingController searchControllerAsset = TextEditingController();
+  String? searchParamSparePart;
+  final  TextEditingController searchControllerSparePart = TextEditingController();
 
   @override
   void initState() {
-    mainPadding = !kIsWeb ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
+    mainPadding = !kIsWeb
+        ? const EdgeInsets.symmetric(horizontal: 24)
+        : const EdgeInsets.symmetric(horizontal: 600);
     super.initState();
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
     _tabController.addListener(_tabChangesListener);
@@ -48,7 +46,6 @@ class _ManageRequestState extends State<ManageRequest>
     page = 1;
     scrollController.addListener(_scrollListener);
     fetchRequests();
-    locations = fetchLocations();
   }
 
   @override
@@ -58,10 +55,7 @@ class _ManageRequestState extends State<ManageRequest>
   }
 
   Future<void> fetchRequests({bool? refresh}) async {
-    var data = await Services.getListOfRequests(page,
-        filterLocation: locationFilter,
-        createdAtSort: createdAtSort,
-        prioritySort: prioritySort);
+    var data = await Services.getListOfRequests(page, searchParamAsset);
     if (data == null) {
       assetRequests += [];
     } else if (refresh == true) {
@@ -103,38 +97,8 @@ class _ManageRequestState extends State<ManageRequest>
     }
   }
 
-  Future<void> fetchRequestsSort() async {
-    try {
-      var data = await Services.getListOfRequests(page,
-          filterLocation: locationFilter,
-          createdAtSort: createdAtSort,
-          prioritySort: prioritySort);
-      if (data != null) {
-        assetRequests = data['data'].map((request) {
-          return AssetRequest(
-              request['id'],
-              request['priority'],
-              request['created_at'],
-              request['title'],
-              request['description'],
-              request['for_user'],
-              request['location'],
-              request['requester'],
-              status: request['status']);
-        }).toList();
-        setState(() {
-          lastPage = data['meta']['last_page'];
-          assetRequests;
-          requestsLength = assetRequests.length;
-        });
-      }
-    } catch (e) {
-      rethrow;
-    }
-  }
-
   Future<void> fetchSparePartRequests({bool? isRefresh}) async {
-    var data = await Services.getSparePartRequests(page);
+    var data = await Services.getSparePartRequests(page, searchParamSparePart);
     if (data == null) {
       sparePartRequests += [];
     } else {
@@ -161,17 +125,6 @@ class _ManageRequestState extends State<ManageRequest>
         lastPage = data['meta']['last_page'];
       });
     }
-  }
-
-  Future<List<LocationForList>> fetchLocations() async {
-    final data = await Services.getLocationList();
-    if (data == null) {
-      return [];
-    }
-    locationId = data[0]['id'];
-    return data.map((item) {
-      return LocationForList(item['id'], item['name']);
-    }).toList();
   }
 
   @override
@@ -204,236 +157,17 @@ class _ManageRequestState extends State<ManageRequest>
         onPressed: Navigator.of(context).pop,
       ),
       actions: [
-        Container(
-          margin: const EdgeInsets.only(right: 6),
-          child: IconButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  var size = MediaQuery.of(context).size;
-                  prioritySort = sortOrders[0];
-                  createdAtSort = sortOrders[0];
-                  return StatefulBuilder(
-                    builder: (context, setState) {
-                      return AlertDialog(
-                        scrollable: true,
-                        title: const Text("Sort & Filter"),
-                        content: Padding(
-                          padding: const EdgeInsets.all(2),
-                          child: Column(
-                            children: [
-                              const Align(
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  "Prioritas",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              DecoratedBox(
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.black54, width: 1),
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(10))),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 10, right: 10),
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton(
-                                      isExpanded: true,
-                                      value: prioritySort,
-                                      items: sortOrders.map((String value) {
-                                        return DropdownMenuItem(
-                                            value: value, child: Text(value));
-                                      }).toList(),
-                                      onChanged: (value) {
-                                        if (mounted) {
-                                          setState(() {
-                                            prioritySort = value!;
-                                          });
-                                        }
-                                      },
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 14,
-                              ),
-                              const Align(
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  "Tanggal dibuat",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              DecoratedBox(
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.black54, width: 1),
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(10))),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 10, right: 10),
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton(
-                                      isExpanded: true,
-                                      value: createdAtSort,
-                                      items: sortOrders.map((String value) {
-                                        return DropdownMenuItem(
-                                            value: value, child: Text(value));
-                                      }).toList(),
-                                      onChanged: (value) {
-                                        if (mounted) {
-                                          setState(() {
-                                            createdAtSort = value!;
-                                          });
-                                        }
-                                      },
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 14,
-                              ),
-                              const Align(
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  "Lokasi",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              FutureBuilder(
-                                future: locations,
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasError) {
-                                    return Text(snapshot.error.toString());
-                                  } else if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return const CircularProgressIndicator();
-                                  } else {
-                                    List<dynamic>? locationData = snapshot.data;
-                                    String? initialLocationSelection;
-                                    if (locationData != null &&
-                                        locationData.isNotEmpty) {
-                                      initialLocationSelection =
-                                          locationData.first.id.toString();
-                                    }
-                                    return DropdownMenu(
-                                      width: size.width / 1.5,
-                                      menuHeight: size.height / 2,
-                                      textStyle: const TextStyle(fontSize: 16),
-                                      enableSearch: true,
-                                      initialSelection:
-                                          initialLocationSelection,
-                                      onSelected: (value) {
-                                        setState(() {
-                                          locationId =
-                                              int.parse(value as String);
-                                          locationFilter = locationId;
-                                        });
-                                      },
-                                      dropdownMenuEntries:
-                                          locationData!.map((location) {
-                                        return DropdownMenuEntry(
-                                            value: location.id.toString(),
-                                            label: location.name);
-                                      }).toList(),
-                                    );
-                                  }
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                        actions: [
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xffF05050),
-                            ),
-                            child: const Text("Batal"),
-                          ),
-                          const SizedBox.shrink(),
-                          ElevatedButton(
-                            onPressed: () async {
-                              try {
-                                page = 1;
-                                await fetchRequestsSort();
-
-                                if (mounted) {
-                                  Navigator.of(context).pop();
-                                }
-                              } catch (e) {
-                                if (mounted) {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) =>
-                                        alert(context, "Error", e.toString()),
-                                  );
-                                }
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xff00ABB3),
-                            ),
-                            child: const Text("OK"),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-              );
-            },
-            icon: const Icon(
-              Icons.filter_alt,
-              size: 32,
-              color: Color(0xff00ABB3),
-            ),
-            padding: EdgeInsets.zero,
+        IconButton(
+          onPressed: () {},
+          icon: const Icon(
+            Icons.refresh,
+            size: 32,
+            color: Color(0xff00ABB3),
           ),
         ),
-        Container(
-          margin: const EdgeInsets.only(right: 6),
-          child: IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.notifications,
-              size: 32,
-              color: Color(0xff00ABB3),
-            ),
-            padding: EdgeInsets.zero,
-          ),
-        ),
+        const SizedBox(
+          width: 8,
+        )
       ],
       bottom: TabBar(
         controller: _tabController,
@@ -459,44 +193,95 @@ class _ManageRequestState extends State<ManageRequest>
         child: CircularProgressIndicator(),
       );
     }
-    return Padding(
-      padding: mainPadding,
-      child: (requestsLength > 0)
-          ? RefreshIndicator(
-              onRefresh: () async {
-                page = 1;
-                await fetchRequests(refresh: true);
-              },
-              child: ListView.builder(
-                controller: scrollController,
-                itemCount: isLoadingMore ? requestsLength + 1 : requestsLength,
-                itemBuilder: (context, index) {
-                  if (index < requestsLength) {
-                    return Column(
-                      children: [
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        RequestCard(
-                          request: assetRequests[index],
-                          role: role,
-                        ),
-                        (index == requestsLength - 1)
-                            ? const SizedBox(height: 16)
-                            : const SizedBox.shrink()
-                      ],
-                    );
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
+    return Stack(
+      children: [
+        Padding(
+          padding: mainPadding,
+          child: (requestsLength > 0)
+              ? RefreshIndicator(
+                  onRefresh: () async {
+                    page = 1;
+                    await fetchRequests(refresh: true);
+                  },
+                  child: ListView.builder(
+                    controller: scrollController,
+                    itemCount:
+                        isLoadingMore ? requestsLength + 1 : requestsLength,
+                    itemBuilder: (context, index) {
+                      if (index < requestsLength) {
+                        return Column(
+                          children: [
+                            if (index == 0)
+                              const SizedBox(
+                                height: 68,
+                              ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            RequestCard(
+                              request: assetRequests[index],
+                              role: role,
+                            ),
+                            (index == requestsLength - 1)
+                                ? const SizedBox(height: 16)
+                                : const SizedBox.shrink()
+                          ],
+                        );
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    },
+                  ),
+                )
+              : const Center(
+                  child: CircularProgressIndicator(),
+                ),
+        ),
+        Padding(
+          padding: mainPadding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              const SizedBox(
+                height: 16,
               ),
-            )
-          : const Center(
-              child: CircularProgressIndicator(),
-            ),
+              SearchBar(
+                elevation: const MaterialStatePropertyAll<double>(4.0),
+                padding: const MaterialStatePropertyAll<EdgeInsets>(
+                    EdgeInsets.symmetric(horizontal: 16.0)),
+                controller: searchControllerAsset,
+                onChanged: (value) async {
+                  setState(() {
+                    page = 1;
+                    searchParamAsset = value;
+                  });
+                  await fetchRequests(refresh: true);
+                },
+                leading: const Icon(Icons.search),
+                hintText: "Cari nomor Permintaan",
+                hintStyle: const MaterialStatePropertyAll<TextStyle>(
+                  TextStyle(color: Colors.black54),
+                ),
+                trailing: <Widget>[
+                  IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () async {
+                      setState(() {
+                        page = 1;
+                        searchControllerAsset.clear();
+                        searchParamAsset = null;
+                      });
+                      await fetchRequests(refresh: true);
+                    },
+                  )
+                ],
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 
@@ -506,43 +291,94 @@ class _ManageRequestState extends State<ManageRequest>
         child: CircularProgressIndicator(),
       );
     }
-    return Padding(
-        padding: mainPadding,
-        child: (sparePartRequestsLength > 0)
-            ? RefreshIndicator(
-                onRefresh: () async {
-                  page = 1;
+    return Stack(
+      children: [
+        Padding(
+          padding: mainPadding,
+          child: (sparePartRequestsLength > 0)
+              ? RefreshIndicator(
+                  onRefresh: () async {
+                    page = 1;
+                    await fetchSparePartRequests(isRefresh: true);
+                  },
+                  child: ListView.builder(
+                      controller: scrollController,
+                      itemCount: isLoadingMore
+                          ? sparePartRequestsLength + 1
+                          : sparePartRequestsLength,
+                      itemBuilder: (context, index) {
+                        if (index < sparePartRequestsLength) {
+                          return Column(children: [
+                            if (index == 0)
+                              const SizedBox(
+                                height: 68,
+                              ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            SparePartRequestCard(
+                              sparePartRequest: sparePartRequests[index],
+                              role: role,
+                            ),
+                            (index == sparePartRequestsLength - 1)
+                                ? const SizedBox(height: 16)
+                                : const SizedBox.shrink()
+                          ]);
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      }),
+                )
+              : const Center(
+                  child: CircularProgressIndicator(),
+                ),
+        ),
+        Padding(
+          padding: mainPadding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              const SizedBox(
+                height: 16,
+              ),
+              SearchBar(
+                elevation: const MaterialStatePropertyAll<double>(4.0),
+                padding: const MaterialStatePropertyAll<EdgeInsets>(
+                    EdgeInsets.symmetric(horizontal: 16.0)),
+                controller: searchControllerSparePart,
+                onChanged: (value) async {
+                  setState(() {
+                    page = 1;
+                    searchParamSparePart = value;
+                  });
                   await fetchSparePartRequests(isRefresh: true);
                 },
-                child: ListView.builder(
-                    controller: scrollController,
-                    itemCount: isLoadingMore
-                        ? sparePartRequestsLength + 1
-                        : sparePartRequestsLength,
-                    itemBuilder: (context, index) {
-                      if (index < sparePartRequestsLength) {
-                        return Column(children: [
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          SparePartRequestCard(
-                            sparePartRequest: sparePartRequests[index],
-                            role: role,
-                          ),
-                          (index == sparePartRequestsLength - 1)
-                              ? const SizedBox(height: 16)
-                              : const SizedBox.shrink()
-                        ]);
-                      } else {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                    }),
-              )
-            : const Center(
-                child: CircularProgressIndicator(),
-              ));
+                leading: const Icon(Icons.search),
+                hintText: "Cari nomor Permintaan",
+                hintStyle: const MaterialStatePropertyAll<TextStyle>(
+                  TextStyle(color: Colors.black54),
+                ),
+                trailing: <Widget>[
+                  IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () async {
+                      setState(() {
+                        page = 1;
+                        searchControllerSparePart.clear();
+                        searchParamSparePart = null;
+                      });
+                      await fetchSparePartRequests(isRefresh: true);
+                    },
+                  )
+                ],
+              ),
+            ],
+          ),
+        )
+      ],
+    );
   }
 
   Future<void> _tabChangesListener() async {
