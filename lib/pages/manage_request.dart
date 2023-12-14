@@ -385,9 +385,7 @@ class _ManageRequestState extends State<ManageRequest>
                               try {
                                 page = 1;
                                 await fetchRequestsSort();
-                                if (mounted) {
-                                  build(context);
-                                }
+
                                 if (mounted) {
                                   Navigator.of(context).pop();
                                 }

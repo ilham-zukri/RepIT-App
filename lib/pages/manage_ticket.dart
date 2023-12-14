@@ -24,6 +24,8 @@ class _ManageTicketState extends State<ManageTicket> {
   bool isLoadingMore = false;
   List tickets = [];
   late EdgeInsets mainPadding;
+  final TextEditingController searchController = TextEditingController();
+  String? searchParam;
 
   @override
   void initState() {
@@ -41,7 +43,7 @@ class _ManageTicketState extends State<ManageTicket> {
   }
 
   Future<void> fetchTickets({bool? isRefresh}) async {
-    var data = await Services.getAllTickets(page);
+    var data = await Services.getAllTickets(page, searchParam);
     if (data == null) {
       tickets += [];
     } else {
@@ -97,43 +99,91 @@ class _ManageTicketState extends State<ManageTicket> {
           });
         },
       ),
-      body: Padding(
-        padding: mainPadding,
-        child: (ticketsLength > 0)
-            ? RefreshIndicator(
-                onRefresh: () async {
-                  page = 1;
-                  await fetchTickets(isRefresh: true);
-                },
-                child: ListView.builder(
-                  controller: scrollController,
-                  itemCount:
-                      (isLoadingMore) ? ticketsLength + 1 : ticketsLength,
-                  itemBuilder: (context, index) {
-                    if (index < ticketsLength) {
-                      return Column(children: [
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        TicketCard(
-                          ticket: tickets[index],
-                          role: role,
-                        ),
-                        (index == ticketsLength - 1)
-                            ? const SizedBox(height: 16)
-                            : const SizedBox.shrink()
-                      ]);
-                    } else {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  },
+      body: Stack(
+        children: [
+          Padding(
+            padding: mainPadding,
+            child: (ticketsLength > 0)
+                ? RefreshIndicator(
+                    onRefresh: () async {
+                      page = 1;
+                      await fetchTickets(isRefresh: true);
+                    },
+                    child: ListView.builder(
+                      controller: scrollController,
+                      itemCount:
+                          (isLoadingMore) ? ticketsLength + 1 : ticketsLength,
+                      itemBuilder: (context, index) {
+                        if (index < ticketsLength) {
+                          return Column(children: [
+                            if (index == 0)
+                              const SizedBox(
+                                height: 68,
+                              ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            TicketCard(
+                              ticket: tickets[index],
+                              role: role,
+                            ),
+                            (index == ticketsLength - 1)
+                                ? const SizedBox(height: 16)
+                                : const SizedBox.shrink()
+                          ]);
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      },
+                    ),
+                  )
+                : const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+          ),
+          Padding(
+            padding: mainPadding,
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 16,
                 ),
-              )
-            : const Center(
-                child: CircularProgressIndicator(),
-              ),
+                SearchBar(
+                  elevation: const MaterialStatePropertyAll<double>(4.0),
+
+                  padding: const MaterialStatePropertyAll<EdgeInsets>(
+                      EdgeInsets.symmetric(horizontal: 16.0)),
+                  controller: searchController,
+                  onChanged: (value) async {
+                    setState(() {
+                      searchParam = value;
+                    });
+                    await fetchTickets(isRefresh: true);
+                  },
+                  leading: const Icon(Icons.search),
+                  hintText: "Cari No Ticket dan ID Asset",
+                  hintStyle: const MaterialStatePropertyAll<TextStyle>(
+                    TextStyle(color: Colors.black54),
+                  ),
+                  trailing: <Widget>[
+                    IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () async {
+                        setState(() {
+                          searchController.clear();
+                          searchParam = null;
+                        });
+                        await fetchTickets(isRefresh: true);
+                      },
+                    )
+                  ],
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

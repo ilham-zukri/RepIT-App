@@ -9,10 +9,9 @@ import 'package:dio/dio.dart';
 
 abstract class Services {
   ///local url
-  static const String url =
-      kIsWeb ? "http://127.0.0.1:8000" : "http://10.0.2.2:8000";
+  // static const String url = kIsWeb ? "http://127.0.0.1:8000" : "http://10.0.2.2:8000";
 
-  // static const String url = "http://192.168.100.194:8000";
+  static const String url = "http://192.168.100.194:8000";
 
   /// deploy url
   // static const String url = "https://api.repit.tech";
@@ -1288,7 +1287,7 @@ abstract class Services {
   }
 
   /// Get All Ongoing Tickets
-  static Future<Map?> getAllTickets(int? page) async {
+  static Future<Map?> getAllTickets(int? page, String? searchParam) async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token').toString();
@@ -1299,6 +1298,7 @@ abstract class Services {
           }),
           queryParameters: {
             'page': page ?? 1,
+            'search_param': searchParam
           });
       if (response.statusCode == 200) {
         return response.data as Map;
