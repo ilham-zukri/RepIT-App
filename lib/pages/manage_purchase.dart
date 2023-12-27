@@ -186,21 +186,25 @@ class _ManagePurchaseState extends State<ManagePurchase>
         Container(
           margin: const EdgeInsets.only(right: 6),
           child: IconButton(
-            onPressed: () {},
+            onPressed: () async{
+              if(_tabController.index == 0){
+                setState(() {
+                  page = 1;
+                  purchasesLength = 0;
+                  purchases = [];
+                });
+                await fetchPurchases(isRefresh: true);
+              } else {
+                setState(() {
+                  page = 1;
+                  sparePartPurchasesLength = 0;
+                  sparePartPurchases = [];
+                });
+                await fetchSparePartPurchases(isRefresh: true);
+              }
+            },
             icon: const Icon(
-              Icons.filter_alt,
-              size: 32,
-              color: Color(0xff00ABB3),
-            ),
-            padding: EdgeInsets.zero,
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.only(right: 6),
-          child: IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.notifications,
+              Icons.refresh,
               size: 32,
               color: Color(0xff00ABB3),
             ),

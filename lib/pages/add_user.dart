@@ -100,6 +100,9 @@ class _AddUserState extends State<AddUser> {
             padding: mainPadding,
             child: Column(
               children: [
+                const SizedBox(
+                  height: 24,
+                ),
                 locationDropdownBuilder(
                   context,
                   enabled: true,
