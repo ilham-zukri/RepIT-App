@@ -177,6 +177,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         shape: const CircleBorder(),
         //shape of button
         children: [
+          if(userData.role['asset_management'] == 1)
           SpeedDialChild(
             //speed dial child
             child: const Icon(Icons.construction, color: Colors.white),
