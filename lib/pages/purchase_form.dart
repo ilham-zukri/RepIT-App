@@ -508,18 +508,9 @@ class _PurchaseFormState extends State<PurchaseForm> {
             padding: EdgeInsets.zero,
           ),
         ),
-        Container(
-          margin: const EdgeInsets.only(right: 6),
-          child: IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.notifications,
-              size: 32,
-              color: Color(0xff00ABB3),
-            ),
-            padding: EdgeInsets.zero,
-          ),
-        ),
+        const SizedBox(
+          width: 8,
+        )
       ],
     );
   }
