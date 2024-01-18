@@ -88,48 +88,43 @@ class _MyRequestPageState extends State<MyRequestPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Padding(
-          padding: mainPadding,
-          child: (requestsLength > 0)
-              ? RefreshIndicator(
-                  onRefresh: () async {
-                    page = 1;
-                    await fetchRequests(isRefresh: true);
-                  },
-                  child: ListView.builder(
-                    controller: scrollController,
-                    itemCount:
-                        isLoadingMore ? requestsLength + 1 : requestsLength,
-                    itemBuilder: (context, index) {
-                      if (index < requestsLength) {
-                        return Column(
-                          children: [
-                            const SizedBox(
-                              height: 16,
-                            ),
-                            RequestCard(
-                              request: assetRequests[index],
-                              role: role,
-                            ),
-                            (index == requestsLength - 1)
-                                ? const SizedBox(height: 16)
-                                : const SizedBox.shrink()
-                          ],
-                        );
-                      } else {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                    },
-                  ),
-                )
-              : blankListView(),
-        ),
-        loadingOverlay(isLoading, context)
-      ],
+    return Padding(
+      padding: mainPadding,
+      child: (requestsLength > 0)
+          ? RefreshIndicator(
+              onRefresh: () async {
+                page = 1;
+                await fetchRequests(isRefresh: true);
+              },
+              child: ListView.builder(
+                controller: scrollController,
+                itemCount:
+                    isLoadingMore ? requestsLength + 1 : requestsLength,
+                itemBuilder: (context, index) {
+                  if (index < requestsLength) {
+                    return Column(
+                      children: [
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        RequestCard(
+                          request: assetRequests[index],
+                          role: role,
+                        ),
+                        (index == requestsLength - 1)
+                            ? const SizedBox(height: 16)
+                            : const SizedBox.shrink()
+                      ],
+                    );
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              ),
+            )
+          : blankListView(),
     );
   }
 
