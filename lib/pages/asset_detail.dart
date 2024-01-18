@@ -124,6 +124,7 @@ class _AssetDetailState extends State<AssetDetail> {
                           style: tableContentStyle),
                     )
                   ]),
+                if(asset.cpu != "#N/A")
                 TableRow(children: [
                   Container(
                     margin: const EdgeInsets.only(top: 8),
@@ -136,6 +137,7 @@ class _AssetDetailState extends State<AssetDetail> {
                       margin: const EdgeInsets.only(top: 8),
                       child: Text(asset.cpu, style: tableContentStyle))
                 ]),
+                if(asset.ram != "#N/A")
                 TableRow(children: [
                   Container(
                     margin: const EdgeInsets.only(top: 8),
