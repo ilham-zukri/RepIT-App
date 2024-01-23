@@ -18,6 +18,7 @@ import 'package:repit_app/pages/my_tickets_page.dart';
 import 'package:repit_app/pages/performance.dart';
 import 'package:repit_app/pages/profile_page.dart';
 import 'package:repit_app/pages/qr_page.dart';
+import 'package:repit_app/pages/report_page.dart';
 import 'package:repit_app/pages/spare_part_request_form.dart';
 import 'package:repit_app/pages/ticket_form.dart';
 import 'package:repit_app/services.dart';
@@ -178,35 +179,35 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           shape: const CircleBorder(),
           //shape of button
           children: [
-            if(userData.role['asset_management'] == 1)
-            SpeedDialChild(
-              //speed dial child
-              child: const Icon(Icons.construction, color: Colors.white),
-              label: 'Spare Parts',
-              labelBackgroundColor: const Color(0xff00ABB3),
-              backgroundColor: const Color(0xff00ABB3),
-              labelStyle: const TextStyle(
-                  fontSize: 16.0,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600),
-              onTap: () {
-                if (userData.role['asset_request'] != 1) {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) => alert(
-                          context,
-                          "Tidak Berwenang",
-                          "Anda tidak memiliki wewenang untuk membuat Asset Request"));
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SparePartRequestForm(),
-                    ),
-                  );
-                }
-              },
-            ),
+            if (userData.role['asset_management'] == 1)
+              SpeedDialChild(
+                //speed dial child
+                child: const Icon(Icons.construction, color: Colors.white),
+                label: 'Spare Parts',
+                labelBackgroundColor: const Color(0xff00ABB3),
+                backgroundColor: const Color(0xff00ABB3),
+                labelStyle: const TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600),
+                onTap: () {
+                  if (userData.role['asset_request'] != 1) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => alert(
+                            context,
+                            "Tidak Berwenang",
+                            "Anda tidak memiliki wewenang untuk membuat Asset Request"));
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SparePartRequestForm(),
+                      ),
+                    );
+                  }
+                },
+              ),
             SpeedDialChild(
               //speed dial child
               child: const Icon(CupertinoIcons.cube_box, color: Colors.white),
@@ -243,8 +244,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   color: Colors.white,
                   fontWeight: FontWeight.w600),
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const TicketForm()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const TicketForm()));
               },
             ),
             //add more menu item childs here
@@ -259,8 +262,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    height:
-                    const Size.fromHeight(kToolbarHeight + kTextTabBarHeight)
+                    height: const Size.fromHeight(
+                            kToolbarHeight + kTextTabBarHeight)
                         .height,
                     width: size.width,
                     decoration: const BoxDecoration(color: Color(0xff00ABB3)),
@@ -289,7 +292,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                               userData.role['asset_request'] != 1) {
                             showDialog(
                               context: context,
-                              builder: (context) => alert(context, "Tidak Berwenang",
+                              builder: (context) => alert(
+                                  context,
+                                  "Tidak Berwenang",
                                   "Anda tidak memiliki wewenang untuk mengakses menu ini"),
                             );
                             return;
@@ -340,7 +345,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                               userData.role['asset_request'] != 1) {
                             showDialog(
                               context: context,
-                              builder: (context) => alert(context, "Tidak Berwenang",
+                              builder: (context) => alert(
+                                  context,
+                                  "Tidak Berwenang",
                                   "Anda tidak memiliki wewenang untuk mengakses menu ini"),
                             );
                             return;
@@ -390,7 +397,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           if (userData.role['user_management'] != 1) {
                             showDialog(
                               context: context,
-                              builder: (context) => alert(context, "Tidak Berwenang",
+                              builder: (context) => alert(
+                                  context,
+                                  "Tidak Berwenang",
                                   "Anda tidak memiliki wewenang untuk mengakses menu ini"),
                             );
                             return;
@@ -443,7 +452,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                               userData.role['asset_request'] != 1) {
                             showDialog(
                               context: context,
-                              builder: (context) => alert(context, "Tidak Berwenang",
+                              builder: (context) => alert(
+                                  context,
+                                  "Tidak Berwenang",
                                   "Anda tidak memiliki wewenang untuk mengakses menu ini"),
                             );
                             return;
@@ -451,7 +462,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ManageTicket(role: userData.role),
+                              builder: (context) =>
+                                  ManageTicket(role: userData.role),
                             ),
                           );
                         },
@@ -495,7 +507,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                               userData.role['asset_purchasing'] != 1) {
                             showDialog(
                               context: context,
-                              builder: (context) => alert(context, "Tidak Berwenang",
+                              builder: (context) => alert(
+                                  context,
+                                  "Tidak Berwenang",
                                   "Anda tidak memiliki wewenang untuk mengakses menu ini"),
                             );
                           } else {
@@ -545,7 +559,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                               userData.role['asset_purchasing'] != 1) {
                             showDialog(
                               context: context,
-                              builder: (context) => alert(context, "Tidak Berwenang",
+                              builder: (context) => alert(
+                                  context,
+                                  "Tidak Berwenang",
                                   "Anda tidak memiliki wewenang untuk mengakses menu ini"),
                             );
                           } else {
@@ -596,7 +612,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                               userData.role['asset_purchasing'] != 1) {
                             showDialog(
                               context: context,
-                              builder: (context) => alert(context, "Tidak Berwenang",
+                              builder: (context) => alert(
+                                  context,
+                                  "Tidak Berwenang",
                                   "Anda tidak memiliki wewenang untuk mengakses menu ini"),
                             );
                             return;
@@ -635,47 +653,104 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 16, left: 20),
-                    width: 205,
-                    height: 40,
-                    child: Material(
-                      child: InkWell(
-                        onTap: () async {
-                          Navigator.of(context, rootNavigator: true).pop();
-                          Navigator.push(
-                              context, MaterialPageRoute(
-                            builder: (context) => const QrPage(),
-                          )
-                          );
-                        },
-                        customBorder: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Container(
-                          margin: const EdgeInsets.only(
-                              right: 8, left: 8, top: 4, bottom: 5),
-                          width: size.width,
-                          height: 33,
-                          child: const Row(
-                            children: [
-                              Icon(
-                                Icons.qr_code,
-                                size: 32,
-                              ),
-                              SizedBox(
-                                width: 8,
-                              ),
-                              Text(
-                                'Scan QR Code',
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w600),
-                              )
-                            ],
+                  if (!kIsWeb)
+                    Container(
+                      margin: const EdgeInsets.only(top: 16, left: 20),
+                      width: 205,
+                      height: 40,
+                      child: Material(
+                        child: InkWell(
+                          onTap: () async {
+                            Navigator.of(context, rootNavigator: true).pop();
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const QrPage(),
+                                ));
+                          },
+                          customBorder: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Container(
+                            margin: const EdgeInsets.only(
+                                right: 8, left: 8, top: 4, bottom: 5),
+                            width: size.width,
+                            height: 33,
+                            child: const Row(
+                              children: [
+                                Icon(
+                                  Icons.qr_code,
+                                  size: 32,
+                                ),
+                                SizedBox(
+                                  width: 8,
+                                ),
+                                Text(
+                                  'Scan QR Code',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
+                  if (kIsWeb)
+                    Container(
+                      margin: const EdgeInsets.only(top: 16, left: 20),
+                      width: 205,
+                      height: 40,
+                      child: Material(
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context, rootNavigator: true).pop();
+                            if (userData.role['asset_approval'] != 1 &&
+                                userData.role['asset_purchasing'] != 1) {
+                              showDialog(
+                                context: context,
+                                builder: (context) => alert(
+                                    context,
+                                    "Tidak Berwenang",
+                                    "Anda tidak memiliki wewenang untuk mengakses menu ini"),
+                              );
+                              return;
+                            }
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ReportPage(),
+                              ),
+                            );
+                          },
+                          customBorder: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Container(
+                            margin: const EdgeInsets.only(
+                                right: 8, left: 8, top: 4, bottom: 5),
+                            width: size.width,
+                            height: 33,
+                            child: const Row(
+                              children: [
+                                Icon(
+                                  CupertinoIcons.doc_chart,
+                                  size: 32,
+                                ),
+                                SizedBox(
+                                  width: 8,
+                                ),
+                                Text(
+                                  'Reporting',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
               Column(
@@ -692,15 +767,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  content:
-                                      const Text("Apakah anda yakin ingin log out?"),
+                                  content: const Text(
+                                      "Apakah anda yakin ingin log out?"),
                                   actions: [
                                     ElevatedButton(
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xff00ABB3),
+                                        backgroundColor:
+                                            const Color(0xff00ABB3),
                                       ),
                                       child: const Text("Batal"),
                                     ),
@@ -711,9 +787,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                             isLoading = true;
                                           });
                                           SharedPreferences prefs =
-                                              await SharedPreferences.getInstance();
-                                          String? token =
-                                              prefs.getString('token').toString();
+                                              await SharedPreferences
+                                                  .getInstance();
+                                          String? token = prefs
+                                              .getString('token')
+                                              .toString();
                                           bool response =
                                               await Services.logout(token);
                                           setState(() {
@@ -722,12 +800,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                           if (response) {
                                             if (mounted) {
                                               prefs.clear();
-                                              Navigator.popUntil(
-                                                  context, (route) => route.isFirst);
+                                              Navigator.popUntil(context,
+                                                  (route) => route.isFirst);
                                               Navigator.pushReplacement(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) => LoginPage(),
+                                                  builder: (context) =>
+                                                      LoginPage(),
                                                 ),
                                               );
                                             }
@@ -750,7 +829,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xff00ABB3),
+                                        backgroundColor:
+                                            const Color(0xff00ABB3),
                                       ),
                                       child: const Text("Ya"),
                                     ),
@@ -786,7 +866,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(left: 30, top: 10, bottom: 32),
+                    margin:
+                        const EdgeInsets.only(left: 30, top: 10, bottom: 32),
                     child: const Text(
                       'V.1.1.1',
                       textAlign: TextAlign.start,

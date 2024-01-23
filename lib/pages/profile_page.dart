@@ -102,9 +102,9 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 Container(
                   margin: const EdgeInsets.only(top: 16, bottom: 16),
-                  child: Stack(
+                  child: const Stack(
                     children: [
-                      const CircleAvatar(
+                      CircleAvatar(
                         foregroundColor: Color(0xff00ABB3),
                         minRadius: 80,
                         child: Icon(
@@ -113,18 +113,18 @@ class _ProfilePageState extends State<ProfilePage> {
                           color: Colors.white,
                         ),
                       ),
-                      Positioned(
-                        bottom: 0,
-                        right: -25,
-                        child: RawMaterialButton(
-                          onPressed: () {},
-                          elevation: 2.0,
-                          fillColor: const Color(0xfff5f6f9),
-                          padding: const EdgeInsets.all(5),
-                          shape: const CircleBorder(),
-                          child: const Icon(Icons.image),
-                        ),
-                      ),
+                      // Positioned(
+                      //   bottom: 0,
+                      //   right: -25,
+                      //   child: RawMaterialButton(
+                      //     onPressed: () {},
+                      //     elevation: 2.0,
+                      //     fillColor: const Color(0xfff5f6f9),
+                      //     padding: const EdgeInsets.all(5),
+                      //     shape: const CircleBorder(),
+                      //     child: const Icon(Icons.image),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
