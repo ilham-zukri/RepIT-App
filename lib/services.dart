@@ -90,7 +90,10 @@ abstract class Services {
             "Accept": "application/json",
             "Authorization": "Bearer $token"
           }),
-          data: {"user_name": username});
+          data: {
+            "user_id": userId,
+            "user_name": username,
+          });
 
       if (response.statusCode == 200) return response;
 
