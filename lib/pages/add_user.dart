@@ -35,7 +35,6 @@ class _AddUserState extends State<AddUser> {
   late EdgeInsets mainPadding;
   @override
   void dispose() {
-
     userNameEc.dispose();
     passwordEc.dispose();
     fullNameEc.dispose();

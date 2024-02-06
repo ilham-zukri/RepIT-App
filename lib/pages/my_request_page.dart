@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:repit_app/services.dart';
-import 'package:repit_app/widgets/loading_overlay.dart';
 
 import '../data_classes/asset_request.dart';
 import '../widgets/request_card.dart';
