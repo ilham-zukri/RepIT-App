@@ -158,7 +158,23 @@ class _ManageRequestState extends State<ManageRequest>
       ),
       actions: [
         IconButton(
-          onPressed: () {},
+          onPressed: () async {
+            if (_tabIndex == 0) {
+              setState(() {
+                page = 1;
+                assetRequests = [];
+                requestsLength = 0;
+              });
+              await fetchRequests(refresh: true);
+            }else{
+              setState(() {
+                page = 1;
+                sparePartRequests = [];
+                sparePartRequestsLength = 0;
+              });
+              await fetchSparePartRequests(isRefresh: true);
+            }
+          },
           icon: const Icon(
             Icons.refresh,
             size: 32,

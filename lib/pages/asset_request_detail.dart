@@ -34,7 +34,9 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
 
   @override
   void initState() {
-    mainPadding = !kIsWeb ? const EdgeInsets.all(28) : const EdgeInsets.symmetric(horizontal: 600, vertical: 28);
+    mainPadding = !kIsWeb
+        ? const EdgeInsets.all(28)
+        : const EdgeInsets.symmetric(horizontal: 600, vertical: 28);
     super.initState();
     request = widget.request;
     role = widget.role;
@@ -202,7 +204,6 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
               ),
               onPressed: () async {
                 try {
-                  Response? response;
                   await showDialog(
                     context: context,
                     builder: (context) {
@@ -221,22 +222,9 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
                             child: const Text("Batal"),
                           ),
                           ElevatedButton(
-                            onPressed: () async {
-                              response = await Services.approveRequest(
-                                  request!.id, true);
-                              if (mounted) {
-                                setState(() {
-                                  request!.status = response!.data['status'];
-                                });
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        backgroundColor:
-                                            const Color(0xff00ABB3),
-                                        content: Text(
-                                          response!.data['message'],
-                                        )));
-                                Navigator.pop(context);
-                              }
+                            onPressed: () {
+                              approveRequest();
+                              Navigator.of(context).pop();
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xff009199),
@@ -274,7 +262,6 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
               ),
               onPressed: () async {
                 try {
-                  Response? response;
                   await showDialog(
                     context: context,
                     builder: (context) {
@@ -292,15 +279,9 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
                             child: const Text("Batal"),
                           ),
                           ElevatedButton(
-                            onPressed: () async {
-                              response = await Services.approveRequest(
-                                  request!.id, false);
-                              if (mounted) {
-                                setState(() {
-                                  request!.status = response!.data['status'];
-                                });
-                                Navigator.of(context).pop();
-                              }
+                            onPressed: () {
+                              rejectRequest();
+                              Navigator.of(context).pop();
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xff009199),
@@ -311,13 +292,7 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
                       );
                     },
                   );
-                  if (mounted) {
-                    showDialog(
-                      context: context,
-                      builder: (context) =>
-                          alert(context, "Berhasil", response!.data['message']),
-                    );
-                  }
+
                 } catch (e) {
                   if (mounted) {
                     showDialog(
@@ -366,5 +341,40 @@ class _AssetRequestDetailState extends State<AssetRequestDetail> {
       );
     }
     return const SizedBox.shrink();
+  }
+
+  Future<void> approveRequest() async {
+    Response? response = await Services.approveRequest(request!.id, true);
+    if (mounted) {
+      setState(() {
+        request!.status = response!.data['status'];
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: const Color(0xff00ABB3),
+          content: Text(
+            response!.data['message'],
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> rejectRequest() async {
+    Response? response = await Services.approveRequest(
+        request!.id, false);
+    if (mounted) {
+      setState(() {
+        request!.status = response!.data['status'];
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: const Color(0xff00ABB3),
+          content: Text(
+            response!.data['message'],
+          ),
+        ),
+      );
+    }
   }
 }
