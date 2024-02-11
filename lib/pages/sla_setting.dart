@@ -87,6 +87,7 @@ class _SlaSettingState extends State<SlaSetting> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     halfSizeTextFieldBuilder(
+                      keyboardType: TextInputType.number,
                       enabled: isEnabled,
                       labelText: "Response Time (Menit)",
                       controller: _responseTimeController,
@@ -94,6 +95,7 @@ class _SlaSettingState extends State<SlaSetting> {
                       size: size,
                     ),
                     halfSizeTextFieldBuilder(
+                      keyboardType: TextInputType.number,
                       enabled: isEnabled,
                       labelText: "Resolve Time (Jam)",
                       controller: _resolveTimeController,

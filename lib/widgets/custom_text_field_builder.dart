@@ -6,6 +6,7 @@ Widget regularTextFieldBuilder({
   required bool obscureText,
   String? hintText,
   bool enabled = true,
+  TextInputType keyboardType = TextInputType.text,
 }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -20,6 +21,7 @@ Widget regularTextFieldBuilder({
         height: 41,
         child: TextField(
           enabled: enabled,
+          keyboardType: keyboardType,
           controller: controller,
           obscureText: obscureText,
           decoration: InputDecoration(
@@ -43,6 +45,7 @@ Widget halfSizeTextFieldBuilder({
   required Size size,
   String? hintText,
   bool enabled = true,
+  TextInputType keyboardType = TextInputType.text,
 }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,6 +60,7 @@ Widget halfSizeTextFieldBuilder({
         height: 41,
         width: size.width / 3,
         child: TextField(
+          keyboardType: keyboardType,
           enabled: enabled,
           controller: controller,
           obscureText: obscureText,

@@ -172,6 +172,7 @@ class _AddUserState extends State<AddUser> {
                   labelText: "Nomor Karyawan*",
                   controller: empNumberEc,
                   obscureText: false,
+                  keyboardType: TextInputType.number,
                 ),
                 const SizedBox(
                   height: 24,

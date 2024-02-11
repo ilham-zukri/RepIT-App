@@ -119,7 +119,8 @@ class SparePartCard extends StatelessWidget {
                           child: const Text(':')),
                       Container(
                           margin: const EdgeInsets.only(top: 8),
-                          child: Text(sparePart.serialNumber))
+                          child: Text(sparePart.serialNumber,
+                              maxLines: 1, overflow: TextOverflow.ellipsis))
                     ],
                   ),
                 ]),
