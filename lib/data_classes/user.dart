@@ -3,7 +3,7 @@ class User {
   String? email;
   String? userName;
   String? fullName;
-  final String? empNumber;
+  String? empNumber;
   String? branch;
   String? department;
   String? createdAt;

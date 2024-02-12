@@ -25,14 +25,16 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController rePasswordController = TextEditingController();
   TextEditingController oldPasswordController = TextEditingController();
+  TextEditingController empNumberController = TextEditingController();
   late String status;
   late User userData;
   late EdgeInsets mainPadding;
 
-
   @override
   void initState() {
-    mainPadding = !kIsWeb  ? const EdgeInsets.symmetric(horizontal: 24) : const EdgeInsets.symmetric(horizontal: 600);
+    mainPadding = !kIsWeb
+        ? const EdgeInsets.symmetric(horizontal: 24)
+        : const EdgeInsets.symmetric(horizontal: 600);
     userData = widget.userData!;
     status = (userData.active == 1) ? 'Active' : 'Inactive';
     super.initState();
@@ -46,7 +48,17 @@ class _ProfilePageState extends State<ProfilePage> {
     oldPasswordController.dispose();
     usernameController.dispose();
     emailController.dispose();
+    empNumberController.dispose();
     super.dispose();
+  }
+
+  void clearControllers() {
+    usernameController.clear();
+    emailController.clear();
+    fullNameController.clear();
+    passwordController.clear();
+    rePasswordController.clear();
+    oldPasswordController.clear();
   }
 
   @override
@@ -61,17 +73,14 @@ class _ProfilePageState extends State<ProfilePage> {
         title: const Text('Profile'),
         actions: [
           IconButton(
-            onPressed: () async {
-              if (widget.withAdvancedMenu) {
-                showResetPasswordDialog(context);
-              } else {
-                showChangePasswordDialog(context);
-              }
-            },
-            icon: const Icon(
-              Icons.vpn_key
-            )
-          ),
+              onPressed: () async {
+                if (widget.withAdvancedMenu) {
+                  showResetPasswordDialog(context);
+                } else {
+                  showChangePasswordDialog(context);
+                }
+              },
+              icon: const Icon(Icons.vpn_key)),
           if (widget.withAdvancedMenu)
             IconButton(
               onPressed: () {
@@ -192,6 +201,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                             usernameController.text.toString(),
                                             userData.id!,
                                           );
+                                          setState(() {
+                                            userData.userName =
+                                                usernameController.text
+                                                    .toString()
+                                                    .trim();
+                                            clearControllers();
+                                          });
                                           if (mounted) {
                                             Navigator.pop(context);
                                             ScaffoldMessenger.of(context)
@@ -208,13 +224,16 @@ class _ProfilePageState extends State<ProfilePage> {
                                         } catch (e) {
                                           if (mounted) {
                                             showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return AlertDialog(
-                                                      content:
-                                                          Text(e.toString()));
-                                                });
+                                              context: context,
+                                              builder:
+                                                  (BuildContext context) {
+                                                return alert(
+                                                  context,
+                                                  "Perhatian",
+                                                  e.toString(),
+                                                );
+                                              },
+                                            );
                                           }
                                         }
                                       },
@@ -306,6 +325,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           setState(() {
                                             userData.fullName =
                                                 fullNameController.text.trim();
+                                            clearControllers();
                                           });
                                           if (mounted) {
                                             Navigator.pop(context);
@@ -321,10 +341,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                           if (mounted) {
                                             showDialog(
                                               context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                    content:
-                                                        Text(e.toString()));
+                                              builder:
+                                                  (BuildContext context) {
+                                                return alert(
+                                                  context,
+                                                  "Perhatian",
+                                                  e.toString(),
+                                                );
                                               },
                                             );
                                           }
@@ -352,6 +375,7 @@ class _ProfilePageState extends State<ProfilePage> {
               decoration: const BoxDecoration(
                   border: Border(bottom: BorderSide(color: Colors.grey))),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
@@ -359,7 +383,6 @@ class _ProfilePageState extends State<ProfilePage> {
                         padding: const EdgeInsets.only(
                             top: 24, left: 24, bottom: 24, right: 16),
                         child: const Icon(Icons.badge),
-
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -377,6 +400,89 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ],
                   ),
+                  if (widget.withAdvancedMenu)
+                    Container(
+                      margin: const EdgeInsets.only(right: 16),
+                      child: IconButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    content: TextField(
+                                      decoration: const InputDecoration(
+                                        hintText: "Masukan Nomor Karyawan Baru",
+                                      ),
+                                      controller: empNumberController,
+                                    ),
+                                    actions: [
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              const Color(0xff00ABB3),
+                                        ),
+                                        child: const Text("Batal"),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          try {
+                                            Response? response =
+                                                await Services.changeEmpNumber(
+                                              empNumberController.text,
+                                              userData.id!,
+                                            );
+                                            setState(() {
+                                              userData.empNumber =
+                                                  empNumberController.text
+                                                      .trim();
+                                              clearControllers();
+                                            });
+                                            if (mounted) {
+                                              Navigator.pop(context);
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(SnackBar(
+                                                      backgroundColor:
+                                                          const Color(
+                                                              0xff00ABB3),
+                                                      content: Text(
+                                                        response!
+                                                            .data['message'],
+                                                      )));
+                                            }
+                                          } catch (e) {
+                                            if (mounted) {
+                                              showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return alert(
+                                                    context,
+                                                    "Perhatian",
+                                                    e.toString(),
+                                                  );
+                                                },
+                                              );
+                                            }
+                                          }
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              const Color(0xff00ABB3),
+                                        ),
+                                        child: const Text("Ubah"),
+                                      ),
+                                      const SizedBox(
+                                        width: 6,
+                                      )
+                                    ],
+                                  );
+                                });
+                          },
+                          icon: const Icon(Icons.edit)),
+                    ),
                 ],
               ),
             ),
@@ -401,7 +507,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             style: TextStyle(fontSize: 14),
                           ),
                           Text(
-                            userData.email ?? '#N/A',
+                            userData.email ?? 'Belum Diisi',
                             style: const TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.w600),
                           ),
@@ -459,13 +565,16 @@ class _ProfilePageState extends State<ProfilePage> {
                                         } catch (e) {
                                           if (mounted) {
                                             showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return AlertDialog(
-                                                      content:
-                                                          Text(e.toString()));
-                                                });
+                                              context: context,
+                                              builder:
+                                                  (BuildContext context) {
+                                                return alert(
+                                                  context,
+                                                  "Perhatian",
+                                                  e.toString(),
+                                                );
+                                              },
+                                            );
                                           }
                                         }
                                       },
@@ -626,7 +735,7 @@ class _ProfilePageState extends State<ProfilePage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text("Ganti Password"),
+              title: const Text("Ganti Password"),
               scrollable: true,
               content: Column(
                 children: [

@@ -185,6 +185,35 @@ abstract class Services {
     }
   }
 
+  /// change user's employee number
+  static Future<Response?> changeEmpNumber(String empNumber, String userId) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token').toString();
+      Response? response = await Dio().put(
+        '$apiUrl/user/employee-id',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          }
+        ),
+        data: {
+          "user_id": userId,
+          "employee_id": empNumber,
+        }
+      );
+      if (response.statusCode == 200) {
+        return response;
+      }else{
+        exceptionHandling(response.data['message']);
+        return null;
+      }
+    }catch(e){
+      exceptionHandling(e);
+      return null;
+    }
+  }
   /// Reset Password
   static Future<Response?> resetPassword(String userId, String password) async {
     try {
